@@ -22,7 +22,8 @@ public class GetCampaignsForAccount extends BaseAdsTest {
         TwitterAdsCampaignApi campaignApi = twitterAdsInstance.getCampaignApi();
         List<Campaign> campaignList = Lists.newArrayList();
         try {
-            BaseAdsListResponseIterable<Campaign> allCampaigns = campaignApi.getAllCampaigns("18ce53uo3nm", null, null, false, null, null, null);
+            // BaseAdsListResponseIterable<Campaign> allCampaigns = campaignApi.getAllCampaigns("18ce53uo3nm", null, null, false, null, null, null);
+            BaseAdsListResponseIterable<Campaign> allCampaigns = campaignApi.getAllCampaigns("1b83s0", null, null, false, null, null, null);
             for (BaseAdsListResponse<Campaign> allCampaign : allCampaigns) {
                 campaignList.addAll(allCampaign.getData());
             }
