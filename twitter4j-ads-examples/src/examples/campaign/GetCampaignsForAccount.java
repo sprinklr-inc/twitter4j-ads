@@ -27,7 +27,7 @@ public class GetCampaignsForAccount extends BaseAdsTest {
             for (BaseAdsListResponse<Campaign> allCampaign : allCampaigns) {
                 campaignList.addAll(allCampaign.getData());
             }
-            System.out.println(campaignList);
+            System.out.println(campaignList.size());
         } catch (TwitterException e) {
             System.err.println(e.getErrorMessage());
         }

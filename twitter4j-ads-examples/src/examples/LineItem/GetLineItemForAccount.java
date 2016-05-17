@@ -28,7 +28,7 @@ public class GetLineItemForAccount extends BaseAdsTest {
             for (BaseAdsListResponse<LineItem> allLineItem : allLineItems) {
                 lineItemList.addAll(allLineItem.getData());
             }
-            System.out.println(lineItemList);
+            System.out.println(lineItemList.size());
         } catch (TwitterException e) {
             System.err.println(e.getErrorMessage());
         }

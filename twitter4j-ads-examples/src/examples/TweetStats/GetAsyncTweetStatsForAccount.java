@@ -20,8 +20,10 @@ public class GetAsyncTweetStatsForAccount extends BaseAdsTest {
     public static void main(String[] args) {
         TwitterAds twitterAdsInstance = getTwitterAdsInstance();
         TwitterAdsStatApi statApi = twitterAdsInstance.getStatApi();
+        long until;
+        long since;
         try {
-            BaseAdsResponse<JobDetails> twitterAsyncJob = statApi.createAsyncJob("1b83s0", TwitterEntityType.CAMPAIGN, Lists.newArrayList("4u3mr"), 1461664800000L, 1462183200000L, Boolean.TRUE, Granularity.TOTAL, TwitterAdObjective.VIDEO_VIEWS, Placement.ALL_ON_TWITTER, null);
+            BaseAdsResponse<JobDetails> twitterAsyncJob = statApi.createAsyncJob("1b83s0", TwitterEntityType.CAMPAIGN, Lists.newArrayList("4u3mr"), since, until, Boolean.TRUE, Granularity.TOTAL, TwitterAdObjective.VIDEO_VIEWS, Placement.ALL_ON_TWITTER, null);
             BaseAdsListResponseIterable<JobDetails> jobExecutionDetails;
             boolean flag;
             long timeOut = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(2);
@@ -51,7 +53,7 @@ public class GetAsyncTweetStatsForAccount extends BaseAdsTest {
                     }
                     twitterEntityStatsList.addAll(allTwitterEntityStat.getData());
                 }
-                System.out.println(twitterEntityStatsList);
+                System.out.println(twitterEntityStatsList.size());
             }
         } catch (TwitterException e) {
             System.err.println(e.getErrorMessage());

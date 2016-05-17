@@ -25,12 +25,14 @@ public class GetTweetStatsForAccount extends BaseAdsTest {
         TwitterAds twitterAdsInstance = getTwitterAdsInstance();
         TwitterAdsStatApi statApi = twitterAdsInstance.getStatApi();
         List<TwitterEntityStatistics> twitterEntityStatsList = Lists.newArrayList();
+        long since;
+        long until;
         try {
-            BaseAdsListResponseIterable<TwitterEntityStatistics> allTwitterEntityStats = statApi.fetchStatsSync("1b83s0", TwitterEntityType.CAMPAIGN,Lists.<String>newArrayList("4u3mr"), 1461664800000L,1462183200000L, Boolean.TRUE, Granularity.TOTAL, TwitterAdObjective.VIDEO_VIEWS, Placement.ALL_ON_TWITTER);
+            BaseAdsListResponseIterable<TwitterEntityStatistics> allTwitterEntityStats = statApi.fetchStatsSync("1b83s0", TwitterEntityType.CAMPAIGN, Lists.<String>newArrayList("4u3mr"), since, until, Boolean.TRUE, Granularity.TOTAL, TwitterAdObjective.VIDEO_VIEWS, Placement.ALL_ON_TWITTER);
             for (BaseAdsListResponse<TwitterEntityStatistics> allTwitterEntityStat : allTwitterEntityStats) {
                 twitterEntityStatsList.addAll(allTwitterEntityStat.getData());
             }
-            System.out.println(twitterEntityStatsList);
+            System.out.println(twitterEntityStatsList.size());
         } catch (TwitterException e) {
             System.err.println(e.getErrorMessage());
         }

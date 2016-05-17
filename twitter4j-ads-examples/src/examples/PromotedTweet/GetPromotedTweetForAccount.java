@@ -28,7 +28,7 @@ public class GetPromotedTweetForAccount extends BaseAdsTest {
             for (BaseAdsListResponse<PromotedTweets> allPromotedTweet : allPromotedTweets) {
                 promotedTweetsList.addAll(allPromotedTweet.getData());
             }
-            System.out.println(promotedTweetsList);
+            System.out.println(promotedTweetsList.size());
         } catch (TwitterException e) {
             System.err.println(e.getErrorMessage());
         }
