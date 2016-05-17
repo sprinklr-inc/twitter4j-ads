@@ -1,0 +1,42 @@
+<project name="twitter4j-ads" default="all">
+    <description>
+        Core source package
+    </description>
+
+    <tstamp>
+        <format property="app.version" pattern="yyyyMMdd" locale="en"/>
+    </tstamp>
+    <echo message="${app.version}"/>
+    <property file="build.properties"/>
+
+    <!-- Path -->
+    <path id="project.class.path">
+        <fileset dir="${global-lib}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete file="${global-lib}/${ant.project.name}.jar"/>
+    </target>
+
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${build}/${ant.project.name}"/>
+    </target>
+
+    <target name="compile" depends="init" description="compile the source ">
+        <javac srcdir="${src}" destdir="${build}/${ant.project.name}" classpathRef="project.class.path"
+               debug="${compile.for.debugging}" debuglevel="${debug.level}"
+               deprecation="${compile.tofind.deprecation}"/>
+    </target>
+
+    <target name="dist-jars" depends="clean,compile" description="generate the distribution">
+        <jar jarfile="${global-lib}/${ant.project.name}.jar" basedir="${build}/${ant.project.name}"/>
+    </target>
+
+    <target name="package"/>
+    <target name="all" depends="dist-jars,package"/>
+
+</project>
