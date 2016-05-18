@@ -55,6 +55,7 @@ Please reference this Twitter Ads API documentation for more help in generating 
 * Abhishek Anand (Sprinklr)
 * Akash Maurya (Sprinklr)
 * John Babich (Twitter)
+* Nihit Purwar (Sprinklr)
 * Prashant Dubey (Sprinklr)
 
 ### LICENSE
