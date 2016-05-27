@@ -11,6 +11,7 @@ import twitter4j.models.TwitterSegmentationType;
 import twitter4j.models.ads.*;
 import twitter4j.util.TwitterAdUtil;
 
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
@@ -134,17 +135,15 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
             URL url = new URL(urlString);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestProperty("Accept-Encoding", "gzip");
-            Reader reader = new InputStreamReader(new GZIPInputStream(con.getInputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(con.getInputStream())));
 
-            String response = "";
-            while (true) {
-                int ch = reader.read();
-                if (ch == -1) {
-                    break;
-                }
-                response = response + (char) ch;
+            StringBuilder builder = new StringBuilder();
+            String line = reader.readLine();
+            while (line != null) {
+                builder.append(line);
+                line = reader.readLine();
             }
-            return response;
+            return builder.toString();
         } catch (Exception e) {
             // Throw Execption
         }
