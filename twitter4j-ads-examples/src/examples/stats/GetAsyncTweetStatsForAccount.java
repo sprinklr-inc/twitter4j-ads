@@ -1,4 +1,4 @@
-package examples.TweetStats;
+package examples.stats;
 
 import com.google.common.collect.Lists;
 import examples.BaseAdsTest;
@@ -20,8 +20,8 @@ public class GetAsyncTweetStatsForAccount extends BaseAdsTest {
     public static void main(String[] args) {
         TwitterAds twitterAdsInstance = getTwitterAdsInstance();
         TwitterAdsStatApi statApi = twitterAdsInstance.getStatApi();
-        long until;
-        long since;
+        long until = 0;
+        long since = 0;
         try {
             BaseAdsResponse<JobDetails> twitterAsyncJob = statApi.createAsyncJob("1b83s0", TwitterEntityType.CAMPAIGN, Lists.newArrayList("4u3mr"), since, until, Boolean.TRUE, Granularity.TOTAL, TwitterAdObjective.VIDEO_VIEWS, Placement.ALL_ON_TWITTER, null);
             BaseAdsListResponseIterable<JobDetails> jobExecutionDetails;
