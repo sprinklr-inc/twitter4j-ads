@@ -1,4 +1,4 @@
-package examples.TweetStats;
+package examples.stats;
 
 import com.google.common.collect.Lists;
 import examples.BaseAdsTest;
@@ -6,13 +6,13 @@ import twitter4j.BaseAdsListResponse;
 import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.TwitterAds;
 import twitter4j.TwitterException;
-import twitter4j.api.TwitterAdsPromotedTweetApi;
 import twitter4j.api.TwitterAdsStatApi;
 import twitter4j.models.Granularity;
-import twitter4j.models.ads.*;
+import twitter4j.models.ads.Placement;
+import twitter4j.models.ads.TwitterAdObjective;
+import twitter4j.models.ads.TwitterEntityStatistics;
+import twitter4j.models.ads.TwitterEntityType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
