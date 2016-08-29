@@ -1,9 +1,12 @@
 package twitter4j;
 
 import twitter4j.api.*;
+import twitter4j.models.video.TwitterCallToActionType;
 
 /**
- * Created by poly on 29/01/14.
+ * User: poly
+ * Date: 29/01/14.
+ * Time: 8:08 PM
  */
 public interface TwitterAds extends java.io.Serializable {
 
@@ -32,6 +35,8 @@ public interface TwitterAds extends java.io.Serializable {
     TwitterAdsBiddingApi getBiddingApi();
 
     TwitterAdsClient getTwitterAdsClient();
+
+    TwitterCallToActionApi getCallToActionApi();
 
     TwitterAdsPreviewApi getPreviewApi();
 }

@@ -9,7 +9,9 @@ import twitter4j.models.ads.HttpVerb;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static twitter4j.util.TwitterAdUtil.constructBaseAdsResponse;
 
@@ -22,6 +24,17 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
 
     public static final String ADS_API_URL = "https://ads-api.twitter.com/";
     public static final Gson GSON_INSTANCE = new Gson();
+
+    private static final Map<String, String> requestHeaders;
+
+    static {
+        requestHeaders = new HashMap<>();
+        requestHeaders.put("X-Twitter-Client-Version", Version.getVersion());
+        requestHeaders.put("X-Twitter-Client-URL", "http://twitter4j.org/en/twitter4j-" + Version.getVersion() + ".xml");
+        requestHeaders.put("X-Twitter-Client", "Twitter4J");
+        requestHeaders.put("User-Agent", "twitter4j http://twitter4j.org/ /" + Version.getVersion());
+        requestHeaders.put("Accept-Encoding", "gzip");
+    }
 
     public static TwitterAdsClient getInstance(Configuration conf, Authorization auth) {
         return new TwitterAdsClient(conf, auth);

@@ -72,6 +72,11 @@ public interface TwitterAdsConstants {
     String PARAM_PLACEMENTS = "placements";
     String PARAM_MATCH_RELEVANT_POPULAR_QUERIES = "match_relevant_popular_queries";
     String PARAM_OBJECTIVE = "objective";
+    String CURRENCY = "currency";
+    String CAMPAIGN_DAILY_BUDGET_AMOUNT_LOCAL_MICRO = "campaign_daily_budget_amount_local_micro";
+    String BID_AMOUNT_LOCAL_MICRO = "bid_amount_local_micro";
+
+    String BID_TYPE = "bid_type";
     String PARAM_INCLUDE_SENTIMENT = "include_sentiment";
     String PARAM_AUTOMATICALLY_SELECT_TWEET = "automatically_select_tweets";
     String PARAM_SUGGESTION_TYPE = "suggestion_type";
@@ -277,7 +282,7 @@ public interface TwitterAdsConstants {
     String PRE_ROLL_CALL_TO_ACTION = "/preroll_call_to_actions";
 
     String PATH_PROMOTED_VIDEO_TWEET = "/tweet";
-
+    String PATH_ACCOUNTS = "accounts/";
     String PATH_TAILORED_AUDIENCE = "/tailored_audiences/";
     String PATH_TAILORED_AUDIENCE_CHANGES = "/tailored_audience_changes/";
     String PATH_TAILORED_AUDIENCE_GLOBAL_OPT_OUT = "/tailored_audiences/global_opt_out";
@@ -310,4 +315,11 @@ public interface TwitterAdsConstants {
     String PATH_ORGANIC_TWEETS_STATS ="/organic_tweets";
 
     String PATH_REACH_STATS = "/reach/campaigns/";
+
+    /**
+     * for Twitter preview
+     */
+
+    String TWEET_PATH_PREVIEW = "/tweet/preview/";
+    String PARAM_PREVIEW_TARGET = "preview_target";
 }

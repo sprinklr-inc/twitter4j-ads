@@ -26,6 +26,7 @@ public class TwitterAdsImpl implements TwitterAds {
     private final TwitterAdsCampaignApi campaignApi;
     private final TwitterAdsBiddingApi biddingApi;
     private final TwitterAdsPreviewApi adsPreviewApi;
+    private final TwitterCallToActionApi callToActionApi;
 
     TwitterAdsImpl(Configuration conf, Authorization auth) {
         this.twitterAdsClient = new TwitterAdsClient(conf, auth);
@@ -42,6 +43,7 @@ public class TwitterAdsImpl implements TwitterAds {
         this.promotedTweetApi = new TwitterAdsPromotedTweetApiImpl(twitterAdsClient);
         this.biddingApi = new TwitterAdsBiddingApiImpl(twitterAdsClient);
         this.adsPreviewApi = new TwitterAdsPreviewApiImpl(twitterAdsClient);
+        this.callToActionApi = new TwitterCallToActionApiImpl(twitterAdsClient);
     }
 
     @Override
@@ -52,6 +54,11 @@ public class TwitterAdsImpl implements TwitterAds {
     @Override
     public TwitterAdsPreviewApi getPreviewApi() {
         return adsPreviewApi;
+    }
+
+    @Override
+    public TwitterCallToActionApi getCallToActionApi() {
+        return callToActionApi;
     }
 
     @Override

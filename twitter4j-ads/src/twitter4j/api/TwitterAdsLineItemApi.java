@@ -13,6 +13,7 @@ import twitter4j.models.ads.sort.PromotedAccountsSortByField;
 import twitter4j.models.video.AssociateMediaCreativeResponse;
 import twitter4j.models.video.PreRollCallToActionResponse;
 import twitter4j.models.video.TwitterCallToActionType;
+import twitter4j.models.video.TwitterPreRollCallToAction;
 
 import java.util.Collection;
 
@@ -124,9 +125,9 @@ public interface TwitterAdsLineItemApi {
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/preroll_call_to_action">https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/preroll_call_to_action</a>
      */
-    BaseAdsResponse<PreRollCallToActionResponse> createCallToActionDetailsForPreRollViews(String accountId, String lineItemId,
-                                                                                          TwitterCallToActionType twitterCallToActionType,
-                                                                                          String callToActionUrl) throws TwitterException;
+    BaseAdsResponse<TwitterPreRollCallToAction> createCallToActionDetailsForPreRollViews(String accountId, String lineItemId,
+                                                                                         TwitterCallToActionType twitterCallToActionType,
+                                                                                         String callToActionUrl) throws TwitterException;
 
     /**
      * @param accountId            The identifier for the leveraged account.

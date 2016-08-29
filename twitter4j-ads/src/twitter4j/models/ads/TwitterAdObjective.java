@@ -10,24 +10,31 @@ import twitter4j.models.MetricGroup;
 public enum TwitterAdObjective {
 
     APP_ENGAGEMENTS("app_engagements", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MOBILE_CONVERSION,
-                     MetricGroup.MEDIA, MetricGroup.VIDEO),
+            MetricGroup.MEDIA, MetricGroup.VIDEO, MetricGroup.WEB_CONVERSION),
 
     APP_INSTALLS("app_installs", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MOBILE_CONVERSION,
-                  MetricGroup.MEDIA, MetricGroup.VIDEO),
+            MetricGroup.MEDIA, MetricGroup.VIDEO, MetricGroup.WEB_CONVERSION),
 
-    FOLLOWERS("followers", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MEDIA),
+    FOLLOWERS("followers", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MOBILE_CONVERSION, MetricGroup.MEDIA, MetricGroup.VIDEO,
+            MetricGroup.WEB_CONVERSION),
 
-    LEAD_GENERATION("lead_generation", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MEDIA),
+    LEAD_GENERATION("lead_generation", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MOBILE_CONVERSION, MetricGroup.MEDIA, MetricGroup
+            .VIDEO, MetricGroup.WEB_CONVERSION),
 
-    PREROLL_VIEWS("preroll_views", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.VIDEO),
+    VIDEO_VIEWS_PREROLL("video_views_preroll", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MOBILE_CONVERSION, MetricGroup.MEDIA,
+            MetricGroup.VIDEO, MetricGroup.WEB_CONVERSION),
 
-    TWEET_ENGAGEMENTS("tweet_engagements", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MEDIA),
+    TWEET_ENGAGEMENTS("tweet_engagements", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MOBILE_CONVERSION, MetricGroup.MEDIA,
+            MetricGroup.VIDEO, MetricGroup.WEB_CONVERSION),
 
-    QUALIFIED_VIEWS("qualified_views", MetricGroup.ENGAGEMENT, MetricGroup.BILLING),
+    QUALIFIED_VIEWS("qualified_views", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MOBILE_CONVERSION, MetricGroup.MEDIA, MetricGroup
+            .VIDEO, MetricGroup.WEB_CONVERSION),
 
-    VIDEO_VIEWS("video_views", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.VIDEO),
+    VIDEO_VIEWS("video_views", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MOBILE_CONVERSION, MetricGroup.MEDIA, MetricGroup.VIDEO,
+            MetricGroup.WEB_CONVERSION),
 
-    WEBSITE_CLICKS("website_clicks", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.WEB_CONVERSION, MetricGroup.MEDIA);
+    WEBSITE_CLICKS("website_clicks", MetricGroup.ENGAGEMENT, MetricGroup.BILLING, MetricGroup.MOBILE_CONVERSION, MetricGroup.MEDIA, MetricGroup
+            .VIDEO, MetricGroup.WEB_CONVERSION);
 
     private MetricGroup[] metricGroups;
     private String objective;

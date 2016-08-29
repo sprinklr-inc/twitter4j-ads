@@ -200,7 +200,15 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         TwitterAdUtil.ensureNotNull(campaignId, "Campaign Id");
         List<HttpParameter> params = new ArrayList<>();
         //The Ones that can be changed to null
-        params.add(new HttpParameter(PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO, String.valueOf(totalBudgetAmountLocalMicro)));
+
+        //The Ones that can be changed to null
+        if (totalBudgetAmountLocalMicro == null || totalBudgetAmountLocalMicro >= 0) {
+            params.add(new HttpParameter(PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO, String.valueOf(totalBudgetAmountLocalMicro)));
+        }
+
+        if (endTime != null && endTime.isPresent()) {
+            params.add(new HttpParameter(PARAM_END_TIME, String.valueOf(endTime)));
+        }
         //The Ones that cannot be changed to null below
         if (name != null && name.isPresent()) {
             params.add(new HttpParameter(PARAM_NAME, name.get()));

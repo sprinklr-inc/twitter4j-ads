@@ -11,6 +11,7 @@ import twitter4j.models.ads.sort.PromotedAccountsSortByField;
 import twitter4j.models.video.AssociateMediaCreativeResponse;
 import twitter4j.models.video.PreRollCallToActionResponse;
 import twitter4j.models.video.TwitterCallToActionType;
+import twitter4j.models.video.TwitterPreRollCallToAction;
 import twitter4j.util.TwitterAdUtil;
 
 import java.io.IOException;
@@ -194,9 +195,9 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
     }
 
     @Override
-    public BaseAdsResponse<PreRollCallToActionResponse> createCallToActionDetailsForPreRollViews(String accountId, String lineItemId,
-                                                                                                 TwitterCallToActionType twitterCallToActionType,
-                                                                                                 String callToActionUrl) throws TwitterException {
+    public BaseAdsResponse<TwitterPreRollCallToAction> createCallToActionDetailsForPreRollViews(String accountId, String lineItemId,
+                                                                                                TwitterCallToActionType twitterCallToActionType,
+                                                                                                String callToActionUrl) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(lineItemId, "Line Item Id");
         TwitterAdUtil.ensureNotNull(callToActionUrl, "Call To Action Url");
@@ -211,7 +212,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PRE_ROLL_CALL_TO_ACTION;
         HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
-            Type type = new TypeToken<BaseAdsResponse<PreRollCallToActionResponse>>() {}.getType();
+            Type type = new TypeToken<BaseAdsResponse<TwitterPreRollCallToAction>>() {}.getType();
             return TwitterAdUtil.constructBaseAdsResponse(httpResponse, httpResponse.asString(), type);
         } catch (IOException e) {
             throw new TwitterException("Failed to parse call to action response.");
@@ -231,8 +232,9 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         params.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
         params.add(new HttpParameter(PARAM_LINE_ITEM_ID, lineItemId));
         params.add(new HttpParameter(PARAM_ACCOUNT_MEDIA_ID, accountMediaId));
-        params.add(new HttpParameter(PARAM_LANDING_URL, landingUrl));
-
+        if(TwitterAdUtil.isNotNullOrEmpty(landingUrl)) {
+            params.add(new HttpParameter(PARAM_LANDING_URL, landingUrl));
+        }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_MEDIA_CREATIVES;
         HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {

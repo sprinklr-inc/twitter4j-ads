@@ -2,6 +2,7 @@ package twitter4j.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
 import twitter4j.*;
@@ -9,6 +10,8 @@ import twitter4j.api.TwitterAdsTargetingApi;
 import twitter4j.models.LocationType;
 import twitter4j.models.ads.*;
 import twitter4j.models.ads.tags.TwitterApplicationList;
+import twitter4j.models.ads.targeting.TargetingParamRequest;
+import twitter4j.models.ads.targeting.TargetingParamResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.io.IOException;
@@ -26,6 +29,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
 
     private static final Integer MAX_REQUEST_PARAMETER_SIZE = 50;
 
+    private static final Gson GSON = new Gson();
     private final TwitterAdsClient twitterAdsClient;
 
     public TwitterAdsTargetingApiImpl(TwitterAdsClient twitterAdsClient) {
@@ -43,7 +47,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_TARGETING_CRITERIA;
 
-        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
@@ -54,9 +59,10 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         TwitterAdUtil.ensureNotNull(targetingId, "Targeting Id");
 
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_TARGETING_CRITERIA +
-                         targetingId;
+                targetingId;
         HttpParameter[] params = new HttpParameter[]{new HttpParameter(PARAM_WITH_DELETED, withDeleted)};
-        Type type = new TypeToken<BaseAdsResponse<TargetingCriteria>>() {}.getType();
+        Type type = new TypeToken<BaseAdsResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params, type, HttpVerb.GET);
 
     }
@@ -66,8 +72,9 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(targetingCriteriaId, "Targeting Id");
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_TARGETING_CRITERIA +
-                         targetingCriteriaId;
-        Type type = new TypeToken<BaseAdsResponse<TargetingCriteria>>() {}.getType();
+                targetingCriteriaId;
+        Type type = new TypeToken<BaseAdsResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);
     }
 
@@ -78,7 +85,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         List<HttpParameter> params = validateTargetingLocationParameters(locationType, q, countryCode, count);
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TARGETING_CRITERIA_LOCATION;
 
-        Type type = new TypeToken<BaseAdsListResponse<twitter4j.models.ads.TargetingLocation>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<twitter4j.models.ads.TargetingLocation>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
@@ -117,7 +125,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         params.add(new HttpParameter(PARAM_LINE_ITEM_ID, lineItemId));
         HttpResponse httpResponse = twitterAdsClient.putRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
-            Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {}.getType();
+            Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {
+            }.getType();
 
             BaseAdsListResponse<TargetingCriteria> baseAdsListResponse =
                     TwitterAdUtil.constructBaseAdsListResponse(httpResponse, httpResponse.asString(), type);
@@ -145,7 +154,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
             params.add(new HttpParameter(PARAM_TAILORED_AUDIENCE_TYPE, tailoredAudienceType.get().name()));
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_TARGETING_CRITERIA;
-        Type type = new TypeToken<BaseAdsResponse<TargetingCriteria>>() {}.getType();
+        Type type = new TypeToken<BaseAdsResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.POST);
     }
 
@@ -153,7 +163,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     public BaseAdsListResponseIterable<PlatformVersions> getAllTargetingPlatformVersions() throws TwitterException {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TARGETING_CRITERIA_PLATFORM_VERSIONS;
 
-        Type type = new TypeToken<BaseAdsListResponse<PlatformVersions>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<PlatformVersions>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, null, type);
     }
 
@@ -162,20 +173,66 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         return hitQueryForPath(q, PATH_TARGETING_CRITERIA_DEVICES);
     }
 
+    private void validateTargetingBatch(List<TargetingParamRequest> targetingParamRequests) throws TwitterException {
+        if (!TwitterAdUtil.isNotEmpty(targetingParamRequests)) {
+            throw new TwitterException("Targeting Params size is 0");
+        }
+        if (targetingParamRequests.size() > 20) {
+            throw new TwitterException("Targeting Params size cannot be more than 20 as per the API");
+            //https://dev.twitter.com/ads/reference/post/batch/accounts/%3Aaccount_id/targeting_criteria
+        }
+    }
+
     @Override
-    public BaseAdsResponse<TwitterReachEstimate> getReachEstimate(String accountId, ProductType productType, String promotableUserId,
-                                                                  List<TargetingCriteria> targetingCriterias) throws TwitterException {
+    public BaseAdsResponse<NewTwitterReachEstimate> getReachEstimate(String accountId, ProductType productType,
+                                                                     List<TargetingCriteria> targetingCriterias, String objective,
+                                                                     Long bidAmountLocalMicro, String currency,
+                                                                     Long campaignDailyBudgetAmountLocalMicro, String bidType)
+            throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(productType, "Product Type");
-        TwitterAdUtil.ensureNotNull(promotableUserId, "User Id");
+        TwitterAdUtil.ensureNotNull(objective, "Objective");
+
+        TwitterAdUtil.ensureNotNull(currency, "Currency");
+        TwitterAdUtil.ensureNotNull(campaignDailyBudgetAmountLocalMicro, "Campaign Daily Budget Amount Local Micro");
+        if (StringUtils.isBlank(bidType)) {
+            if (bidAmountLocalMicro != null) {
+                throw new IllegalArgumentException("bidAmountLocalMicro has to be null when the BidType is null as default bidType is AUTO");
+            }
+            bidType = BidType.AUTO.name();
+        }
 
         List<HttpParameter> params = validateAndCreateTargetingParameters(targetingCriterias);
         params.add(new HttpParameter(PARAM_PRODUCT_TYPE, productType.name()));
-        params.add(new HttpParameter(PARAM_USER_ID, promotableUserId));
+        params.add(new HttpParameter(PARAM_OBJECTIVE, objective));
+
+        params.add(new HttpParameter(CURRENCY, currency));
+        params.add(new HttpParameter(CAMPAIGN_DAILY_BUDGET_AMOUNT_LOCAL_MICRO, campaignDailyBudgetAmountLocalMicro));
+        params.add(new HttpParameter(BID_TYPE, bidType));
+
+        if (!BidType.AUTO.name().equals(bidType)) {
+            TwitterAdUtil.ensureNotNull(bidAmountLocalMicro, "Bid Amount Local Micro");
+            params.add(new HttpParameter(BID_AMOUNT_LOCAL_MICRO, bidAmountLocalMicro));
+        }
+
         String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_REACH_ESTIMATE;
-        Type type = new TypeToken<BaseAdsResponse<TwitterReachEstimate>>() {}.getType();
+        Type type = new TypeToken<BaseAdsResponse<NewTwitterReachEstimate>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.GET);
     }
+
+    @Override
+    public BaseAdsListResponseIterable<IabCategory> fetchIabCategories(String q) throws TwitterException {
+        List<HttpParameter> params = new ArrayList<>();
+        if (TwitterAdUtil.isNotNullOrEmpty(q)) {
+            params.add(new HttpParameter("q", q));
+        }
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_IAB_CATEGORIES;
+        Type type = new TypeToken<BaseAdsListResponse<IabCategory>>() {
+        }.getType();
+        return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
+    }
+
 
     @Override
     public BaseAdsListResponseIterable<TargetingCriteria> getAllTargetingTVChannels(String tvMarketLocale, Optional<Integer> count, Optional<String> cursor)
@@ -191,7 +248,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
             params.add(new HttpParameter(PARAM_CURSOR, cursor.get()));
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TV_CHANNELS;
-        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
@@ -204,7 +262,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         }
         params.add(new HttpParameter("location_type", locationType.name()));
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TARGETING_CRITERIA_LOCATION;
-        Type type = new TypeToken<BaseAdsListResponse<TargetingLocation>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TargetingLocation>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
@@ -221,28 +280,32 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         List<HttpParameter> params = validateTvShowsParameters(tvMarket, q, count, cursor);
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TV_SHOWS;
 
-        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
     @Override
     public BaseAdsListResponseIterable<TargetingCriteria> getAllEvents() throws TwitterException {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TARGETING_CRITERIA_EVENT;
-        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, null, type);
     }
 
     @Override
     public BaseAdsListResponseIterable<TargetingCriteria> getAllTVMarkets() throws TwitterException {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TV_MARKETS;
-        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, null, type);
     }
 
     @Override
     public BaseAdsListResponseIterable<TargetingCriteria> getAllTargetingTVGenres() throws TwitterException {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TV_GENRES;
-        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, null, type);
     }
 
@@ -264,7 +327,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_TARGETING_SUGGESTIONS;
         HttpResponse httpResponse = twitterAdsClient.getRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
-            Type type = new TypeToken<BaseAdsListResponse<TargetingSuggestion>>() {}.getType();
+            Type type = new TypeToken<BaseAdsListResponse<TargetingSuggestion>>() {
+            }.getType();
             BaseAdsListResponse<TargetingSuggestion> baseAdsListResponse =
                     TwitterAdUtil.constructBaseAdsListResponse(httpResponse, httpResponse.asString(), type);
             return baseAdsListResponse == null ? Collections.<TargetingSuggestion>emptyList() : baseAdsListResponse.getData();
@@ -285,7 +349,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TARGETING_CRITERIA_APP_STORE_CATEGORIES;
         HttpResponse httpResponse = twitterAdsClient.getRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
-            Type type = new TypeToken<BaseAdsListResponse<TwitterAppStore>>() {}.getType();
+            Type type = new TypeToken<BaseAdsListResponse<TwitterAppStore>>() {
+            }.getType();
             BaseAdsListResponse<TwitterAppStore> baseAdsListResponse =
                     TwitterAdUtil.constructBaseAdsListResponse(httpResponse, httpResponse.asString(), type);
             return baseAdsListResponse == null ? Collections.<TwitterAppStore>emptyList() : baseAdsListResponse.getData();
@@ -309,7 +374,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         }
 
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_BEHAVIORS;
-        Type type = new TypeToken<BaseAdsListResponse<TwitterBehavior>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TwitterBehavior>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
@@ -335,21 +401,24 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         }
 
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_BEHAVIORS_TAXONOMY;
-        Type type = new TypeToken<BaseAdsListResponse<TwitterBehaviorTaxonomy>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TwitterBehaviorTaxonomy>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
     @Override
     public BaseAdsListResponseIterable<TwitterApplicationList> getAllAppLists(String accountId) throws TwitterException {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_APP_LIST;
-        Type type = new TypeToken<BaseAdsListResponse<TwitterApplicationList>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TwitterApplicationList>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, null, type);
     }
 
     @Override
     public BaseAdsResponse<TwitterApplicationList> getAllAppsListsById(String accountId, String listId) throws TwitterException {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_APP_LIST + listId;
-        Type typeToken = new TypeToken<BaseAdsResponse<TwitterApplicationList>>() {}.getType();
+        Type typeToken = new TypeToken<BaseAdsResponse<TwitterApplicationList>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, typeToken, HttpVerb.GET);
     }
 
@@ -358,7 +427,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
             throws TwitterException {
         List<HttpParameter> params = validateAndCreateApplicationListParameters(twitterApplicationList);
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_APP_LIST;
-        Type typeToken = new TypeToken<BaseAdsResponse<TwitterApplicationList>>() {}.getType();
+        Type typeToken = new TypeToken<BaseAdsResponse<TwitterApplicationList>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), typeToken, HttpVerb.POST);
     }
 
@@ -371,7 +441,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
             params.add(new HttpParameter("q", q));
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + queryPath;
-        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<TargetingCriteria>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 

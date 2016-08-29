@@ -87,6 +87,29 @@ public class LineItem extends TwitterEntity {
     @SerializedName("categories")
     private String[] categories;
 
+    @SerializedName("optimization")
+    private String optimization;
+
+    @SerializedName("creative_source")
+    private String creativeSource;
+
+    public String getCreativeSource() {
+        return creativeSource;
+    }
+
+    public void setCreativeSource(String creativeSource) {
+        this.creativeSource = creativeSource;
+    }
+
+    public String getOptimization() {
+        return optimization;
+    }
+
+    public void setOptimization(String optimization) {
+        this.optimization = optimization;
+    }
+
+
     public String getAccountId() {
         return accountId;
     }

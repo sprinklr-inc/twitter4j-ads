@@ -5,6 +5,7 @@ import twitter4j.models.LocationType;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: poly
@@ -40,7 +41,7 @@ public class TargetingCriteria extends TwitterEntity {
     private String name;
 
     @SerializedName("targeting_value")
-    private String targetingValue;
+    private Object targetingValue;
 
     @SerializedName("targeting_type")
     private TargetingType targetingType;
@@ -140,10 +141,33 @@ public class TargetingCriteria extends TwitterEntity {
     }
 
     public String getTargetingValue() {
-        return targetingValue;
+        if (this.targetingValue == null) {
+            return null;
+        }
+        if (targetingValue instanceof String) {
+            return ((String) targetingValue);
+        }
+
+        if (targetingValue instanceof Map) {
+            Map targetingMap = (Map) targetingValue;
+            Object id = targetingMap.get("id");
+            if (id != null) {
+                return id.toString();
+            }
+        }
+        if (targetingValue instanceof Double) {
+            Double doubleValue = (Double) targetingValue;
+            return Integer.toString(doubleValue.intValue());
+        }
+
+        if (targetingValue instanceof Long) {
+            Long longValue = (Long) targetingValue;
+            return Integer.toString(longValue.intValue());
+        }
+        return null;
     }
 
-    public void setTargetingValue(String targetingValue) {
+    public void setTargetingValue(Object targetingValue) {
         this.targetingValue = targetingValue;
     }
 

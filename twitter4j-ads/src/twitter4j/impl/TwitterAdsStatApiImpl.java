@@ -149,4 +149,14 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
         }
         return null;
     }
+
+    private String getMetrics(TwitterEntityType twitterEntity, TwitterAdObjective objective, TwitterSegmentationType twitterSegmentationType) {
+        String metrics;
+        if (objective == null && twitterEntity.equals(TwitterEntityType.ORGANIC_TWEET)) {
+            metrics = StringUtils.join(TwitterEntityStatisticsMetrics.ORGANIC_METRIC_GROUPS, ",");
+        } else {
+            metrics = StringUtils.join(TwitterEntityStatisticsMetrics.getMetricGroups(objective, twitterSegmentationType), ",");
+        }
+        return metrics;
+    }
 }
