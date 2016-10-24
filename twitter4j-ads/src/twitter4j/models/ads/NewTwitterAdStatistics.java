@@ -45,6 +45,7 @@ public class NewTwitterAdStatistics extends TwitterEntity {
     public static final String VIDEO_CTA_CLICKS = "video_cta_clicks";
     public static final String VIDEO_CONTENT_STARTS = "video_content_starts";
     public static final String VIDEO_MRC_VIEWS = "video_mrc_views";
+    public static final String VIDEO_3S100PCT_VIEWS = "video_3s100pct_views";
 
     //MEDIA
     public static final String MEDIA_VIEWS = "media_views";
@@ -173,6 +174,9 @@ public class NewTwitterAdStatistics extends TwitterEntity {
 
     @SerializedName(VIDEO_MRC_VIEWS)
     private String[] videoMrcViews;
+
+    @SerializedName(VIDEO_3S100PCT_VIEWS)
+    private String[] video3s100pctViews;
 
     @SerializedName(MEDIA_VIEWS)
     private String[] mediaViews;
@@ -661,6 +665,14 @@ public class NewTwitterAdStatistics extends TwitterEntity {
         this.videoMrcViews = videoMrcViews;
     }
 
+    public String[] getVideo3s100pctViews() {
+        return video3s100pctViews;
+    }
+
+    public void setVideo3s100pctViews(String[] video3s100pctViews) {
+        this.video3s100pctViews = video3s100pctViews;
+    }
+
     public String[] getMediaViews() {
         return mediaViews;
     }
@@ -875,6 +887,7 @@ public class NewTwitterAdStatistics extends TwitterEntity {
                ", videoCtaClicks=" + Arrays.toString(videoCtaClicks) +
                ", videoContentStarts=" + Arrays.toString(videoContentStarts) +
                ", videoMrcViews=" + Arrays.toString(videoMrcViews) +
+               ", video3s100pctViews=" + Arrays.toString(video3s100pctViews) +
                ", mediaViews=" + Arrays.toString(mediaViews) +
                ", segment=" + segment +
                ", conversionPurchases=" + conversionPurchases +
