@@ -9,7 +9,6 @@ import twitter4j.models.ads.*;
 import twitter4j.models.ads.sort.LineItemsSortByField;
 import twitter4j.models.ads.sort.PromotedAccountsSortByField;
 import twitter4j.models.video.AssociateMediaCreativeResponse;
-import twitter4j.models.video.PreRollCallToActionResponse;
 import twitter4j.models.video.TwitterCallToActionType;
 import twitter4j.models.video.TwitterPreRollCallToAction;
 import twitter4j.util.TwitterAdUtil;
@@ -118,15 +117,15 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         String campaignIdsAsString = null;
         String lineItemIdsAsString = null;
         String fundingInstrumentIdsAsString = null;
-        if (campaignIds.isPresent()) {
+        if (campaignIds != null && campaignIds.isPresent()) {
             TwitterAdUtil.ensureMaxSize(campaignIds.get(), MAX_REQUEST_PARAMETER_SIZE);
             campaignIdsAsString = TwitterAdUtil.getCsv(campaignIds.get());
         }
-        if (lineItemIds.isPresent()) {
+        if (lineItemIds != null && lineItemIds.isPresent()) {
             TwitterAdUtil.ensureMaxSize(lineItemIds.get(), MAX_REQUEST_PARAMETER_SIZE);
             lineItemIdsAsString = TwitterAdUtil.getCsv(lineItemIds.get());
         }
-        if (fundingInstrumentIds.isPresent()) {
+        if (lineItemIds != null && fundingInstrumentIds.isPresent()) {
             TwitterAdUtil.ensureMaxSize(fundingInstrumentIds.get(), MAX_REQUEST_PARAMETER_SIZE);
             fundingInstrumentIdsAsString = TwitterAdUtil.getCsv(fundingInstrumentIds.get());
         }
