@@ -34,6 +34,9 @@ public class AdAccount extends TwitterEntity {
     @SerializedName("salt")
     private String salt;
 
+    @SerializedName("approval_status")
+    private String approvalStatus;
+
     public String getTimezone() {
         return timezone;
     }
@@ -72,6 +75,14 @@ public class AdAccount extends TwitterEntity {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 
     public String getName() {
