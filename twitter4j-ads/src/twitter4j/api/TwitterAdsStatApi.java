@@ -38,7 +38,7 @@ public interface TwitterAdsStatApi {
 
     /**
      * @param accountId            The identifier for the leveraged account.
-     * @param twitterEntity        The enum of entity type (e.g. LINE_ITEM, PROMOTED_TWEET).
+     * @param twitterEntityType        The enum of entity type (e.g. LINE_ITEM, PROMOTED_TWEET).
      * @param ids                  A collection of ids to retrieve stats for.
      * @param startTime            The time to retrieve stats from.
      * @param endTime              The time to retrieve stats until.

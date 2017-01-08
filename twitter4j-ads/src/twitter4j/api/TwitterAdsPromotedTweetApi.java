@@ -1,13 +1,11 @@
 package twitter4j.api;
 
 import com.google.common.base.Optional;
-import twitter4j.BaseAdsListResponse;
-import twitter4j.BaseAdsListResponseIterable;
-import twitter4j.BaseAdsResponse;
-import twitter4j.TwitterException;
+import twitter4j.*;
 import twitter4j.models.ads.PromotedTweets;
 import twitter4j.models.ads.sort.PromotedTweetsSortByField;
 
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -61,5 +59,9 @@ public interface TwitterAdsPromotedTweetApi {
      * @see <a href="https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/promoted_tweets/%3Aid">https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/promoted_tweets/%3Aid</a>
      */
     BaseAdsResponse<PromotedTweets> deletePromotedTweets(String accountId, String tweetId) throws TwitterException;
+
+    Status createPromotedVideoTweet(String accountId, String targetUserId, String tweetText, String videoId, String videoTitle,
+                                    String videoDescription, String callToAction, String ctaValue)
+            throws TwitterException, IOException, InterruptedException;
 
 }
