@@ -58,6 +58,9 @@ Please reference this Twitter Ads API documentation for more help in generating 
 * Nihit Purwar (Sprinklr)
 * Prashant Dubey (Sprinklr)
 
+## Credits
+Yusuke Yamamoto - yusuke at mac.com using https://github.com/yusuke/twitter4j with minor modifications
+
 ### LICENSE
 
 The MIT License (MIT)

@@ -1,7 +1,8 @@
 package twitter4j.models.ads;
 
+
 import twitter4j.BaseListResponse;
-import twitter4j.Status;
+import twitter4j.internal.models4j.Status;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
 package twitter4j.stats;
 
 import com.google.common.collect.Lists;
-import twitter4j.BaseAdsTest;
 import twitter4j.*;
 import twitter4j.api.TwitterAdsStatApi;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.Granularity;
 import twitter4j.models.ads.*;
 import twitter4j.util.TwitterAdUtil;

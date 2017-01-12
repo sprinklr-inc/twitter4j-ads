@@ -5,8 +5,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import twitter4j.BaseAdsListResponse;
 import twitter4j.BaseAdsResponse;
-import twitter4j.HttpResponse;
-import twitter4j.RateLimitStatus;
+import twitter4j.internal.http.HttpResponse;
+import twitter4j.internal.models4j.RateLimitStatus;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

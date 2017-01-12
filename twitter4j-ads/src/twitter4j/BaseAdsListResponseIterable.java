@@ -2,6 +2,10 @@ package twitter4j;
 
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.http.HttpResponse;
+import twitter4j.internal.models4j.RateLimitStatus;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.TwitterRuntimeException;
 import twitter4j.util.TwitterAdHttpUtils;
 import twitter4j.util.TwitterAdUtil;

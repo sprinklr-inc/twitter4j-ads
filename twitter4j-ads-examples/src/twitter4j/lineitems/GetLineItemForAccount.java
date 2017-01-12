@@ -1,9 +1,12 @@
 package twitter4j.lineitems;
 
 import com.google.common.collect.Lists;
-import twitter4j.*;
+import twitter4j.BaseAdsListResponse;
+import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsTest;
+import twitter4j.TwitterAds;
 import twitter4j.api.TwitterAdsLineItemApi;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.LineItem;
 
 import java.util.List;

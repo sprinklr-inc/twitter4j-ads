@@ -1,6 +1,8 @@
 package twitter4j;
 
 import com.google.gson.annotations.SerializedName;
+import twitter4j.internal.models4j.RateLimitStatus;
+import twitter4j.internal.models4j.TwitterResponse;
 import twitter4j.models.ads.RequestParameters;
 
 import java.io.Serializable;

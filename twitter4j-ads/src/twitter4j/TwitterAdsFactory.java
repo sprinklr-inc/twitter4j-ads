@@ -6,6 +6,7 @@ import twitter4j.auth.AuthorizationFactory;
 import twitter4j.auth.OAuthAuthorization;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationContext;
+import twitter4j.internal.models4j.Twitter;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +26,7 @@ public class TwitterAdsFactory {
     private final Configuration conf;
 
     static {
-        String className = "twitter4j.TwitterImpl";
+        String className = "twitter4j.internal.models4j.TwitterImpl";
         Constructor<Twitter> constructor;
         Class clazz;
         try {

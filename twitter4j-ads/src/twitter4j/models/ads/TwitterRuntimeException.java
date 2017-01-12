@@ -1,6 +1,6 @@
 package twitter4j.models.ads;
 
-import twitter4j.TwitterException;
+import twitter4j.internal.models4j.TwitterException;
 
 /**
  * Created by poly on 11/02/14.

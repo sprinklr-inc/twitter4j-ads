@@ -4,8 +4,13 @@ import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
-import twitter4j.*;
+import twitter4j.BaseAdsListResponse;
+import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.BaseAdsResponse;
+import twitter4j.TwitterAdsClient;
 import twitter4j.api.TwitterAdsStatApi;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.Granularity;
 import twitter4j.models.TwitterSegmentationType;
 import twitter4j.models.ads.*;
@@ -13,15 +18,15 @@ import twitter4j.util.TwitterAdUtil;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import static twitter4j.TwitterAdsConstants.*;
-import static twitter4j.TwitterAdsConstants.V1_PREFIX_STATS_JOB_ACCOUNTS_URI;
 
 /**
  * User: abhay

@@ -1,9 +1,12 @@
 package twitter4j.campaigns;
 
 import com.google.common.collect.Lists;
-import twitter4j.*;
+import twitter4j.BaseAdsListResponse;
+import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsTest;
+import twitter4j.TwitterAds;
 import twitter4j.api.TwitterAdsCampaignApi;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.Campaign;
 
 import java.util.List;

@@ -2,8 +2,13 @@ package twitter4j.impl;
 
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
-import twitter4j.*;
+import twitter4j.BaseAdsListResponse;
+import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.BaseAdsResponse;
+import twitter4j.TwitterAdsClient;
 import twitter4j.api.TwitterAdsWebEventApi;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.HttpVerb;
 import twitter4j.models.ads.tags.WebEventTag;
 import twitter4j.models.ads.tags.WebEventTagType;

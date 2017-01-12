@@ -1,7 +1,7 @@
 package twitter4j.api;
 
 import twitter4j.BaseAdsListResponse;
-import twitter4j.TwitterException;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.TwitterCreativePreview;
 import twitter4j.models.ads.TwitterPreviewTarget;
 
