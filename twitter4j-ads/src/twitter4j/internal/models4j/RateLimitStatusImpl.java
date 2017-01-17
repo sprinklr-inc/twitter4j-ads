@@ -1,6 +1,4 @@
-package twitter4j.models;
-
-import twitter4j.RateLimitStatus;
+package twitter4j.internal.models4j;
 
 /**
  * User: abhay
@@ -30,6 +28,11 @@ public class RateLimitStatusImpl implements RateLimitStatus {
     @Override
     public int getRemaining() {
         return remaining;
+    }
+
+    @Override
+    public int getRemainingHits() {
+        return getRemaining();
     }
 
     @Override

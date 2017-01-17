@@ -4,10 +4,12 @@ import com.google.common.base.Optional;
 import twitter4j.BaseAdsListResponse;
 import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsResponse;
-import twitter4j.TwitterException;
+import twitter4j.internal.models4j.Status;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.PromotedTweets;
 import twitter4j.models.ads.sort.PromotedTweetsSortByField;
 
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -26,7 +28,6 @@ public interface TwitterAdsPromotedTweetApi {
      * @param count       (optional) Specifies the number of Promoted Tweets to try to retrieve, up to a maximum of 1000 per distinct request.
      * @param cursor      (optional) Specify a cursor to retrieve data from a specific page (function automatically handles paging upon iteration when you do not specify cursor value).
      * @return Retrieve references to the Promoted Tweets associated with one or more line items.
-     * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_tweets">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_tweets</a>
      */
     BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, String lineItemId, boolean withDeleted,
@@ -61,5 +62,9 @@ public interface TwitterAdsPromotedTweetApi {
      * @see <a href="https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/promoted_tweets/%3Aid">https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/promoted_tweets/%3Aid</a>
      */
     BaseAdsResponse<PromotedTweets> deletePromotedTweets(String accountId, String tweetId) throws TwitterException;
+
+    Status createPromotedVideoTweet(String accountId, String targetUserId, String tweetText, String videoId, String videoTitle,
+                                    String videoDescription, String callToAction, String ctaValue)
+            throws TwitterException, IOException, InterruptedException;
 
 }

@@ -5,7 +5,13 @@ import org.apache.commons.lang3.StringUtils;
 import twitter4j.auth.Authorization;
 import twitter4j.auth.OAuthSupport;
 import twitter4j.conf.Configuration;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.http.HttpResponse;
+import twitter4j.internal.models4j.TwitterAPIMonitor;
+import twitter4j.internal.models4j.TwitterException;
+import twitter4j.internal.models4j.Version;
 import twitter4j.models.ads.HttpVerb;
+import twitter4j.internal.models4j.TwitterImpl;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -205,13 +211,13 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
         ensureAuthorizationEnabled();
 
         if (!conf.isMBeanEnabled()) {
-            return http.get(url, null, auth, this);
+            return http.get(url, null, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.get(url, null, auth, this);
+                response = http.get(url, null, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -223,13 +229,13 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
     public HttpResponse get(String url, HttpParameter... params) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.get(url, params, auth, this);
+            return http.get(url, params, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.get(url, params, auth, this);
+                response = http.get(url, params, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -241,13 +247,13 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
     public HttpResponse post(String url, HttpParameter... params) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.post(url, params, auth, this);
+            return http.post(url, params, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.post(url, params, auth, this);
+                response = http.post(url, params, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -263,13 +269,13 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
     protected HttpResponse put(String url, HttpParameter[] params) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.put(url, params, auth, null);
+            return http.put(url, params, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.put(url, params, auth, null);
+                response = http.put(url, params, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -281,13 +287,13 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
     protected HttpResponse delete(String url) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.delete(url, null, auth, null);
+            return http.delete(url, null, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.delete(url, null, auth, null);
+                response = http.delete(url, null, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -299,13 +305,13 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
     protected HttpResponse delete(String url, HttpParameter[] params) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.delete(url, params, auth, null);
+            return http.delete(url, params, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.delete(url, params, auth, null);
+                response = http.delete(url, params, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -317,13 +323,13 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
     protected HttpResponse getWithoutMergingImplicitParams(String url, HttpParameter[] params) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.get(url, params, auth, null);
+            return http.get(url, params, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.get(url, params, auth, null);
+                response = http.get(url, params, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));

@@ -3,11 +3,18 @@ package twitter4j.impl;
 import com.google.common.base.Optional;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
-import twitter4j.*;
+import twitter4j.BaseAdsListResponse;
+import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.BaseAdsResponse;
+import twitter4j.TwitterAdsClient;
 import twitter4j.api.TwitterAdsLineItemApi;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.http.HttpResponse;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.*;
 import twitter4j.models.ads.sort.LineItemsSortByField;
 import twitter4j.models.ads.sort.PromotedAccountsSortByField;
+import twitter4j.models.media.TwitterMediaCallToAction;
 import twitter4j.models.video.AssociateMediaCreativeResponse;
 import twitter4j.models.video.TwitterCallToActionType;
 import twitter4j.models.video.TwitterPreRollCallToAction;
@@ -243,6 +250,26 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         } catch (IOException e) {
             throw new TwitterException("Failed to parse response for associate media to account", e);
         }
+    }
+
+    @Override
+    public BaseAdsListResponseIterable<PromotedAccount> getPromotedAccounts(String accountId, Collection<String> promotedAccountIds, String lineItemId, boolean withDeleted) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterMediaCallToAction> createCallToActionDetails(String accountId, String lineItemId, TwitterCallToActionType twitterCallToActionType, String callToActionUrl) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterMediaCallToAction> updateCallToAction(String accountId, String channelId, String callToActionUrl, TwitterCallToActionType twitterCallToActionType) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterMediaCallToAction> deleteCallToAction(String accountId, String channelId) throws TwitterException {
+        return null;
     }
 
     // -------------------------------------- Private Methods ------------------------------------------

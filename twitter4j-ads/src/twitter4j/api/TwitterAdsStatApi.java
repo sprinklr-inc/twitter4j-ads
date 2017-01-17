@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 import twitter4j.BaseAdsListResponse;
 import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsResponse;
-import twitter4j.TwitterException;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.Granularity;
 import twitter4j.models.TwitterSegmentationType;
 import twitter4j.models.ads.*;
@@ -38,7 +38,7 @@ public interface TwitterAdsStatApi {
 
     /**
      * @param accountId            The identifier for the leveraged account.
-     * @param twitterEntity        The enum of entity type (e.g. LINE_ITEM, PROMOTED_TWEET).
+     * @param twitterEntityType        The enum of entity type (e.g. LINE_ITEM, PROMOTED_TWEET).
      * @param ids                  A collection of ids to retrieve stats for.
      * @param startTime            The time to retrieve stats from.
      * @param endTime              The time to retrieve stats until.

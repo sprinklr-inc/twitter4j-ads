@@ -2,8 +2,15 @@ package twitter4j.impl;
 
 import com.google.common.base.Optional;
 import com.google.gson.reflect.TypeToken;
-import twitter4j.*;
+import twitter4j.BaseAdsListResponse;
+import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.BaseAdsResponse;
+import twitter4j.TwitterAdsClient;
 import twitter4j.api.TwitterAdsPromotedTweetApi;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.http.HttpResponse;
+import twitter4j.internal.models4j.Status;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.HttpVerb;
 import twitter4j.models.ads.PromotedTweets;
 import twitter4j.models.ads.sort.PromotedTweetsSortByField;
@@ -95,5 +102,10 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
                          tweetId;
         Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>() {}.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);
+    }
+
+    @Override
+    public Status createPromotedVideoTweet(String accountId, String targetUserId, String tweetText, String videoId, String videoTitle, String videoDescription, String callToAction, String ctaValue) throws TwitterException, IOException, InterruptedException {
+        return null;
     }
 }

@@ -3,16 +3,23 @@ package twitter4j.impl;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
-import twitter4j.*;
+import twitter4j.BaseAdsListResponse;
+import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.BaseAdsResponse;
+import twitter4j.TwitterAdsClient;
 import twitter4j.api.TwitterAdsCardsApi;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.HttpVerb;
 import twitter4j.models.ads.TwitterUUIDResponse;
 import twitter4j.models.ads.cards.*;
 import twitter4j.util.TwitterAdUtil;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static twitter4j.TwitterAdsConstants.*;
 
@@ -212,6 +219,96 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         Type typeToken = new TypeToken<BaseAdsResponse<TwitterLeadGenerationStat>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, parameters, typeToken, HttpVerb.GET);
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterLeadGenerationCard> createLeadGenerationCard(String accountId, String name, String title, String cta, String fallbackUrl, String privacyPolicyUrl, String imageUrl, String imageData, String submitMethod, String submitUrl, String customKeyScreenName, String customKeyName, String customKeyEmail, Map<String, String> customParamKeys) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterLeadGenerationCard> updateLeadGenerationCard(String accountId, String cardId, String name, String title, String cta, String fallbackUrl, String privacyPolicyUrl, String imageUrl, String imageData, String submitMethod, String submitUrl, String customKeyScreenName, String customKeyName, String customKeyEmail, Map<String, String> customParamKeys) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsListResponseIterable<TwitterImageConversationCard> getAllImageConversationCards(String accountId, List<String> cardIds, boolean withDeleted, Integer count) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsListResponseIterable<TwitterVideoConversationCard> getAllVideoConversationCards(String accountId, List<String> cardIds, boolean withDeleted, Integer count) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterWebsiteCard> updateWebsiteCard(String accountId, String name, String cardId, String websiteTitle, String websiteUrl, String channelImage, String channelImageData) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterWebsiteCard> createWebsiteCard(String accountId, String name, String websiteTitle, String websiteUrl, String channelImage, String channelImageData) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterMobileAppCard> createAppDownloadCard(String accountId, String name, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String customIcon, String customIconData, String customAppDescription, String callToAction) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterMobileAppCard> updateAppDownloadCard(String accountId, String name, String cardId, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String customIcon, String customIconData, String customAppDescription, String callToAction) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterImageAppDownloadCard> createImageAppDownloadCard(String accountId, String name, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String wideAppImage, String wideAppImageData, String callToAction) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterImageAppDownloadCard> updateImageAppDownloadCard(String accountId, String name, String cardId, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String wideAppImage, String wideAppImageData, String callToAction) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterVideoAppDownloadCard> createVideoAppDownloadCard(String accountId, String name, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String videoUrl, String imageUrl, String callToAction) throws TwitterException, IOException, InterruptedException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterVideoAppDownloadCard> updateVideoAppDownloadCard(String accountId, String name, String cardId, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String updatedImageUrl, String updatedVideoUrl, String originalImageId, String originalVideoId, String callToActionValue) throws TwitterException, IOException, InterruptedException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterImageConversationCard> createImageConversationCard(String accountId, String name, String title, String firstCta, String firstCtaTweet, String secondCta, String secondCtaTweet, String thanksText, String thanksUrl, String imageUrl) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterImageConversationCard> updateImageConversationCard(String accountId, String cardId, String name, String title, String firstCta, String firstCtaTweet, String secondCta, String secondCtaTweet, String thanksText, String thanksUrl, String imageUrl) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterImageConversationCard> deleteImageConversationCard(String accountId, String cardId) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterVideoConversationCard> createVideoConversationCard(String accountId, String name, String title, String firstHashtag, String firstTweet, String secondHashtag, String secondTweet, String thanksText, String thanksUrl, String imageUrl, String videoUrl) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterVideoConversationCard> updateVideoConversationCard(String accountId, String cardId, String name, String title, String firstCta, String firstCtaTweet, String secondCta, String secondCtaTweet, String thanksText, String thanksUrl, String updatedImageUrl, String updatedVideoUrl) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterVideoConversationCard> deleteVideoConversationCard(String accountId, String cardId) throws TwitterException {
+        return null;
     }
 
     @Override

@@ -2,8 +2,12 @@ package twitter4j.impl;
 
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
-import twitter4j.*;
+import twitter4j.BaseAdsResponse;
+import twitter4j.TwitterAdsClient;
 import twitter4j.api.TwitterAdsVideoApi;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.http.HttpResponse;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.video.AssociateVideoToAccountResponse;
 import twitter4j.models.video.TwitterAccountMediaResponse;
 import twitter4j.models.video.TwitterCreativeType;

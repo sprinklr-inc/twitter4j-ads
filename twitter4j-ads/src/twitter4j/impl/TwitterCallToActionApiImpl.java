@@ -1,8 +1,13 @@
 package twitter4j.impl;
 
 import com.google.gson.reflect.TypeToken;
-import twitter4j.*;
+import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.BaseAdsResponse;
+import twitter4j.TwitterAdsClient;
 import twitter4j.api.TwitterCallToActionApi;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.http.HttpResponse;
+import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.HttpVerb;
 import twitter4j.models.video.TwitterCallToActionType;
 import twitter4j.models.video.TwitterPreRollCallToAction;

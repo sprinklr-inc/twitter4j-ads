@@ -2,11 +2,19 @@ package twitter4j.impl;
 
 import com.google.common.base.Optional;
 import com.google.gson.reflect.TypeToken;
-import twitter4j.*;
+import twitter4j.BaseAdsListResponse;
+import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.BaseAdsResponse;
+import twitter4j.TwitterAdsClient;
 import twitter4j.api.TwitterAdsAudienceApi;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.models4j.TwitterException;
+import twitter4j.models.TwitterTonUploadResponse;
 import twitter4j.models.ads.*;
 import twitter4j.util.TwitterAdUtil;
 
+import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,5 +129,25 @@ public class TwitterAdsAudienceApiImpl implements TwitterAdsAudienceApi {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PATH_TAILORED_AUDIENCE_CHANGES;
         Type type = new TypeToken<BaseAdsResponse<TailoredAudienceChangeInfo>>() {}.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.GET);
+    }
+
+    @Override
+    public TwitterTonUploadResponse uploadTailoredAudience(File file) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public TwitterTonUploadResponse resumableUploadTailoredAudience(Boolean resumable, String location, InputStream inputStream, String contentRange, Integer chunkSize) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public void getGlobalOptOutListOfTailoredAudience(String accountId, String location) throws TwitterException {
+
+    }
+
+    @Override
+    public BaseAdsResponse<TailoredAudience> createFlexibleTailoredAudience(String accountId, String requestBody) throws TwitterException {
+        return null;
     }
 }
