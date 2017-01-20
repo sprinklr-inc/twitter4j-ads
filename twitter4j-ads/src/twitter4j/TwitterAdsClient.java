@@ -1,24 +1,35 @@
 package twitter4j;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import twitter4j.auth.Authorization;
 import twitter4j.auth.OAuthSupport;
 import twitter4j.conf.Configuration;
 import twitter4j.internal.http.HttpParameter;
 import twitter4j.internal.http.HttpResponse;
-import twitter4j.internal.models4j.TwitterAPIMonitor;
-import twitter4j.internal.models4j.TwitterException;
-import twitter4j.internal.models4j.Version;
+import twitter4j.internal.models4j.*;
 import twitter4j.models.ads.HttpVerb;
-import twitter4j.internal.models4j.TwitterImpl;
+import twitter4j.models.ads.cards.TwitterVideoErrors;
+import twitter4j.models.media.TwitterMediaType;
+import twitter4j.models.video.TwitterVideo;
+import twitter4j.util.TwitterAdUtil;
 
+import javax.xml.bind.DatatypeConverter;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static twitter4j.TwitterAdsConstants.*;
 import static twitter4j.util.TwitterAdUtil.constructBaseAdsResponse;
 
 /**
@@ -84,6 +95,20 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
                                                                            Type type, boolean isCostBasedRateLimit)
             throws TwitterException, IOException {
         return new BaseAdsListResponseIterable<>(this, baseUrl, params, type, httpResponse, isCostBasedRateLimit);
+    }
+
+    public TwitterVideo uploadAndCreateVideoObject(String videoUrl, String accountId) throws TwitterException {
+        try {
+            String videoSizeInBytes = getMediaSizeInBytes(videoUrl);
+            String mediaId = initiateMediaUpload(videoSizeInBytes, null, TwitterMediaType.VIDEO);// todo this is done deliberately, fix it in future
+            uploadMedia(videoUrl, mediaId, videoSizeInBytes);
+            finalizeUpload(mediaId);
+            waitForVideoTranscoding(mediaId, MAX_WAIT_TIME_TRANSCODING);
+            String videoId = createVideoObject(mediaId, accountId);
+            return waitForVideoProcessing(accountId, videoId, MAX_WAIT_TIME);
+        } catch (Exception e) {
+            throw new TwitterException("Error Occurred while uploading Promoted Video", e);
+        }
     }
 
     public <T> BaseAdsResponse<T> executeHttpRequest(String baseUrl, HttpParameter[] params, Type type, HttpVerb httpVerb) throws TwitterException {
@@ -336,6 +361,182 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
             }
             return response;
         }
+    }
+
+    private String getMediaSizeInBytes(String mediaUrl) throws TwitterException, IOException {
+        URLConnection urlConnection = new URL(mediaUrl).openConnection();
+        return urlConnection.getHeaderField("Content-Length");
+    }
+
+    private String initiateMediaUpload(String mediaSizeInBytes, String accountUserId, TwitterMediaType twitterMediaType) throws TwitterException {
+        if (StringUtils.isBlank(mediaSizeInBytes)) {
+            throw new TwitterInvalidParameterException("Media could not be uploaded as connection could not be established");
+        }
+        Long mediaSizeInBytesLong;
+        try {
+            mediaSizeInBytesLong = Long.valueOf(mediaSizeInBytes);
+        } catch (NumberFormatException eX) {
+            throw new TwitterException("Media could not be uploaded as connection could not be established");
+        }
+
+        if (twitterMediaType == TwitterMediaType.IMAGE && mediaSizeInBytesLong > MAX_IMAGE_SIZE_FOR_TWITTER_IN_BYTES) {
+            throw new TwitterInvalidParameterException("Image should be less than 5 MB in size");
+        }
+        if (twitterMediaType == TwitterMediaType.VIDEO && mediaSizeInBytesLong > MAX_VIDEO_SIZE_IN_BYTES) {
+            throw new TwitterInvalidParameterException("Video should be less than 500 MB in size");
+        }
+
+        String url = conf.getMediaUploadBaseUrl() + UPLOAD_MEDIA_URL + UPLOAD_JSON;
+        HttpParameter[] parameters = createInitiateMediaUploadParams(mediaSizeInBytes, accountUserId, twitterMediaType);
+        return mediaUploadInitOrFinalize(url, parameters).getMediaIdString();
+    }
+
+    private HttpParameter[] createInitiateMediaUploadParams(String mediaSizeInBytes, String accountUserId, TwitterMediaType twitterMediaType) {
+        if (StringUtils.isBlank(mediaSizeInBytes)) {
+            throw new TwitterRuntimeException(null, new TwitterException("mediaSizeInBytes cannot be blank or null."));
+        }
+
+        List<HttpParameter> params = Lists.newArrayList();
+        params.add(new HttpParameter(PARAM_COMMAND, "INIT"));
+        params.add(new HttpParameter(PARAM_TOTAL_BYTES, mediaSizeInBytes));
+
+        if (twitterMediaType == TwitterMediaType.VIDEO) {
+            params.add(new HttpParameter(PARAM_MEDIA_TYPE, "video/mp4"));
+            params.add(new HttpParameter(PARAM_MEDIA_CATEGORY, "amplify_video"));
+        } else {
+            params.add(new HttpParameter(PARAM_MEDIA_TYPE, "image/jpeg"));
+        }
+        if (StringUtils.isNotBlank(accountUserId)) {
+            params.add(new HttpParameter(PARAM_ADDITIONAL_OWNERS, accountUserId));
+        }
+        return params.toArray(new HttpParameter[params.size()]);
+    }
+
+    private void uploadMedia(String mediaUrl, String mediaId, String mediaSizeInBytes) throws TwitterException, IOException {
+        int segmentIndex = 0;
+        Long bytesLeftToUpload = Long.valueOf(mediaSizeInBytes);
+        InputStream inputStream = null;
+        BufferedInputStream bis = null;
+        try {
+            inputStream = new URL(mediaUrl).openStream();
+            bis = new BufferedInputStream(inputStream);
+
+            while (bytesLeftToUpload > 0) {
+                int totalBytesRead = 0;
+                byte[] chunkToUpload = new byte[2 * TWO_MIB];
+
+                while (totalBytesRead < TWO_MIB) {
+                    byte[] chunk = new byte[TWO_MIB];
+                    int bytesRead = bis.read(chunk);
+                    if (bytesRead == -1) {
+                        break;
+                    } else {
+                        chunk = Arrays.copyOf(chunk, bytesRead);
+                        for (int i = 0; i < bytesRead; i++) {
+                            chunkToUpload[totalBytesRead++] = chunk[i];
+                        }
+                    }
+                }
+
+                if (totalBytesRead > 0) {
+                    chunkToUpload = Arrays.copyOf(chunkToUpload, totalBytesRead);
+                    String base64Encoding = DatatypeConverter.printBase64Binary(chunkToUpload);
+                    appendChunk(mediaId, base64Encoding, segmentIndex);
+                    bytesLeftToUpload -= totalBytesRead;
+                    segmentIndex += 1;
+                } else {
+                    break;
+                }
+            }
+        } finally {
+            if (inputStream != null) {
+                IOUtils.closeQuietly(bis);
+            }
+        }
+    }
+
+    private void appendChunk(String mediaId, String chunk, int segmentIndex) throws TwitterException {
+        String url = conf.getMediaUploadBaseUrl() + "media/upload.json";
+
+        List<HttpParameter> params = createAppendChunkParams(mediaId, chunk, segmentIndex);
+        HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
+
+        HttpResponse response = postRequest(url, parameters);
+        int responseCode = response.getStatusCode();
+        if (responseCode < SUCCESSFULL_CALL_BEGIN_CODE || responseCode > SUCCESSFULL_CALL_END_CODE) {
+            throw new TwitterException(response.asString());
+        }
+
+    }
+
+    private List<HttpParameter> createAppendChunkParams(String mediaId, String chunk, int segment_index) {
+        List<HttpParameter> params = Lists.newArrayList();
+
+        params.add(new HttpParameter(PARAM_COMMAND, "APPEND"));
+        params.add(new HttpParameter(PARAM_MEDIA_ID, mediaId));
+        params.add(new HttpParameter(PARAM_MEDIA_DATA, chunk));
+        params.add(new HttpParameter(PARAM_SEGMENT_INDEX, segment_index));
+
+        return params;
+    }
+
+    private void finalizeUpload(String mediaId) throws TwitterException {
+        String url = conf.getMediaUploadBaseUrl() + "media/upload.json";
+        HttpParameter[] parameters = createFinalizeMediaUploadParams(mediaId);
+        mediaUploadInitOrFinalize(url, parameters);
+    }
+
+    private HttpParameter[] createFinalizeMediaUploadParams(String mediaId) {
+        List<HttpParameter> params = Lists.newArrayList();
+        params.add(new HttpParameter(PARAM_COMMAND, "FINALIZE"));
+        params.add(new HttpParameter(PARAM_MEDIA_ID, mediaId));
+        return params.toArray(new HttpParameter[params.size()]);
+    }
+
+    private String createVideoObject(String mediaId, String accountId) throws TwitterException {
+        String url = getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PREFIX_VIDEOS;
+        //TODO add video title and description (optional)
+        List<HttpParameter> params = createVideoObjectParams(mediaId);
+        HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideo>>() {
+        }.getType();
+        BaseAdsResponse<TwitterVideo> response = executeHttpRequest(url, parameters, type, HttpVerb.POST);
+        return response.getData().getId();
+    }
+
+    private List<HttpParameter> createVideoObjectParams(String mediaId) {
+        List<HttpParameter> params = Lists.newArrayList();
+
+        params.add(new HttpParameter(PARAM_VIDEO_MEDIA_ID, mediaId));
+        params.add(new HttpParameter(PARAM_COMMAND, "FINALIZE"));
+        return params;
+    }
+
+    public TwitterVideo waitForVideoProcessing(String accountId, String videoId, long maxWaitTime) throws TwitterException {
+        Long totalWaitTime = 0L;
+        String url = getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PREFIX_VIDEOS + SLASH + videoId;
+
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideo>>() {
+        }.getType();
+        while (totalWaitTime < maxWaitTime) {
+            BaseAdsResponse<TwitterVideo> response = executeHttpRequest(url, null, type, HttpVerb.GET);
+
+            TwitterVideo video = response.getData();
+            boolean readyToTweet = video.isReadyToTweet();
+            TwitterVideoErrors status = null;
+            if (video.getReasonsNotServable() != null && video.getReasonsNotServable().size() > 0) {
+                status = video.getReasonsNotServable().get(0);
+            }
+            if (readyToTweet) {
+                return video;
+            } else if (TwitterVideoErrors.PROCESSING.equals(status)) {
+                TwitterAdUtil.reallySleep(WAIT_INTERVAL);
+                totalWaitTime += WAIT_INTERVAL;
+            } else {
+                throw new TwitterException("Video processing error. Error code: " + (status != null ? status.getLabel() : StringUtils.EMPTY));
+            }
+        }
+        return null;
     }
 }
 

@@ -12,6 +12,8 @@ public interface TwitterAdsConstants {
     String V1_PREFIX_STATS_ACCOUNTS_URI = "1/stats/accounts/";
     String V1_PREFIX_STATS_JOB_ACCOUNTS_URI = "1/stats/jobs/accounts/";
 
+    Long MAX_IMAGE_SIZE_FOR_WEBSITE_IN_BYTES = 1040000L;
+
     String PREFIX_ACCOUNTS_V1 = "1/accounts/";
     String TWEET_PREVIEW_PATH = "/tweet/preview/";
     String UPLOAD_MEDIA_URL = "1.1/media/";
@@ -214,6 +216,8 @@ public interface TwitterAdsConstants {
 
 
     Long MAX_VIDEO_SIZE_IN_BYTES = (long) 524277511; // 500 MB.
+    int TWO_MIB = 2 * 1024 * 1024;
+    Long MAX_IMAGE_SIZE_FOR_TWITTER_IN_BYTES = 5242775L;//5MB
     Long MAX_CHUNK_SIZE_IN_BYTES = (long) 5242880;
     int CHUNK_SIZE_IN_BYTES = 4000000;
     int SUCCESSFULL_CALL_BEGIN_CODE = 200;
@@ -276,6 +280,8 @@ public interface TwitterAdsConstants {
     String PATH_VIDEO_APP_DOWNLOAD_CARDS = "/cards/video_app_download/";
     String PATH_WEBSITE_CARDS = "/cards/website/";
     String PATH_LEAD_GENERATION_CARDS = "/cards/lead_gen/";
+    String PATH_IMAGE_CONVERSATION_CARDS = "/cards/image_conversation/";
+    String PATH_VIDEO_CONVERSATION_CARDS = "/cards/video_conversation/";
     String PATH_SCOPED_TIMELINE = "/scoped_timeline/";
     String PATH_ACCOUNT_MEDIA = "/account_media";
     String PATH_MEDIA_CREATIVES = "/media_creatives";
@@ -315,6 +321,7 @@ public interface TwitterAdsConstants {
     String PATH_ORGANIC_TWEETS_STATS ="/organic_tweets";
 
     String PATH_REACH_STATS = "/reach/campaigns/";
+    String SLASH = "/";
 
     /**
      * for Twitter preview

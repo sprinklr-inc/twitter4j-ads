@@ -493,7 +493,7 @@ public class TwitterImpl extends TwitterBaseImpl implements Twitter {
      *
      * @see <a href="https://dev.twitter.com/rest/reference/get/media/upload-status"> Upload Status</a>
      */
-    private void waitForVideoTranscoding(String mediaId, long maxWaitTime) throws TwitterException {
+    protected void waitForVideoTranscoding(String mediaId, long maxWaitTime) throws TwitterException {
         long totalWaitTime = 0;
         String url = getMediaUploadUrl();
         HttpParameter[] parameters = createChunkedUploadStatusParams(mediaId);
