@@ -850,7 +850,7 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
         }
     }
 
-    protected HttpResponse postBatchRequest(String url, String requestBody) throws TwitterException {
+    public HttpResponse postBatchRequest(String url, String requestBody) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
             return http.postBatchRequest(url, getImplicitParams(), auth, requestBody);

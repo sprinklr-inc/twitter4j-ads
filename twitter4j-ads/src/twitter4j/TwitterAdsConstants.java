@@ -307,6 +307,13 @@ public interface TwitterAdsConstants {
     String PARAM_MEDIA_VIDEO_ID = "video_media_id";
     String PARAM_DESCRIPTION = "description";
 
+    String PARAM_FIRST_CTA = "first_cta";
+    String PARAM_FIRST_CTA_TWEET = "first_cta_tweet";
+    String PARAM_SECOND_CTA = "second_cta";
+    String PARAM_SECOND_CTA_TWEET = "second_cta_tweet";
+    String PARAM_THANK_YOU_TEXT = "thank_you_text";
+    String PARAM_THANK_YOU_URL = "thank_you_url";
+
     /**
      * for web event tags
      */

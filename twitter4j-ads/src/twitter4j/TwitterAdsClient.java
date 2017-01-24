@@ -11,6 +11,8 @@ import twitter4j.conf.Configuration;
 import twitter4j.internal.http.HttpParameter;
 import twitter4j.internal.http.HttpResponse;
 import twitter4j.internal.models4j.*;
+import twitter4j.models.TwitterTonUploadResponse;
+import twitter4j.models.ads.AudienceUploadDetails;
 import twitter4j.models.ads.HttpVerb;
 import twitter4j.models.ads.cards.TwitterVideoErrors;
 import twitter4j.models.media.TwitterMediaType;
@@ -174,6 +176,25 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
 
     public HttpResponse putRequest(String url, HttpParameter[] params) throws TwitterException {
         return put(url, params);
+    }
+
+    public TwitterTonUploadResponse executeHttpRequestForTon(String baseUrl, HttpParameter[] params, HttpVerb httpVerb,
+                                                             Map<String, String> customHeaders) throws TwitterException {
+        HttpResponse httpResponse;
+        AudienceUploadDetails response = null;
+        //noinspection EnumSwitchStatementWhichMissesCases
+        switch (httpVerb) {
+            case PUT:
+                httpResponse = putWithCustomHeaders(baseUrl, params, customHeaders, true);
+                response = getResponseFromHeaders(httpResponse);
+
+                break;
+            case POST:
+                httpResponse = postWithCustomHeaders(baseUrl, params, customHeaders, true);
+                response = getResponseFromHeaders(httpResponse);
+                break;
+        }
+        return response;
     }
 
     public <T> T executeRequest(String baseUrl, HttpParameter[] params, Type typeToken, HttpVerb httpVerb) throws TwitterException {
@@ -467,6 +488,37 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
             throw new TwitterException(response.asString());
         }
 
+    }
+
+    private AudienceUploadDetails getResponseFromHeaders(HttpResponse httpResponse) {
+        Integer minChunkSize = null;
+        Integer maxChunkSize = null;
+        String location = httpResponse.getResponseHeader("location");
+        Integer bytesSuccessfullyUploaded = getBytesUploadedFromHeader(httpResponse);
+        String minimumChunkSizeFromHeader = httpResponse.getResponseHeader("x-ton-min-chunk-size");
+        if (minimumChunkSizeFromHeader != null) {
+            minChunkSize = Integer.valueOf(minimumChunkSizeFromHeader);
+
+        }
+        String maximumChunkSizeFromHeader = httpResponse.getResponseHeader("x-ton-max-chunk-size");
+        if (maximumChunkSizeFromHeader != null) {
+            maxChunkSize = Integer.valueOf(maximumChunkSizeFromHeader);
+
+        }
+        return new AudienceUploadDetails(location, minChunkSize, maxChunkSize, bytesSuccessfullyUploaded, null);
+    }
+
+    private Integer getBytesUploadedFromHeader(HttpResponse httpResponse) {
+        String range;
+        String rangeFromHeader = httpResponse.getResponseHeader("range");
+        if (rangeFromHeader != null) {
+            int i = rangeFromHeader.indexOf("-");
+            if (i > 0) {
+                range = rangeFromHeader.substring(i + 1, rangeFromHeader.length());
+                return Integer.valueOf(range);
+            }
+        }
+        return null;
     }
 
     private List<HttpParameter> createAppendChunkParams(String mediaId, String chunk, int segment_index) {

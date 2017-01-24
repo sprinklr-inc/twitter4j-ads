@@ -1,6 +1,7 @@
 package twitter4j.api;
 
 import com.google.common.base.Optional;
+import twitter4j.BaseAdsListBatchPostResponse;
 import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsResponse;
 import twitter4j.internal.models4j.TwitterException;
@@ -109,5 +110,5 @@ public interface TwitterAdsAudienceApi {
 
     void getGlobalOptOutListOfTailoredAudience(String accountId, String location) throws TwitterException;
 
-    BaseAdsResponse<TailoredAudience> createFlexibleTailoredAudience(String accountId, String requestBody) throws TwitterException;
+    BaseAdsListBatchPostResponse<TailoredAudience> createFlexibleTailoredAudience(String accountId, String requestBody) throws TwitterException;
 }

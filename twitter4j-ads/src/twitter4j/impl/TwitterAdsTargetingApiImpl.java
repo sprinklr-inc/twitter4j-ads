@@ -17,6 +17,7 @@ import twitter4j.models.LocationType;
 import twitter4j.models.ads.*;
 import twitter4j.models.ads.tags.TwitterApplicationList;
 import twitter4j.models.ads.targeting.TargetingParamRequest;
+import twitter4j.models.ads.targeting.TargetingParamResponse;
 import twitter4j.util.TwitterAdUtil;
 
 import java.io.IOException;
@@ -236,6 +237,17 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         Type type = new TypeToken<BaseAdsListResponse<IabCategory>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
+    }
+
+    @Override
+    public TargetingParamResponse createTargetingBatchRequest(String accountId, List<TargetingParamRequest> targetingParamRequests) throws TwitterException {
+        validateTargetingBatch(targetingParamRequests);
+
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_BATCH_ACCOUNTS_V1 + PATH_ACCOUNTS + accountId + PATH_TARGETING_CRITERIA;
+        HttpResponse httpResponse = twitterAdsClient.postBatchRequest(baseUrl, GSON.toJson(targetingParamRequests));
+        Type typeToken = new TypeToken<TargetingParamResponse>() {
+        }.getType();
+        return GSON.fromJson(httpResponse.asString(), typeToken);
     }
 
 

@@ -1,8 +1,6 @@
 package twitter4j.api;
 
 import com.google.common.base.Optional;
-import com.google.gson.reflect.TypeToken;
-import twitter4j.BaseAdsListResponse;
 import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsResponse;
 import twitter4j.internal.models4j.TwitterException;
@@ -11,13 +9,8 @@ import twitter4j.models.ads.*;
 import twitter4j.models.ads.tags.TwitterApplicationList;
 import twitter4j.models.ads.targeting.TargetingParamRequest;
 import twitter4j.models.ads.targeting.TargetingParamResponse;
-import twitter4j.util.TwitterAdUtil;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
-
-import static twitter4j.TwitterAdsConstants.PATH_IAB_CATEGORIES;
 
 /**
  * User: abhay
@@ -292,5 +285,8 @@ public interface TwitterAdsTargetingApi {
             throws TwitterException;
 
     BaseAdsListResponseIterable<IabCategory> fetchIabCategories(String q) throws TwitterException;
+
+    TargetingParamResponse createTargetingBatchRequest(String accountId, List<TargetingParamRequest> targetingParamRequests)
+            throws TwitterException;
 
 }
