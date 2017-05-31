@@ -2,7 +2,7 @@ apply plugin: "java"
 apply plugin: 'maven-publish'
 
 group = 'com.sprinklr'
-version = '1.0'
+version = '1.1'
 
 repositories {
     mavenCentral()
@@ -30,6 +30,27 @@ dependencies {
 
 
     testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+task packageSources(type: Jar, dependsOn: 'classes') {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+artifacts {
+    archives packageJavadoc
+    archives packageSources
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
 }
 
 publishing {
