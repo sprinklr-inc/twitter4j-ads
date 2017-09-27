@@ -61,7 +61,7 @@ public class BaseAdsListResponseIterable<T> implements Iterable<BaseAdsListRespo
         return new BaseAdsListResponseIterator<>(this);
     }
 
-    private static class BaseAdsListResponseIterator<T> implements Iterator<BaseAdsListResponse<T>> {
+    public static class BaseAdsListResponseIterator<T> implements Iterator<BaseAdsListResponse<T>> {
         private BaseAdsListResponseIterable<T> baseAdsListResponseIterable;
         private boolean initialResponse = true;
 
