@@ -10,7 +10,6 @@ import twitter4j.models.ads.PromotedAccount;
 import twitter4j.models.ads.Sentiments;
 import twitter4j.models.ads.sort.LineItemsSortByField;
 import twitter4j.models.ads.sort.PromotedAccountsSortByField;
-import twitter4j.models.media.TwitterMediaCallToAction;
 import twitter4j.models.video.AssociateMediaCreativeResponse;
 import twitter4j.models.video.TwitterCallToActionType;
 import twitter4j.models.video.TwitterPreRollCallToAction;
@@ -143,15 +142,5 @@ public interface TwitterAdsLineItemApi {
 
     BaseAdsListResponseIterable<PromotedAccount> getPromotedAccounts(String accountId, Collection<String> promotedAccountIds, String lineItemId,
                                                                      boolean withDeleted) throws TwitterException;
-
-    BaseAdsResponse<TwitterMediaCallToAction> createCallToActionDetails(String accountId, String lineItemId,
-                                                                        TwitterCallToActionType twitterCallToActionType, String callToActionUrl)
-            throws TwitterException;
-
-    BaseAdsResponse<TwitterMediaCallToAction> updateCallToAction(String accountId, String channelId, String callToActionUrl,
-                                                                 TwitterCallToActionType twitterCallToActionType) throws TwitterException;
-
-    BaseAdsResponse<TwitterMediaCallToAction> deleteCallToAction(String accountId, String channelId) throws TwitterException;
-
 
 }

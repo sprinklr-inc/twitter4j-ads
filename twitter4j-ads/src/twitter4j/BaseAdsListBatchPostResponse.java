@@ -1,6 +1,7 @@
 package twitter4j;
 
 import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import twitter4j.internal.models4j.RateLimitStatus;
 import twitter4j.internal.models4j.TwitterResponse;
 import twitter4j.models.ads.RequestParameters;
@@ -10,11 +11,17 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * User: poly
- * Date: 29/01/14
- * Time: 11:56 AM
+ * Copyright (c) 2016-2017 Sprinklr, Inc. All rights reserved.
+ * Created with Intellij IDEA.
+ * User: ratneshjd
+ * Date: 19/01/17
+ * Time: 5:32 PM
  */
-public class BaseAdsListResponse<T> implements Serializable, TwitterResponse {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class BaseAdsListBatchPostResponse<T> implements Serializable, TwitterResponse {
+
+    @SerializedName("data_type")
+    private String dataType;
 
     @SerializedName("data")
     private List<T> data;
@@ -23,7 +30,7 @@ public class BaseAdsListResponse<T> implements Serializable, TwitterResponse {
     private Long totalCount;
 
     @SerializedName("request")
-    private RequestParameters request;
+    private List<RequestParameters> request;
 
     @SerializedName("next_cursor")
     private String nextCursor;
@@ -38,11 +45,36 @@ public class BaseAdsListResponse<T> implements Serializable, TwitterResponse {
 
     private int accessLevel;
 
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
+    public String getCursor() {
+        return cursor;
+    }
+
+    public void setCursor(String cursor) {
+        this.cursor = cursor;
+    }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
     public List<T> getData() {
         if (data == null) {
             return Collections.emptyList();
         }
         return data;
+
     }
 
     void setData(List<T> data) {
@@ -57,11 +89,11 @@ public class BaseAdsListResponse<T> implements Serializable, TwitterResponse {
         this.totalCount = totalCount;
     }
 
-    public RequestParameters getRequest() {
+    public List<RequestParameters> getRequest() {
         return request;
     }
 
-    void setRequest(RequestParameters request) {
+    public void setRequest(List<RequestParameters> request) {
         this.request = request;
     }
 

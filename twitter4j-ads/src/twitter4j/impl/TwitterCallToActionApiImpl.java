@@ -45,7 +45,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
         params.add(new HttpParameter(PARAM_CALL_TO_ACTION, twitterCallToActionType.name()));
         params.add(new HttpParameter(PARAM_CALL_TO_ACTION_URL, callToActionUrl));
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PRE_ROLL_CALL_TO_ACTION;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PRE_ROLL_CALL_TO_ACTION;
         HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             Type type = new TypeToken<BaseAdsResponse<TwitterPreRollCallToAction>>() {
@@ -69,7 +69,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
         if (TwitterAdUtil.isNotNullOrEmpty(callToActionUrl)) {
             params.add(new HttpParameter(PARAM_CALL_TO_ACTION_URL, callToActionUrl));
         }
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + preRollCTAId;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + preRollCTAId;
         HttpResponse httpResponse = twitterAdsClient.putRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             Type type = new TypeToken<BaseAdsResponse<TwitterPreRollCallToAction>>() {
@@ -92,7 +92,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
             params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         }
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PRE_ROLL_CALL_TO_ACTION;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PRE_ROLL_CALL_TO_ACTION;
         Type type = new TypeToken<BaseAdsListResponseIterable<TwitterPreRollCallToAction>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
@@ -108,7 +108,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
         if (withDeleted != null) {
             params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         }
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + callToActionId;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + callToActionId;
         HttpResponse httpResponse = twitterAdsClient.putRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             Type type = new TypeToken<BaseAdsResponse<TwitterPreRollCallToAction>>() {
@@ -123,7 +123,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
     public BaseAdsResponse<TwitterPreRollCallToAction> delete(String accountId, String callToActionId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(callToActionId, "Pre Roll Call To Action Id");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_V1 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + callToActionId;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + callToActionId;
         Type type = new TypeToken<BaseAdsResponse<TwitterPreRollCallToAction>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);

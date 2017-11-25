@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsResponse;
 import twitter4j.internal.models4j.TwitterException;
+import twitter4j.models.ads.TwitterEntity;
 import twitter4j.models.ads.cards.*;
 
 import java.io.IOException;
@@ -351,5 +352,36 @@ public interface TwitterAdsCardsApi {
                                                                               String updatedImageUrl, String updatedVideoUrl) throws TwitterException;
 
     BaseAdsResponse<TwitterVideoConversationCard> deleteVideoConversationCard(String accountId, String cardId) throws TwitterException;
+
+
+
+    BaseAdsResponse<TwitterImageDMCard> createImageDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
+                                                          String secondCta, Long secondWelcomeMessageId,
+                                                          String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
+                                                          Long recipientAccountId,
+                                                          String imageUrl, String imageMediaId) throws TwitterException;
+
+    BaseAdsResponse<TwitterVideoDMCard> createVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
+                                                          String secondCta, Long secondWelcomeMessageId, String thirdCta,
+                                                          Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
+                                                          Long recipientAccountId, String imageUrl, String videoUrl,
+                                                          String imageMediaId, String videoMediaId) throws TwitterException;
+
+    BaseAdsResponse<TwitterEntity> associateDMVideoToAccount(String accountId, String videoMediaId, String imageMediaId) throws TwitterException;
+
+    BaseAdsResponse<TwitterImageDMCard> updateImageDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
+                                                          String secondCta, Long secondWelcomeMessageId,
+                                                          String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
+                                                          String imageUrl, String imageMediaId, String channelId) throws TwitterException;
+
+    BaseAdsResponse<TwitterVideoDMCard> updateVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
+                                                          String secondCta, Long secondWelcomeMessageId, String thirdCta,
+                                                          Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
+                                                          String imageUrl, String videoUrl, String imageMediaId, String videoMediaId,
+                                                          String channelId) throws TwitterException;
+
+    BaseAdsResponse<TwitterImageDMCard> deleteImageDMCard(String accountId, String cardId) throws TwitterException;
+
+    BaseAdsResponse<TwitterVideoDMCard> deleteVideoDMCard(String accountId, String cardId) throws TwitterException;
 
 }
