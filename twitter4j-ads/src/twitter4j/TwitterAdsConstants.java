@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
  */
 public interface TwitterAdsConstants {
 
-    String V1_PREFIX_STATS_ACCOUNTS_URI = "1/stats/accounts/";
-    String V1_PREFIX_STATS_JOB_ACCOUNTS_URI = "1/stats/jobs/accounts/";
+    String V1_PREFIX_STATS_ACCOUNTS_URI = "2/stats/accounts/";
+    String V1_PREFIX_STATS_JOB_ACCOUNTS_URI = "2/stats/jobs/accounts/";
 
     Long MAX_IMAGE_SIZE_FOR_WEBSITE_IN_BYTES = 1040000L;
 
@@ -18,9 +18,9 @@ public interface TwitterAdsConstants {
     String TWEET_PREVIEW_PATH = "/tweet/preview/";
     String UPLOAD_MEDIA_URL = "1.1/media/";
     String UPLOAD_JSON = "upload.json";
-    String PREFIX_BATCH_ACCOUNTS_V1 = "1/batch/accounts/";
+    String PREFIX_BATCH_ACCOUNTS_V2 = "2/batch/accounts/";
     String PREFIX_VIDEOS = "/videos";
-    String PREFIX_STATS_ACCOUNTS_URI = "1/stats/accounts/";
+    String PREFIX_STATS_ACCOUNTS_URI = "2/stats/accounts/";
     String PARAM_WITH_DELETED = "with_deleted";
     String GRANULARITY = "granularity";
     String PARAM_FUNDING_INSTRUMENT_IDS = "funding_instrument_ids";
@@ -281,12 +281,12 @@ public interface TwitterAdsConstants {
     String PATH_TARGETING_LANGUAGES = "1/targeting_criteria/languages";
     String PATH_TAILORED_AUDIENCES = "/tailored_audiences";
     String PATH_TARGETING_SUGGESTIONS = "/targeting_suggestions/";
-    String PATH_TV_SHOWS = "1/targeting_criteria/tv_shows/";
-    String PATH_TV_MARKETS = "1/targeting_criteria/tv_markets/";
-    String PATH_TV_CHANNELS = "1/targeting_criteria/tv_channels/";
-    String PATH_TV_GENRES = "1/targeting_criteria/tv_genres/";
-    String PATH_BEHAVIORS = "1/targeting_criteria/behaviors/";
-    String PATH_BEHAVIORS_TAXONOMY = "1/targeting_criteria/behavior_taxonomies/";
+    String PATH_TV_SHOWS = "2/targeting_criteria/tv_shows/";
+    String PATH_TV_MARKETS = "2/targeting_criteria/tv_markets/";
+    String PATH_TV_CHANNELS = "2/targeting_criteria/tv_channels/";
+    String PATH_TV_GENRES = "2/targeting_criteria/tv_genres/";
+    String PATH_BEHAVIORS = "2/targeting_criteria/behaviors/";
+    String PATH_BEHAVIORS_TAXONOMY = "2/targeting_criteria/behavior_taxonomies/";
     String PATH_APP_DOWNLOAD_CARDS = "/cards/app_download/";
     String PATH_IMAGE_APP_DOWNLOAD_CARDS = "/cards/image_app_download/";
     String PATH_VIDEO_APP_DOWNLOAD_CARDS = "/cards/video_app_download/";

@@ -186,7 +186,7 @@ public class TwitterAdsAudienceApiImpl implements TwitterAdsAudienceApi {
     public BaseAdsListBatchPostResponse<TailoredAudience> createFlexibleTailoredAudience(String accountId, String requestBody) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(requestBody, "params");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_BATCH_ACCOUNTS_V1 + accountId + PATH_TAILORED_AUDIENCE;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_BATCH_ACCOUNTS_V2 + accountId + PATH_TAILORED_AUDIENCE;
 
         Type type = new TypeToken<BaseAdsListBatchPostResponse<TailoredAudience>>() {
         }.getType();

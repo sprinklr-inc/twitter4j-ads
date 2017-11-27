@@ -816,6 +816,21 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
+    public BaseAdsResponse<TwitterVideoWebsiteCard> createVideoWebsiteCard(String accountId, String name, String title, String videoId, String websiteUrl) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterVideoWebsiteCard> updateVideoWebsiteCard(String accountId, String cardId, String name, String title, String videoId, String websiteUrl) throws TwitterException {
+        return null;
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterVideoWebsiteCard> deleteVideoWebsiteCard(String accountId, String cardId) throws TwitterException {
+        return null;
+    }
+
+    @Override
     public String postVideoCardImage(String imageTonLocation) throws TwitterException {
         TwitterAdUtil.ensureNotNull(imageTonLocation, "imageTonLocation");
         List<HttpParameter> params = Lists.newArrayList();

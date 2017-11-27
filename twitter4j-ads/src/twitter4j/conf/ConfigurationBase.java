@@ -182,7 +182,7 @@ class ConfigurationBase implements Configuration, java.io.Serializable {
         setContributingTo(-1L);
         setClientVersion(Version.getVersion());
         setClientURL("https://twitter4j.org/en/twitter4j-" + Version.getVersion() + ".xml");
-        setUserAgent("twitter4j https://twitter4j.org/ /" + Version.getVersion());
+        setUserAgent("twitter4jads https://twitter4j.org/ /" + Version.getVersion());
 
         setJSONStoreEnabled(false);
 

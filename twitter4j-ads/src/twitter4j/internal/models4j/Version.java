@@ -20,8 +20,8 @@ package twitter4j.internal.models4j;
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 public final class Version {
-    private static final String VERSION = "3.0.4-SNAPSHOT";
-    private static final String TITLE = "Twitter4J";
+    private static final String VERSION = "2.0-SNAPSHOT";
+    private static final String TITLE = "Twitter4JAds";
 
     private Version() {
         throw new AssertionError();
