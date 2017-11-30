@@ -64,7 +64,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         List<HttpParameter> params =
                 validateCreateLineItemParameters(Optional.fromNullable(campaignId), bidType, Optional.fromNullable(bidAmountLocalMicro),
                         automaticallySelectBid, Optional.fromNullable(lineItem.getProductType()),
-                        lineItem.getPlacements(), Optional.fromNullable(paused), Optional.fromNullable(includeSentiment),
+                        lineItem.getPlacements(), lineItem.getEntityStatus(), Optional.fromNullable(includeSentiment),
                         Optional.fromNullable(matchRelevantPopularQueries), Optional.fromNullable(lineItem.getObjective()),
                         Optional.fromNullable(lineItem.getChargeBy()), Optional.fromNullable(lineItem.getBidUnit()),
                         Optional.fromNullable(lineItem.getAdvertiserDomain()), lineItem.getCategories(), lineItem.getWebEventTag());
@@ -85,7 +85,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
 
     @Override
     public BaseAdsResponse<LineItem> updateLineItem(String accountId, String lineItemId, BidType bidType, boolean automaticallySelectBid,
-                                                    Optional<Long> bidAmountLocalMicro, Optional<Boolean> paused, Optional<Sentiments> includeSentiment,
+                                                    Optional<Long> bidAmountLocalMicro, EntityStatus status, Optional<Sentiments> includeSentiment,
                                                     Optional<Boolean> matchRelevantPopularQueries, Optional<String> chargeBy,
                                                     Optional<String> bidUnit, Optional<String> advertiserDomain,
                                                     String[] iabCategories) throws TwitterException {
@@ -95,7 +95,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         }
 
         List<HttpParameter> params =
-                validateUpdateLineItemParameters(accountId, lineItemId, bidType, automaticallySelectBid, bidAmountLocalMicro, paused,
+                validateUpdateLineItemParameters(accountId, lineItemId, bidType, automaticallySelectBid, bidAmountLocalMicro, status,
                         includeSentiment, matchRelevantPopularQueries, chargeBy, bidUnit, advertiserDomain, iabCategories);
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_LINE_ITEMS +
                 lineItemId;
@@ -138,11 +138,12 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         List<HttpParameter> params =
                 validateLineItemParameters(accountId, campaignIdsAsString, lineItemIdsAsString, fundingInstrumentIdsAsString, count, withDeleted,
                         cursor);
-        if(sortByField.isPresent()) {
+        if (sortByField.isPresent()) {
             params.add(new HttpParameter(PARAM_SORT_BY, sortByField.get().getField()));
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_LINE_ITEMS;
-        Type type = new TypeToken<BaseAdsListResponse<LineItem>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<LineItem>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
@@ -152,7 +153,8 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         TwitterAdUtil.ensureNotNull(lineItemId, "lineItemId");
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_LINE_ITEMS + lineItemId;
         HttpParameter[] params = new HttpParameter[]{new HttpParameter(PARAM_WITH_DELETED, withDeleted)};
-        Type type = new TypeToken<BaseAdsResponse<LineItem>>() {}.getType();
+        Type type = new TypeToken<BaseAdsResponse<LineItem>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params, type, HttpVerb.GET);
     }
 
@@ -168,7 +170,8 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_PROMOTED_ACCOUNTS;
         httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
-            Type type = new TypeToken<BaseAdsResponse<PromotedAccount>>() {}.getType();
+            Type type = new TypeToken<BaseAdsResponse<PromotedAccount>>() {
+            }.getType();
             return TwitterAdUtil.constructBaseAdsResponse(httpResponse, httpResponse.asString(), type);
         } catch (IOException e) {
             throw new TwitterException("Failed to parse promoted accounts.");
@@ -195,7 +198,8 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             params.add(new HttpParameter(PARAM_PROMOTED_ACCOUNTS_IDS, promotedAccountsIdsAsString));
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_PROMOTED_ACCOUNTS;
-        Type type = new TypeToken<BaseAdsListResponse<PromotedAccount>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<PromotedAccount>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
@@ -217,7 +221,8 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PRE_ROLL_CALL_TO_ACTION;
         HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
-            Type type = new TypeToken<BaseAdsResponse<TwitterPreRollCallToAction>>() {}.getType();
+            Type type = new TypeToken<BaseAdsResponse<TwitterPreRollCallToAction>>() {
+            }.getType();
             return TwitterAdUtil.constructBaseAdsResponse(httpResponse, httpResponse.asString(), type);
         } catch (IOException e) {
             throw new TwitterException("Failed to parse call to action response.");
@@ -237,7 +242,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         params.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
         params.add(new HttpParameter(PARAM_LINE_ITEM_ID, lineItemId));
         params.add(new HttpParameter(PARAM_ACCOUNT_MEDIA_ID, accountMediaId));
-        if(TwitterAdUtil.isNotNullOrEmpty(landingUrl)) {
+        if (TwitterAdUtil.isNotNullOrEmpty(landingUrl)) {
             params.add(new HttpParameter(PARAM_LANDING_URL, landingUrl));
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_MEDIA_CREATIVES;
@@ -269,7 +274,8 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             params.add(new HttpParameter(PARAM_PROMOTED_ACCOUNTS_IDS, promotedAccountsIdsAsString));
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_PROMOTED_ACCOUNTS;
-        Type type = new TypeToken<BaseAdsListResponse<PromotedAccount>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<PromotedAccount>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
@@ -278,7 +284,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
 
     private List<HttpParameter> validateCreateLineItemParameters(Optional<String> campaignId, BidType bidType, Optional<Long> bidAmountLocalMicro,
                                                                  boolean automaticallySelectBid, Optional<ProductType> productType, List<Placement> placements,
-                                                                 Optional<Boolean> paused, Optional<Sentiments> includeSentiment, Optional<Boolean> matchRelevantPopularQueries,
+                                                                 String status, Optional<Sentiments> includeSentiment, Optional<Boolean> matchRelevantPopularQueries,
                                                                  Optional<String> objective, Optional<String> chargeBy, Optional<String> bidUnit, Optional<String> advertiserDomain,
                                                                  String[] categories, String webEventTag) {
         if (bidType == BidType.TARGET || bidType == BidType.MAX) {
@@ -309,8 +315,8 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             params.add(new HttpParameter(PARAM_PRIMARY_WEB_EVENT_TAG, webEventTag));
         }
 
-        if (paused != null && paused.isPresent()) {
-            params.add(new HttpParameter(PARAM_PAUSED, paused.get()));
+        if (status != null) {
+            params.add(new HttpParameter(PARAM_ENTITY_STATUS, status));
         }
         if (includeSentiment != null && includeSentiment.isPresent()) {
             params.add(new HttpParameter(PARAM_INCLUDE_SENTIMENT, includeSentiment.get().name()));
@@ -345,7 +351,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
     }
 
     private List<HttpParameter> validateUpdateLineItemParameters(String accountId, String lineItemId, BidType bidType, boolean automaticallySelectBid,
-                                                                 Optional<Long> bidAmountLocalMicro, Optional<Boolean> paused, Optional<Sentiments> includeSentiment,
+                                                                 Optional<Long> bidAmountLocalMicro, EntityStatus status, Optional<Sentiments> includeSentiment,
                                                                  Optional<Boolean> matchRelevantPopularQueries, Optional<String> chargeBy, Optional<String> bidUnit,
                                                                  Optional<String> advertiserDomain, String[] iabCategories) {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
@@ -375,8 +381,8 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             params.add(new HttpParameter(PARAM_BID_UNIT, bidUnit.get()));
         }
 
-        if (paused != null && paused.isPresent()) {
-            params.add(new HttpParameter(PARAM_PAUSED, paused.get()));
+        if (status != null) {
+            params.add(new HttpParameter(PARAM_ENTITY_STATUS, status.name()));
         }
         if (includeSentiment != null && includeSentiment.isPresent()) {
             params.add(new HttpParameter(PARAM_INCLUDE_SENTIMENT, includeSentiment.get().name()));

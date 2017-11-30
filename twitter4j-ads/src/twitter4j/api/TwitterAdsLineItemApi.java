@@ -4,10 +4,7 @@ import com.google.common.base.Optional;
 import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsResponse;
 import twitter4j.internal.models4j.TwitterException;
-import twitter4j.models.ads.BidType;
-import twitter4j.models.ads.LineItem;
-import twitter4j.models.ads.PromotedAccount;
-import twitter4j.models.ads.Sentiments;
+import twitter4j.models.ads.*;
 import twitter4j.models.ads.sort.LineItemsSortByField;
 import twitter4j.models.ads.sort.PromotedAccountsSortByField;
 import twitter4j.models.video.AssociateMediaCreativeResponse;
@@ -65,7 +62,7 @@ public interface TwitterAdsLineItemApi {
      * @param bidType              The BidType to use on this line item.
      * @param automaticallySelectBid Whether to use auto bidding on this line item.
      * @param bidAmountLocalMicro  (optional) Specify a new bid to set on this line item.
-     * @param paused               (optional) Update the paused state of the line item.
+     * @param status               Status to set
      * @param includeSentiment     (optional) Update the include sentiment parameter of line item.
      * @param chargeBy             (optional) Update the charge by parameter of line item.
      * @param bidUnit              (optional) Update the bid unit parameter of line item.
@@ -76,7 +73,7 @@ public interface TwitterAdsLineItemApi {
      * @see <a href="https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/line_items/%3Aline_item_id">https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/line_items/%3Aline_item_id</a>
      */
     BaseAdsResponse<LineItem> updateLineItem(String accountId, String lineItemId, BidType bidType, boolean automaticallySelectBid,
-                                             Optional<Long> bidAmountLocalMicro, Optional<Boolean> paused, Optional<Sentiments> includeSentiment,
+                                             Optional<Long> bidAmountLocalMicro, EntityStatus status, Optional<Sentiments> includeSentiment,
                                              Optional<Boolean> matchRelevantPopularQueries, Optional<String> chargeBy,
                                              Optional<String> bidUnit, Optional<String> advertiserDomain,
                                              String[] iabCategories) throws TwitterException;

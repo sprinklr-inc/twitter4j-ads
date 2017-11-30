@@ -32,6 +32,9 @@ public class Campaign extends TwitterEntity implements Serializable {
     @SerializedName("deleted")
     private Boolean deleted;
 
+    @SerializedName("entity_status")
+    private String entityStatus;
+
     @SerializedName("paused")
     private Boolean paused;
 
@@ -199,5 +202,13 @@ public class Campaign extends TwitterEntity implements Serializable {
 
     public void setDurationInDays(Integer durationInDays) {
         this.durationInDays = durationInDays;
+    }
+
+    public String getEntityStatus() {
+        return entityStatus;
+    }
+
+    public void setEntityStatus(String entityStatus) {
+        this.entityStatus = entityStatus;
     }
 }

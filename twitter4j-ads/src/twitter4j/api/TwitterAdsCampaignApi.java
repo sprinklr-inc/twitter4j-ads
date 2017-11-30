@@ -5,6 +5,7 @@ import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsResponse;
 import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.Campaign;
+import twitter4j.models.ads.EntityStatus;
 import twitter4j.models.ads.sort.CampaignSortByField;
 
 import java.util.Collection;
@@ -59,7 +60,7 @@ public interface TwitterAdsCampaignApi {
      * @param dailyBudgetAmountLocalMicro  (optional) Name to update the cmapaign with.
      * @param startTime                    (optional) Start time to update the cmapaign with.
      * @param endTime                      (optional) End time to update the cmapaign with.
-     * @param paused                       (optional) Update the paused state of campaign.
+     * @param status                       Status of the campaign
      * @param standardDelivery             (optional) Update the standard delivery setting of campaign.
      * @param frequencyCap                 (if value passed greater than 0) Update integer representing the number of times for which one user could be delivered an ad to.
      * @param durationInDays               (if value passed greater than 0) Update integer representing the time period within which the frequency_cap frequency is achieved. Only supports values of: 1, 7 and 30.
@@ -69,7 +70,7 @@ public interface TwitterAdsCampaignApi {
      */
     BaseAdsResponse<Campaign> updateCampaign(String accountId, String campaignId, Optional<String> name,
                                              Long totalBudgetAmountLocalMicro, Optional<Long> dailyBudgetAmountLocalMicro, Optional<String> startTime,
-                                             Optional<String> endTime, Optional<Boolean> paused,
+                                             Optional<String> endTime, EntityStatus status,
                                              Optional<Boolean> standardDelivery, int frequencyCap, int durationInDays) throws TwitterException;
 
     /**

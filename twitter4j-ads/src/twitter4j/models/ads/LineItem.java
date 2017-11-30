@@ -39,6 +39,9 @@ public class LineItem extends TwitterEntity {
     @SerializedName("objective")
     private String objective;
 
+    @SerializedName("entity_status")
+    private String entityStatus;
+
     @SerializedName("deleted")
     private Boolean deleted;
 
@@ -300,5 +303,13 @@ public class LineItem extends TwitterEntity {
 
     public void setAdvertiserUserId(String advertiserUserId) {
         this.advertiserUserId = advertiserUserId;
+    }
+
+    public String getEntityStatus() {
+        return entityStatus;
+    }
+
+    public void setEntityStatus(String entityStatus) {
+        this.entityStatus = entityStatus;
     }
 }

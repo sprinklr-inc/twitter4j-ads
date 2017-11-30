@@ -10,6 +10,7 @@ import twitter4j.api.TwitterAdsCampaignApi;
 import twitter4j.internal.http.HttpParameter;
 import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.Campaign;
+import twitter4j.models.ads.EntityStatus;
 import twitter4j.models.ads.HttpVerb;
 import twitter4j.models.ads.sort.CampaignSortByField;
 import twitter4j.util.TwitterAdUtil;
@@ -62,7 +63,8 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_CAMPAIGN;
 
-        Type type = new TypeToken<BaseAdsListResponse<Campaign>>() {}.getType();
+        Type type = new TypeToken<BaseAdsListResponse<Campaign>>() {
+        }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
@@ -72,7 +74,8 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         TwitterAdUtil.ensureNotNull(campaignId, "campaignId");
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_CAMPAIGN + campaignId;
         HttpParameter[] params = new HttpParameter[]{new HttpParameter(PARAM_WITH_DELETED, withDeleted)};
-        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {}.getType();
+        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params, type, HttpVerb.GET);
     }
 
@@ -86,7 +89,8 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
             parameters = params.toArray(new HttpParameter[params.size()]);
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_CAMPAIGN;
-        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {}.getType();
+        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, parameters, type, HttpVerb.POST);
     }
 
@@ -94,14 +98,15 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
     @Override
     public BaseAdsResponse<Campaign> updateCampaign(String accountId, String campaignId, Optional<String> name,
                                                     Long totalBudgetAmountLocalMicro, Optional<Long> dailyBudgetAmountLocalMicro, Optional<String> startTime,
-                                                    Optional<String> endTime, Optional<Boolean> paused,
+                                                    Optional<String> endTime, EntityStatus status,
                                                     Optional<Boolean> standardDelivery, int frequencyCap, int durationInDays) throws TwitterException {
 
         List<HttpParameter> params =
                 validateUpdateCampaignParameters(accountId, campaignId, name, totalBudgetAmountLocalMicro, dailyBudgetAmountLocalMicro, startTime,
-                        endTime, paused, standardDelivery, frequencyCap, durationInDays);
+                        endTime, status, standardDelivery, frequencyCap, durationInDays);
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_CAMPAIGN + campaignId;
-        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {}.getType();
+        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.PUT);
 
     }
@@ -117,7 +122,8 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         params.add(new HttpParameter(PARAM_PAUSED, paused));
 
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_CAMPAIGN + campaignId;
-        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {}.getType();
+        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.PUT);
 
     }
@@ -127,7 +133,8 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(campaignId, "Campaign Id");
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_CAMPAIGN + campaignId;
-        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {}.getType();
+        Type type = new TypeToken<BaseAdsResponse<Campaign>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);
     }
 
@@ -159,9 +166,8 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
             String endTime = String.valueOf(df.format(campaign.getEndTime()));
             params.add(new HttpParameter(PARAM_END_TIME, endTime));
         }
-        if (campaign.getPaused() != null) {
-            Boolean paused = campaign.getPaused();
-            params.add(new HttpParameter(PARAM_PAUSED, paused));
+        if (campaign.getEntityStatus() != null) {
+            params.add(new HttpParameter(PARAM_ENTITY_STATUS, campaign.getEntityStatus()));
         }
         if (campaign.getStandardDelivery() != null) {
             Boolean standardDelivery = campaign.getStandardDelivery();
@@ -199,7 +205,7 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
 
     private List<HttpParameter> validateUpdateCampaignParameters(String accountId, String campaignId, Optional<String> name, Long totalBudgetAmountLocalMicro,
                                                                  Optional<Long> dailyBudgetAmountLocalMicro, Optional<String> startTime,
-                                                                 Optional<String> endTime, Optional<Boolean> paused,
+                                                                 Optional<String> endTime, EntityStatus status,
                                                                  Optional<Boolean> standardDelivery, int frequencyCap, int durationInDays) {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(campaignId, "Campaign Id");
@@ -227,8 +233,8 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         if (endTime != null && endTime.isPresent()) {
             params.add(new HttpParameter(PARAM_END_TIME, endTime.get()));
         }
-        if (paused != null && paused.isPresent()) {
-            params.add(new HttpParameter(PARAM_PAUSED, paused.get()));
+        if (status != null) {
+            params.add(new HttpParameter(PARAM_ENTITY_STATUS, status.name()));
         }
         if (standardDelivery != null && standardDelivery.isPresent()) {
             params.add(new HttpParameter(PARAM_STANDARD_DELIVERY, standardDelivery.get()));

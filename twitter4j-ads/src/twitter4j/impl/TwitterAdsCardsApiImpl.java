@@ -33,7 +33,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static twitter4j.TwitterAdsConstants.*;
-import static twitter4j.TwitterAdsConstants.PARAM_POSTER_IMAGE_ID;
+import static twitter4j.TwitterAdsConstants.PATH_VIDEO_WEBSITE_CARDS;
+import static twitter4j.util.TwitterAdUtil.isNotNullOrEmpty;
 
 /**
  * User: abhay
@@ -817,17 +818,70 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
     @Override
     public BaseAdsResponse<TwitterVideoWebsiteCard> createVideoWebsiteCard(String accountId, String name, String title, String videoId, String websiteUrl) throws TwitterException {
-        return null;
+        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
+        TwitterAdUtil.ensureNotNull(name, "Name");
+        TwitterAdUtil.ensureNotNull(title, "Title");
+        TwitterAdUtil.ensureNotNull(videoId, "Video Id");
+        TwitterAdUtil.ensureNotNull(websiteUrl, "Website url");
+
+        verifyLength(name, "Name", MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH);
+        verifyLength(title, "Title", MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH);
+
+        final List<HttpParameter> params = new ArrayList<>();
+        params.add(new HttpParameter(PARAM_NAME, name));
+        params.add(new HttpParameter(PARAM_TITLE, title));
+        params.add(new HttpParameter(PARAM_VIDEO_ID, videoId));
+        params.add(new HttpParameter(PARAM_WEBSITE_URL, websiteUrl));
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_VIDEO_WEBSITE_CARDS;
+        final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideoWebsiteCard>>() {
+        }.getType();
+
+        return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
     }
 
     @Override
     public BaseAdsResponse<TwitterVideoWebsiteCard> updateVideoWebsiteCard(String accountId, String cardId, String name, String title, String videoId, String websiteUrl) throws TwitterException {
-        return null;
+
+        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
+        TwitterAdUtil.ensureNotNull(cardId, "Card Id");
+        final List<HttpParameter> params = new ArrayList<>();
+        if (isNotNullOrEmpty(name)) {
+            verifyLength(name, "Name", MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH);
+            params.add(new HttpParameter(PARAM_NAME, name));
+        }
+
+        if (isNotNullOrEmpty(title)) {
+            verifyLength(title, "Title", MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH);
+            params.add(new HttpParameter(PARAM_TITLE, title));
+        }
+
+        if (isNotNullOrEmpty(videoId)) {
+            params.add(new HttpParameter(PARAM_VIDEO_ID, videoId));
+        }
+
+        if (isNotNullOrEmpty(websiteUrl)) {
+            params.add(new HttpParameter(PARAM_WEBSITE_URL, websiteUrl));
+        }
+
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_VIDEO_WEBSITE_CARDS + cardId;
+        final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideoWebsiteCard>>() {
+        }.getType();
+
+        return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.PUT);
     }
 
     @Override
     public BaseAdsResponse<TwitterVideoWebsiteCard> deleteVideoWebsiteCard(String accountId, String cardId) throws TwitterException {
-        return null;
+        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
+        TwitterAdUtil.ensureNotNull(cardId, "Card Id");
+
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_VIDEO_WEBSITE_CARDS + cardId;
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideoWebsiteCard>>() {
+        }.getType();
+
+        return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
     }
 
     @Override
@@ -1348,6 +1402,12 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (cta.length() > DM_CARD_CTA_LENGTH) {
             throw new TwitterException(
                     new UnsupportedOperationException(label + " cannot be more than " + DM_CARD_CTA_LENGTH + " characters"));
+        }
+    }
+
+    private void verifyLength(String field, String label, long length) throws TwitterException {
+        if (field.length() > length) {
+            throw new TwitterException(new UnsupportedOperationException(label + " cannot be more than " + length + " characters"));
         }
     }
 }

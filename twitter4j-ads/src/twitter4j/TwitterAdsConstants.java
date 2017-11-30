@@ -13,6 +13,8 @@ public interface TwitterAdsConstants {
     String V1_PREFIX_STATS_JOB_ACCOUNTS_URI = "2/stats/jobs/accounts/";
 
     Long MAX_IMAGE_SIZE_FOR_WEBSITE_IN_BYTES = 1040000L;
+    long MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH = 80L;
+    long MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH = 70L;
 
     String PREFIX_ACCOUNTS_URI_2 = "2/accounts/";
     String TWEET_PREVIEW_PATH = "/tweet/preview/";
@@ -66,6 +68,7 @@ public interface TwitterAdsConstants {
     String PARAM_FREQUENCY_CAP = "frequency_cap";
     String PARAM_DURATION_IN_DAYS = "duration_in_days";
     String PARAM_PAUSED = "paused";
+    String PARAM_ENTITY_STATUS = "entity_status";
     String PARAM_END_TIME = "end_time";
     String PARAM_START_TIME = "start_time";
     String PARAM_FUNDING_INSTRUMENT_ID = "funding_instrument_id";
@@ -152,7 +155,7 @@ public interface TwitterAdsConstants {
     /**
      * For Twitter Audience Platform
      */
-    String PATH_IAB_CATEGORIES = "1/iab_categories/";
+    String PATH_IAB_CATEGORIES = "2/iab_categories/";
     String PATH_APP_LIST = "/app_lists/";
     String PARAM_ADVERTISER_DOMAIN = "advertiser_domain";
     String PARAM_CATEGORIES = "categories";
@@ -259,7 +262,7 @@ public interface TwitterAdsConstants {
 
     String PATH_CAMPAIGN = "/campaigns/";
     String PATH_FUNDING_INSTRUMENTS = "/funding_instruments/";
-    String PATH_BIDDING_RULES = "1/bidding_rules";
+    String PATH_BIDDING_RULES = "2/bidding_rules";
     String PATH_IMAGE_DM_CARDS = "/cards/image_direct_message/";
     String PATH_VIDEO_DM_CARDS = "/cards/video_direct_message";
     String PATH_PROMOTED_TWEETS = "/promoted_tweets/";
@@ -270,15 +273,15 @@ public interface TwitterAdsConstants {
     String PATH_SCHEDULED_PROMOTED_TWEETS = "/scheduled_promoted_tweets/";
     String PATH_LINE_ITEMS = "/line_items/";
     String PATH_TARGETING_CRITERIA = "/targeting_criteria/";
-    String PATH_TARGETING_CRITERIA_LOCATION = "1/targeting_criteria/locations";
-    String PATH_TARGETING_CRITERIA_INTERESTS = "1/targeting_criteria/interests";
-    String PATH_TARGETING_CRITERIA_PLATFORMS = "1/targeting_criteria/platforms";
-    String PATH_TARGETING_CRITERIA_PLATFORM_VERSIONS = "1/targeting_criteria/platform_versions";
-    String PATH_TARGETING_CRITERIA_DEVICES = "1/targeting_criteria/devices";
-    String PATH_TARGETING_CRITERIA_APP_STORE_CATEGORIES = "1/targeting_criteria/app_store_categories";
-    String PATH_TARGETING_CRITERIA_NETWORK_OPERATORS = "1/targeting_criteria/network_operators/";
-    String PATH_TARGETING_CRITERIA_EVENT = "1/targeting_criteria/events";
-    String PATH_TARGETING_LANGUAGES = "1/targeting_criteria/languages";
+    String PATH_TARGETING_CRITERIA_LOCATION = "2/targeting_criteria/locations";
+    String PATH_TARGETING_CRITERIA_INTERESTS = "2/targeting_criteria/interests";
+    String PATH_TARGETING_CRITERIA_PLATFORMS = "2/targeting_criteria/platforms";
+    String PATH_TARGETING_CRITERIA_PLATFORM_VERSIONS = "2/targeting_criteria/platform_versions";
+    String PATH_TARGETING_CRITERIA_DEVICES = "2/targeting_criteria/devices";
+    String PATH_TARGETING_CRITERIA_APP_STORE_CATEGORIES = "2/targeting_criteria/app_store_categories";
+    String PATH_TARGETING_CRITERIA_NETWORK_OPERATORS = "2/targeting_criteria/network_operators/";
+    String PATH_TARGETING_CRITERIA_EVENT = "2/targeting_criteria/events";
+    String PATH_TARGETING_LANGUAGES = "2/targeting_criteria/languages";
     String PATH_TAILORED_AUDIENCES = "/tailored_audiences";
     String PATH_TARGETING_SUGGESTIONS = "/targeting_suggestions/";
     String PATH_TV_SHOWS = "2/targeting_criteria/tv_shows/";
@@ -348,6 +351,7 @@ public interface TwitterAdsConstants {
     String PARAM_RETARGETING_ENABLED = "retargeting_enabled";
 
     String PATH_WEB_EVENT_TAGS = "/web_event_tags/";
+    String PATH_VIDEO_WEBSITE_CARDS = "/cards/video_website/";
 
     String PATH_ORGANIC_TWEETS_STATS ="/organic_tweets";
 
