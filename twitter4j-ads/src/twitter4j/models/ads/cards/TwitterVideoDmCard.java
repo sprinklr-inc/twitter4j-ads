@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Date: 13/11/17
  * Time: 9:14 PM
  */
-public class TwitterVideoDMCard extends AbstractTwitterDMCard {
+public class TwitterVideoDmCard extends AbstractTwitterDMCard {
 
     @SerializedName("video_url")
     private String videoUrl;

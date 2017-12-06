@@ -634,7 +634,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterVideoDMCard> createVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, Long recipientAccountId, String imageUrl, String videoUrl, String imageMediaId, String videoMediaId) throws TwitterException {
+    public BaseAdsResponse<TwitterVideoDmCard> createVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, Long recipientAccountId, String imageUrl, String videoUrl, String imageMediaId, String videoMediaId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(videoUrl, "Video Url");
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(name, "Title");
@@ -675,7 +675,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
         final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_VIDEO_DM_CARDS;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
-        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDMCard>>() {
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDmCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
@@ -745,7 +745,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterVideoDMCard> updateVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, String imageUrl, String videoUrl, String imageMediaId, String videoMediaId, String channelId) throws TwitterException {
+    public BaseAdsResponse<TwitterVideoDmCard> updateVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, String imageUrl, String videoUrl, String imageMediaId, String videoMediaId, String channelId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(channelId, "Card Channel Id");
 
@@ -786,7 +786,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
         final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_VIDEO_DM_CARDS + channelId;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
-        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDMCard>>() {
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDmCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.PUT);
@@ -805,12 +805,12 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterVideoDMCard> deleteVideoDMCard(String accountId, String cardId) throws TwitterException {
+    public BaseAdsResponse<TwitterVideoDmCard> deleteVideoDMCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
         final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_VIDEO_DM_CARDS + cardId;
-        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDMCard>>() {
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDmCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);

@@ -361,7 +361,7 @@ public interface TwitterAdsCardsApi {
                                                           Long recipientAccountId,
                                                           String imageUrl, String imageMediaId) throws TwitterException;
 
-    BaseAdsResponse<TwitterVideoDMCard> createVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
+    BaseAdsResponse<TwitterVideoDmCard> createVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
                                                           String secondCta, Long secondWelcomeMessageId, String thirdCta,
                                                           Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
                                                           Long recipientAccountId, String imageUrl, String videoUrl,
@@ -374,7 +374,7 @@ public interface TwitterAdsCardsApi {
                                                           String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
                                                           String imageUrl, String imageMediaId, String channelId) throws TwitterException;
 
-    BaseAdsResponse<TwitterVideoDMCard> updateVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
+    BaseAdsResponse<TwitterVideoDmCard> updateVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
                                                           String secondCta, Long secondWelcomeMessageId, String thirdCta,
                                                           Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
                                                           String imageUrl, String videoUrl, String imageMediaId, String videoMediaId,
@@ -382,7 +382,7 @@ public interface TwitterAdsCardsApi {
 
     BaseAdsResponse<TwitterImageDMCard> deleteImageDMCard(String accountId, String cardId) throws TwitterException;
 
-    BaseAdsResponse<TwitterVideoDMCard> deleteVideoDMCard(String accountId, String cardId) throws TwitterException;
+    BaseAdsResponse<TwitterVideoDmCard> deleteVideoDMCard(String accountId, String cardId) throws TwitterException;
 
 
     BaseAdsResponse<TwitterVideoWebsiteCard> createVideoWebsiteCard(String accountId, String name, String title, String videoId, String websiteUrl)
