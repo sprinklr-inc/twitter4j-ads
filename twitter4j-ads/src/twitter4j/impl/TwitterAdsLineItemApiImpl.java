@@ -138,7 +138,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         List<HttpParameter> params =
                 validateLineItemParameters(accountId, campaignIdsAsString, lineItemIdsAsString, fundingInstrumentIdsAsString, count, withDeleted,
                         cursor);
-        if (sortByField.isPresent()) {
+        if (sortByField != null && sortByField.isPresent()) {
             params.add(new HttpParameter(PARAM_SORT_BY, sortByField.get().getField()));
         }
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_LINE_ITEMS;

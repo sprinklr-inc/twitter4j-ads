@@ -1,6 +1,7 @@
 package twitter4j.lineitems;
 
-import com.google.common.collect.Lists;
+import com.google.api.client.util.Lists;
+import com.google.common.base.Optional;
 import twitter4j.BaseAdsListResponse;
 import twitter4j.BaseAdsListResponseIterable;
 import twitter4j.BaseAdsTest;
@@ -8,6 +9,7 @@ import twitter4j.TwitterAds;
 import twitter4j.api.TwitterAdsLineItemApi;
 import twitter4j.internal.models4j.TwitterException;
 import twitter4j.models.ads.LineItem;
+import twitter4j.models.ads.sort.LineItemsSortByField;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class GetLineItemForAccount extends BaseAdsTest {
         TwitterAdsLineItemApi lineItemApi = twitterAdsInstance.getLineItemApi();
         List<LineItem> lineItemList = Lists.newArrayList();
         try {
-            BaseAdsListResponseIterable<LineItem> allLineItems = lineItemApi.getAllLineItems("18ce53uo3nm", null, null, null, null, false, null, null);
+            BaseAdsListResponseIterable<LineItem> allLineItems = lineItemApi.getAllLineItems("18ce53uo3nm", null, null, null, null, false, null, Optional.of(LineItemsSortByField.BID_AMOUNT_LOCAL_MICRO));
             for (BaseAdsListResponse<LineItem> allLineItem : allLineItems) {
                 lineItemList.addAll(allLineItem.getData());
             }
@@ -30,5 +32,8 @@ public class GetLineItemForAccount extends BaseAdsTest {
         } catch (TwitterException e) {
             System.err.println(e.getErrorMessage());
         }
+
     }
+
+
 }
