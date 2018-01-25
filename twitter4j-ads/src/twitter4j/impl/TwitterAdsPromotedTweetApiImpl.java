@@ -1,20 +1,27 @@
 package twitter4j.impl;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.google.gson.reflect.TypeToken;
-import org.apache.commons.collections.CollectionUtils;
-import twitter4j.*;
-import twitter4j.api.TwitterAdsPromotedTweetApi;
-import twitter4j.internal.http.HttpParameter;
-import twitter4j.internal.http.HttpResponse;
-import twitter4j.internal.models4j.Status;
-import twitter4j.internal.models4j.TwitterException;
-import twitter4j.models.ads.HttpVerb;
-import twitter4j.models.ads.PromotedTweet;
-import twitter4j.models.ads.PromotedTweets;
-import twitter4j.models.ads.sort.PromotedTweetsSortByField;
-import twitter4j.util.TwitterAdUtil;
+import static twitter4j.TwitterAdsConstants.PARAM_AS_USER_ID;
+import static twitter4j.TwitterAdsConstants.PARAM_CARD_URI;
+import static twitter4j.TwitterAdsConstants.PARAM_COUNT;
+import static twitter4j.TwitterAdsConstants.PARAM_CURSOR;
+import static twitter4j.TwitterAdsConstants.PARAM_LINE_ITEM_ID;
+import static twitter4j.TwitterAdsConstants.PARAM_MEDIA_IDS;
+import static twitter4j.TwitterAdsConstants.PARAM_NULLCAST;
+import static twitter4j.TwitterAdsConstants.PARAM_SCHEDULED_TWEET_ID;
+import static twitter4j.TwitterAdsConstants.PARAM_SORT_BY;
+import static twitter4j.TwitterAdsConstants.PARAM_STATUS;
+import static twitter4j.TwitterAdsConstants.PARAM_TEXT;
+import static twitter4j.TwitterAdsConstants.PARAM_TWEET_IDS;
+import static twitter4j.TwitterAdsConstants.PARAM_VIDEO_CTA;
+import static twitter4j.TwitterAdsConstants.PARAM_VIDEO_CTA_VALUE;
+import static twitter4j.TwitterAdsConstants.PARAM_VIDEO_DESCRIPTION;
+import static twitter4j.TwitterAdsConstants.PARAM_VIDEO_ID;
+import static twitter4j.TwitterAdsConstants.PARAM_VIDEO_TITLE;
+import static twitter4j.TwitterAdsConstants.PARAM_WITH_DELETED;
+import static twitter4j.TwitterAdsConstants.PATH_PROMOTED_TWEETS;
+import static twitter4j.TwitterAdsConstants.PATH_PROMOTED_VIDEO_TWEET;
+import static twitter4j.TwitterAdsConstants.PATH_SCHEDULED_PROMOTED_TWEETS;
+import static twitter4j.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_2;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -22,7 +29,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static twitter4j.TwitterAdsConstants.*;
+import org.apache.commons.collections.CollectionUtils;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.google.gson.reflect.TypeToken;
+
+import twitter4j.BaseAdsListResponse;
+import twitter4j.BaseAdsListResponseIterable;
+import twitter4j.BaseAdsResponse;
+import twitter4j.TwitterAdsClient;
+import twitter4j.TwitterAdsConstants;
+import twitter4j.api.TwitterAdsPromotedTweetApi;
+import twitter4j.internal.http.HttpParameter;
+import twitter4j.internal.http.HttpResponse;
+import twitter4j.internal.models4j.Status;
+import twitter4j.internal.models4j.Twitter;
+import twitter4j.internal.models4j.TwitterException;
+import twitter4j.models.ads.HttpVerb;
+import twitter4j.models.ads.PromotedTweet;
+import twitter4j.models.ads.PromotedTweets;
+import twitter4j.models.ads.sort.PromotedTweetsSortByField;
+import twitter4j.util.TwitterAdUtil;
 
 /**
  * User: abhay
@@ -40,23 +68,33 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
     }
 
     @Override
-    public BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, boolean withDeleted,
+    public BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, boolean withDeleted, List<String> lineItemIds,
                                                                             Optional<Integer> count, String cursor, Optional<PromotedTweetsSortByField> sortByField) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
+        
         List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
+        
+        if (TwitterAdUtil.isNotEmpty(lineItemIds)) {
+            params.add(new HttpParameter(TwitterAdsConstants.PARAM_LINE_ITEM_IDS, TwitterAdUtil.getCsv(lineItemIds)));
+        }
+        
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
+        
         if (TwitterAdUtil.isNotNullOrEmpty(cursor)) {
             params.add(new HttpParameter(PARAM_CURSOR, cursor));
         }
+        
         if (sortByField != null && sortByField.isPresent()) {
             params.add(new HttpParameter(PARAM_SORT_BY, sortByField.get().getField()));
         }
+        
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_PROMOTED_TWEETS;
         Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {
         }.getType();
+        
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 

@@ -29,7 +29,7 @@ public interface TwitterAdsPromotedTweetApi {
      * @return Retrieve references to the Promoted Tweets associated with one or more line items.
      * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_tweets">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_tweets</a>
      */
-    BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, boolean withDeleted,
+    BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, boolean withDeleted, List<String> lineItemIds,
                                                                      Optional<Integer> count, String cursor, Optional<PromotedTweetsSortByField> sortByField) throws TwitterException;
 
 

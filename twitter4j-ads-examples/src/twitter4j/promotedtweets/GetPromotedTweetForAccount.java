@@ -22,10 +22,12 @@ public class GetPromotedTweetForAccount extends BaseAdsTest {
         TwitterAdsPromotedTweetApi promotedTweetApi = twitterAdsInstance.getPromotedTweetApi();
         List<PromotedTweets> promotedTweetsList = Lists.newArrayList();
         try {
-            BaseAdsListResponseIterable<PromotedTweets> allPromotedTweets = promotedTweetApi.getAllPromotedTweets("18ce53uo3nm", false, null, null, null);
+            BaseAdsListResponseIterable<PromotedTweets> allPromotedTweets = promotedTweetApi.getAllPromotedTweets("18ce53uo3nm", false, null, null, null, null);
+            
             for (BaseAdsListResponse<PromotedTweets> allPromotedTweet : allPromotedTweets) {
                 promotedTweetsList.addAll(allPromotedTweet.getData());
             }
+            
             System.out.println(promotedTweetsList.size());
         } catch (TwitterException e) {
             System.err.println(e.getErrorMessage());
