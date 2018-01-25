@@ -43,7 +43,7 @@ public interface TwitterScheduledTweetApi {
      * @param cardURI Associate a card with the Tweet using the card_uri value from any cards response, if available. card://855591459410511943
      * IMPORTANT
      * @param mediaIds Associate media with the Tweet by specifying a comma-separated list of identifiers. Include up to 4 images, 1 animated GIF, or 1 video. See Uploading Media for additional details on uploading media.
-     * @param nullCast Whether to create a nullcasted (or “Promoted-only”) Tweet..
+     * @param nullCast Whether to create a nullcasted (or Promoted-only) Tweet..
      */
     BaseAdsResponse<ScheduledTweet> create(String accountId, Date scheduledAt, String text, String userId, String cardURI, List<String> mediaIds,
                                            boolean nullCast) throws TwitterException;

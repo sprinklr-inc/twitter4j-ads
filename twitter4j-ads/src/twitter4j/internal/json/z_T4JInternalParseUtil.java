@@ -195,20 +195,20 @@ public final class z_T4JInternalParseUtil {
         } else {
             // https://dev.twitter.com/pages/application-permission-model-faq#how-do-we-know-what-the-access-level-of-a-user-token-is
             switch (xAccessLevel.length()) {
-                // “read” (Read-only)
+                // read (Read-only)
                 case 4:
                     accessLevel = TwitterResponse.READ;
                     break;
                 case 10:
-                    // “read-write” (Read & Write)
+                    // read-write (Read & Write)
                     accessLevel = TwitterResponse.READ_WRITE;
                     break;
                 case 25:
-                    // “read-write-directmessages” (Read, Write, & Direct Message)
+                    // read-write-directmessages (Read, Write, & Direct Message)
                     accessLevel = TwitterResponse.READ_WRITE_DIRECTMESSAGES;
                     break;
                 case 26:
-                    // “read-write-privatemessages” (Read, Write, & Direct Message)
+                    // read-write-privatemessages (Read, Write, & Direct Message)
                     accessLevel = TwitterResponse.READ_WRITE_DIRECTMESSAGES;
                     break;
                 default:

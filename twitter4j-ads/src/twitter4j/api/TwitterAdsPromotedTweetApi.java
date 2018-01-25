@@ -23,6 +23,7 @@ public interface TwitterAdsPromotedTweetApi {
     /**
      * @param accountId   The identifier for the leveraged account.
      * @param withDeleted Include deleted results in your request. Defaults to false.
+     * @param lineItemIds (optional Scope the response to just the desired line items
      * @param sortByField (optional) Sorts by supported attribute in ascending or descending order.
      * @param count       (optional) Specifies the number of Promoted Tweets to try to retrieve, up to a maximum of 1000 per distinct request.
      * @param cursor      (optional) Specify a cursor to retrieve data from a specific page (function automatically handles paging upon iteration when you do not specify cursor value).
