@@ -22,7 +22,6 @@ We recommend using Gradle or Maven to build and manage your project using Twitte
 ### Dependencies
 
 - JDK 1.7
-- Twitter4j 4.0.4 (org.twitter4j)
 - com.google.guava
 - com.google.http-client
 - com.google.api-client
@@ -52,7 +51,7 @@ Please reference this Twitter Ads API documentation for more help in generating 
 ### Contributors
 
 * Abhay Bansal (Sprinklr)
-* Abhishek Anand (Sprinklr)
+* Abhishek Anand 
 * Akash Maurya (Sprinklr)
 * John Babich (Twitter)
 * Nihit Purwar (Sprinklr)
