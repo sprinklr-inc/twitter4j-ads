@@ -106,8 +106,8 @@ class ConfigurationBase implements Configuration, java.io.Serializable {
     private String clientVersion;
     private String clientURL;
 
-    public static final String DALVIK = "twitter4jads.dalvik";
-    public static final String GAE = "twitter4jads.gae";
+    public static final String DALVIK = "twitter4j.dalvik";
+    public static final String GAE = "twitter4j.gae";
 
     private static final String DEFAULT_OAUTH_REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token";
     private static final String DEFAULT_OAUTH_AUTHORIZATION_URL = "https://api.twitter.com/oauth/authorize";
@@ -181,8 +181,8 @@ class ConfigurationBase implements Configuration, java.io.Serializable {
         setAsyncNumThreads(1);
         setContributingTo(-1L);
         setClientVersion(Version.getVersion());
-        setClientURL("https://twitter4jads.org/en/twitter4jads-" + Version.getVersion() + ".xml");
-        setUserAgent("twitter4jads https://twitter4jads.org/ /" + Version.getVersion());
+        setClientURL("https://twitter4j.org/en/twitter4jads-" + Version.getVersion() + ".xml");
+        setUserAgent("twitter4j https://twitter4jads.org/ /" + Version.getVersion());
 
         setJSONStoreEnabled(false);
 
