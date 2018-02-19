@@ -1,2 +1,2 @@
-# twitter4j-ads
-twitter4j-ads open source
+# twitter4jads-ads
+twitter4jads-ads open source
