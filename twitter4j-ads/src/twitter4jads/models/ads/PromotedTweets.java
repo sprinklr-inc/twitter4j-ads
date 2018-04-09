@@ -27,6 +27,12 @@ public class PromotedTweets extends TwitterEntity {
     @SerializedName("line_item_id")
     private String lineItemId;
 
+    @SerializedName("approval_status")
+    private String approvalStatus;
+
+    @SerializedName("entity_status")
+    private String entityStatus;
+
     public String getTweetId() {
         return tweetId;
     }
@@ -73,5 +79,21 @@ public class PromotedTweets extends TwitterEntity {
 
     public void setLineItemId(String lineItemId) {
         this.lineItemId = lineItemId;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public String getEntityStatus() {
+        return entityStatus;
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
+
+    public void setEntityStatus(String entityStatus) {
+        this.entityStatus = entityStatus;
     }
 }
