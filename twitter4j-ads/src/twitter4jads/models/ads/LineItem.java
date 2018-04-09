@@ -96,6 +96,12 @@ public class LineItem extends TwitterEntity {
     @SerializedName("creative_source")
     private String creativeSource;
 
+    @SerializedName("start_time")
+    private Date startTimeInUTC;
+
+    @SerializedName("end_time")
+    private Date endTimeInUTC;
+
     public String getCreativeSource() {
         return creativeSource;
     }
@@ -311,5 +317,21 @@ public class LineItem extends TwitterEntity {
 
     public void setEntityStatus(String entityStatus) {
         this.entityStatus = entityStatus;
+    }
+
+    public Date getStartTime() {
+        return startTimeInUTC;
+    }
+
+    public void setStartTime(Date startTimeInUTC) {
+        this.startTimeInUTC = startTimeInUTC;
+    }
+
+    public Date getEndTime() {
+        return endTimeInUTC;
+    }
+
+    public void setEndTime(Date endTimeInUTC) {
+        this.endTimeInUTC = endTimeInUTC;
     }
 }
