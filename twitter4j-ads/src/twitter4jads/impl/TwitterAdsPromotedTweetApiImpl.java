@@ -40,7 +40,7 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
     }
 
     @Override
-    public BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, boolean withDeleted,
+    public BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, boolean withDeleted, Optional<Collection<String>> lineItemIds,
                                                                             Optional<Integer> count, String cursor, Optional<PromotedTweetsSortByField> sortByField) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         List<HttpParameter> params = new ArrayList<>();
@@ -50,6 +50,10 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
         }
         if (TwitterAdUtil.isNotNullOrEmpty(cursor)) {
             params.add(new HttpParameter(PARAM_CURSOR, cursor));
+        }
+        if (lineItemIds != null && lineItemIds.isPresent()) {
+            TwitterAdUtil.ensureMaxSize(lineItemIds.get(), MAX_REQUEST_PARAMETER_SIZE);
+            params.add(new HttpParameter(TwitterAdsConstants.PARAM_LINE_ITEM_IDS, TwitterAdUtil.getCsv(lineItemIds.get())));
         }
         if (sortByField != null && sortByField.isPresent()) {
             params.add(new HttpParameter(PARAM_SORT_BY, sortByField.get().getField()));
