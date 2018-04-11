@@ -35,7 +35,7 @@ import static twitter4jads.TwitterAdsConstants.*;
  */
 public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
 
-    private static final Integer MAX_REQUEST_PARAMETER_SIZE = 50;
+    private static final Integer MAX_REQUEST_PARAMETER_SIZE = 200;
 
     private final TwitterAdsClient twitterAdsClient;
 
