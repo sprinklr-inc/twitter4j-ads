@@ -45,7 +45,8 @@ public class TwitterAdsFundingInstrumentApiImpl implements TwitterAdsFundingInst
             TwitterAdUtil.ensureMaxSize(fundingInstrumentIds.get(), MAX_REQUEST_PARAMETER_SIZE);
             fundingInstrumentIdsAsString = TwitterAdUtil.getCsv(fundingInstrumentIds.get());
         }
-        List<HttpParameter> params = new ArrayList<>();
+
+        final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         if (TwitterAdUtil.isNotNullOrEmpty(fundingInstrumentIdsAsString)) {
             params.add(new HttpParameter(PARAM_FUNDING_INSTRUMENT_IDS, fundingInstrumentIdsAsString));
@@ -60,12 +61,14 @@ public class TwitterAdsFundingInstrumentApiImpl implements TwitterAdsFundingInst
 
     @Override
     public BaseAdsResponse<FundingInstrument> getFundingInstrumentById(String accountId, String fundingInstrumentId, boolean withDeleted)
-            throws TwitterException {
+        throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(fundingInstrumentId, "fundingInstrumentId");
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_FUNDING_INSTRUMENTS + fundingInstrumentId;
         HttpParameter[] param  = new HttpParameter[]{new HttpParameter(PARAM_WITH_DELETED, withDeleted)};
-        Type type = new TypeToken<BaseAdsResponse<FundingInstrument>>() {}.getType();
+
+        final Type type = new TypeToken<BaseAdsResponse<FundingInstrument>>() {
+        }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, param, type, HttpVerb.GET);
     }
 }

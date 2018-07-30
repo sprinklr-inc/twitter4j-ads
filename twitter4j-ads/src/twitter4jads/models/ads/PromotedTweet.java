@@ -155,6 +155,11 @@ public class PromotedTweet implements Status {
         return null;
     }
 
+    @Override
+    public Status getExtendedTweet() {
+        return null;
+    }
+
 
     @Override
     public long[] getContributors() {
@@ -189,6 +194,16 @@ public class PromotedTweet implements Status {
     @Override
     public String[] getPlaceIds() {
         return new String[0];
+    }
+
+    @Override
+    public void setHierarchicalMessage(Boolean hierarchicalMessage) {
+        //do nothing
+    }
+
+    @Override
+    public Boolean getHierarchicalMessage() {
+        return null;
     }
 
     @Override

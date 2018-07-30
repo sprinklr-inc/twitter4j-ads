@@ -1,11 +1,13 @@
 package twitter4jads.models.ads;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 import twitter4jads.models.LocationType;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * User: poly
@@ -13,14 +15,6 @@ import java.util.Map;
  * Time: 11:51 AM
  */
 public class TargetingCriteria extends TwitterEntity {
-
-    public TargetingCriteria() {
-    }
-
-    public TargetingCriteria(String targetingValue, TargetingType targetingType) {
-        this.targetingValue = targetingValue;
-        this.targetingType = targetingType;
-    }
 
     @SerializedName("created_at")
     private Date createdAt;
@@ -41,7 +35,7 @@ public class TargetingCriteria extends TwitterEntity {
     private String name;
 
     @SerializedName("targeting_value")
-    private Object targetingValue;
+    public JsonElement targetingValue;
 
     @SerializedName("targeting_type")
     private TargetingType targetingType;
@@ -76,6 +70,17 @@ public class TargetingCriteria extends TwitterEntity {
     @SerializedName("app_lists")
     private List<TwitterApplicationDetails> appList;    //this is the list of apps that are excluded from third party targeting for twitter
 
+    @SerializedName("country_code")
+    private String country_code;
+
+    public String getCountryCode() {
+        return country_code;
+    }
+
+    public void setCountryCode(String country_code) {
+        this.country_code = country_code;
+    }
+
     public String getEventType() {
         return eventType;
     }
@@ -96,6 +101,7 @@ public class TargetingCriteria extends TwitterEntity {
         return tvMarketLocale;
     }
 
+    @SuppressWarnings("unused")
     public void setTvMarketLocale(String tvMarketLocale) {
         this.tvMarketLocale = tvMarketLocale;
     }
@@ -108,10 +114,12 @@ public class TargetingCriteria extends TwitterEntity {
         return tailoredAudienceType;
     }
 
+    @SuppressWarnings("unused")
     public void setTailoredAudienceType(TailoredAudienceType tailoredAudienceType) {
         this.tailoredAudienceType = tailoredAudienceType;
     }
 
+    @SuppressWarnings("unused")
     public void setEstimatedUsers(Integer estimatedUsers) {
         this.estimatedUsers = estimatedUsers;
     }
@@ -141,33 +149,13 @@ public class TargetingCriteria extends TwitterEntity {
     }
 
     public String getTargetingValue() {
-        if (this.targetingValue == null) {
+        if (targetingValue == null || !targetingValue.isJsonPrimitive()) {
             return null;
         }
-        if (targetingValue instanceof String) {
-            return ((String) targetingValue);
-        }
-
-        if (targetingValue instanceof Map) {
-            Map targetingMap = (Map) targetingValue;
-            Object id = targetingMap.get("id");
-            if (id != null) {
-                return id.toString();
-            }
-        }
-        if (targetingValue instanceof Double) {
-            Double doubleValue = (Double) targetingValue;
-            return Integer.toString(doubleValue.intValue());
-        }
-
-        if (targetingValue instanceof Long) {
-            Long longValue = (Long) targetingValue;
-            return Integer.toString(longValue.intValue());
-        }
-        return null;
+        return targetingValue.getAsString();
     }
 
-    public void setTargetingValue(Object targetingValue) {
+    public void setTargetingValue(JsonElement targetingValue) {
         this.targetingValue = targetingValue;
     }
 
@@ -215,6 +203,7 @@ public class TargetingCriteria extends TwitterEntity {
         return tailoredAudienceExpansion;
     }
 
+    @SuppressWarnings("unused")
     public void setTailoredAudienceExpansion(boolean tailoredAudienceExpansion) {
         this.tailoredAudienceExpansion = tailoredAudienceExpansion;
     }
@@ -227,19 +216,77 @@ public class TargetingCriteria extends TwitterEntity {
         this.locationType = locationType;
     }
 
+    @SuppressWarnings("unused")
     public String[] getIabCategories() {
         return iabCategories;
     }
 
+    @SuppressWarnings("unused")
     public void setIabCategories(String[] iabCategories) {
         this.iabCategories = iabCategories;
     }
 
+    @SuppressWarnings("unused")
     public List<TwitterApplicationDetails> getAppList() {
         return appList;
     }
 
+    @SuppressWarnings("unused")
     public void setAppList(List<TwitterApplicationDetails> appList) {
         this.appList = appList;
+    }
+
+    public TargetingCriteria() {
+    }
+
+    public TargetingCriteria(String targetingValue, TargetingType targetingType) {
+        this.targetingValue = new JsonPrimitive(targetingValue);
+        this.targetingType = targetingType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TargetingCriteria)) {
+            return false;
+        }
+
+        final TargetingCriteria that = (TargetingCriteria) o;
+        return targetingValue != null ? targetingValue.equals(that.targetingValue)
+                                      : that.targetingValue == null && targetingType == that.targetingType;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = targetingValue != null ? targetingValue.hashCode() : 0;
+        result = 31 * result + (targetingType != null ? targetingType.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "TargetingCriteria{" +
+                "accountId='" + accountId + '\'' +
+                ", id='" + getId() + '\'' +
+                ", createdAt=" + createdAt +
+                ", lineItemId='" + lineItemId + '\'' +
+                ", updatedAt=" + updatedAt +
+                ", deleted='" + deleted + '\'' +
+                ", name='" + name + '\'' +
+                ", targetingValue=" + targetingValue +
+                ", targetingType=" + targetingType +
+                ", locationType=" + locationType +
+                ", estimatedUsers=" + estimatedUsers +
+                ", genre='" + genre + '\'' +
+                ", showCount=" + showCount +
+                ", tailoredAudienceType=" + tailoredAudienceType +
+                ", tailoredAudienceExpansion=" + tailoredAudienceExpansion +
+                ", tvMarketLocale='" + tvMarketLocale + '\'' +
+                ", iabCategories=" + Arrays.toString(iabCategories) +
+                ", eventType='" + eventType + '\'' +
+                ", appList=" + appList +
+                '}';
     }
 }

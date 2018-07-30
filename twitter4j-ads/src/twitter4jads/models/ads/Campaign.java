@@ -1,7 +1,6 @@
 package twitter4jads.models.ads;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -35,9 +34,6 @@ public class Campaign extends TwitterEntity implements Serializable {
     @SerializedName("entity_status")
     private String entityStatus;
 
-    @SerializedName("paused")
-    private Boolean paused;
-
     @SerializedName("servable")
     private Boolean servable;
 
@@ -67,6 +63,9 @@ public class Campaign extends TwitterEntity implements Serializable {
 
     @SerializedName("duration_in_days")
     private Integer durationInDays;
+
+    @SerializedName("entity_status")
+    private EntityStatus status;
 
     public String getName() {
         return name;
@@ -114,14 +113,6 @@ public class Campaign extends TwitterEntity implements Serializable {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public Boolean getPaused() {
-        return paused;
-    }
-
-    public void setPaused(Boolean paused) {
-        this.paused = paused;
     }
 
     public Boolean getServable() {

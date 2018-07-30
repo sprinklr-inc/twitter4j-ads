@@ -40,7 +40,7 @@ public interface TwitterAdsAccountApi {
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/features">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/features</a>
      */
-    List<TwitterAccountPermissions> getAccountPermissions(String accountId) throws TwitterException;
+    List<String> getAccountPermissions(String accountId) throws TwitterException;
 
     /**
      * @param accountId   The identifier for the leveraged account.

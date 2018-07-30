@@ -11,42 +11,78 @@ import java.util.List;
  * Time: 10:51 PM
  */
 public class TailoredAudience extends TwitterEntity {
+    public static final String CREATED_AT = "created_at";
+    public static final String UPDATED_AT = "updated_at";
+    public static final String NAME = "name";
+    public static final String TARGETING_TYPE = "targeting_type";
+    public static final String AUDIENCE_TYPE = "audience_type";
+    public static final String AUDIENCE_SIZE = "audience_size";
+    public static final String TARGETABLE = "targetable";
+    public static final String TARGETABLE_TYPES = "targetable_types";
+    public static final String REASONS_NOT_TARGETABLE = "reasons_not_targetable";
+    public static final String LIST_TYPE = "list_type";
+    public static final String DELETED = "deleted";
+    public static final String PARTNER_SOURCE = "partner_source";
+    public static final String PERMISSION_LEVEL = "permission_level";
+    public static final String IS_OWNER = "is_owner";
 
-    @SerializedName("created_at")
+    @SerializedName(CREATED_AT)
     private Date createdAt;
 
-    @SerializedName("updated_at")
+    @SerializedName(UPDATED_AT)
     private Date updatedAt;
 
-    @SerializedName("name")
+    @SerializedName(NAME)
     private String name;
 
-    @SerializedName("targeting_type")
+    @SerializedName(TARGETING_TYPE)
     private TargetingType targetingType;
 
-    @SerializedName("audience_type")
+    @SerializedName(AUDIENCE_TYPE)
     private TailoredAudienceType tailoredAudienceType;
 
-    @SerializedName("audience_size")
+    @SerializedName(AUDIENCE_SIZE)
     private String audienceSize;
 
-    @SerializedName("targetable")
+    @SerializedName(TARGETABLE)
     private Boolean isTargetable;
 
-    @SerializedName("targetable_types")
+    @SerializedName(TARGETABLE_TYPES)
     private List<TailoredAudienceType> targetableTypes;
 
-    @SerializedName("reasons_not_targetable")
+    @SerializedName(REASONS_NOT_TARGETABLE)
     private List<String> reasonsNotTargetable;
 
-    @SerializedName("list_type")
+    @SerializedName(LIST_TYPE)
     private TailoredAudienceDataType tailoredAudienceDataType;
 
-    @SerializedName("deleted")
+    @SerializedName(DELETED)
     private Boolean deleted;
 
-    @SerializedName("partner_source")
+    @SerializedName(PARTNER_SOURCE)
     private String partnerSource;
+
+    @SerializedName(PERMISSION_LEVEL)
+    private TailoredAudiencePermissionLevel permissionLevel;
+
+    @SerializedName(IS_OWNER)
+    private Boolean isOwner;
+
+    public TailoredAudiencePermissionLevel getPermissionLevel() {
+        return permissionLevel;
+    }
+
+    public void setPermissionLevel(TailoredAudiencePermissionLevel permissionLevel) {
+        this.permissionLevel = permissionLevel;
+    }
+
+    public Boolean getOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(Boolean owner) {
+        isOwner = owner;
+    }
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;

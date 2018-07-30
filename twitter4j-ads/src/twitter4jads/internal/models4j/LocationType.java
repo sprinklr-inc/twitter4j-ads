@@ -9,5 +9,5 @@ package twitter4jads.internal.models4j;
  */
 public enum LocationType {
 
-    COUNTRY, CITY, REGION, POSTAL_CODE
+    POSTAL_CODE, COUNTRIES, METROS, REGIONS
 }

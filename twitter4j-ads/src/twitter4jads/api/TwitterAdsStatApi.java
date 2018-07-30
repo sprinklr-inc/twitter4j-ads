@@ -26,7 +26,6 @@ public interface TwitterAdsStatApi {
      * @param endTime              The time to retrieve stats until.
      * @param withDeleted          Whether or not to include deleted items in the results. Defaults to false.
      * @param granularity          The granularity as enum such as DAY or HOUR.
-     * @param objective            The objective of entity to retrieve stats for.
      * @param placement            The placement of entity to retrieve stats for.
      * @return analytics data for the given parameters
      * @throws TwitterException
@@ -34,7 +33,11 @@ public interface TwitterAdsStatApi {
      */
     BaseAdsListResponseIterable<TwitterEntityStatistics> fetchStatsSync(String accountId, TwitterEntityType twitterEntity, Collection<String> ids,
                                                                         long startTime, long endTime, boolean withDeleted, Granularity granularity,
-                                                                        TwitterAdObjective objective, Placement placement) throws TwitterException;
+                                                                        Placement placement) throws TwitterException;
+
+    BaseAdsListResponseIterable<TwitterAuctionInsights> fetchAuctionInsights(String accountId, Collection<String> lineItemIds, long startTime,
+                                                                             long endTime, Granularity granularity, Placement placement)
+        throws TwitterException;
 
     /**
      * @param accountId            The identifier for the leveraged account.
@@ -44,7 +47,6 @@ public interface TwitterAdsStatApi {
      * @param endTime              The time to retrieve stats until.
      * @param withDeleted          Whether or not to include deleted items in the results. Defaults to false.
      * @param granularity          The granularity as enum such as DAY or HOUR.
-     * @param twitterAdObjective   The objective of entity to retrieve stats for.
      * @param placement            The placement of entity to retrieve stats for.
      * @param twitterSegmentationType  (optional) Break down analytics data via a supported segmentation type.
      * @return job details for async job to fetch analytics data for the given paramters
@@ -52,8 +54,8 @@ public interface TwitterAdsStatApi {
      * @see <a href="https://dev.twitter.com/ads/reference/1/post/stats/jobs/accounts/%3Aaccount_id">https://dev.twitter.com/ads/reference/1/post/stats/jobs/accounts/%3Aaccount_id</a>
      */
     BaseAdsResponse<JobDetails> createAsyncJob(String accountId, TwitterEntityType twitterEntityType, Collection<String> ids, long startTime,
-                                               long endTime, boolean withDeleted, Granularity granularity, TwitterAdObjective twitterAdObjective,
-                                               Placement placement, Optional<TwitterSegmentationType> twitterSegmentationType) throws TwitterException;
+                                               long endTime, boolean withDeleted, Granularity granularity, Placement placement,
+                                               Optional<TwitterSegmentationType> twitterSegmentationType) throws TwitterException;
 
     /**
      * @param accountId            The identifier for the leveraged account.
@@ -71,4 +73,18 @@ public interface TwitterAdsStatApi {
      * @see <a href="https://dev.twitter.com/ads/reference/1/get/stats/jobs/accounts/%3Aaccount_id">https://dev.twitter.com/ads/reference/1/get/stats/jobs/accounts/%3Aaccount_id</a>
      */
     BaseAdsListResponse<TwitterEntityStatistics> fetchJobDataAsync(String dataUrl) throws TwitterException;
+
+
+    /**
+     * @param accountId         The identifier for the leveraged account.
+     * @param campaignIds       Campaign ids to fetch stats for.
+     * @param startTime         Start time.
+     * @param endTime           End time.
+     * @return  statistics response
+     * @throws TwitterException
+     */
+    BaseAdsListResponseIterable<TwitterAdStatistics> fetchCampaignStats(String accountId, Collection<String> campaignIds, long startTime,
+                                                                        long endTime) throws TwitterException;
+
+    BaseAdsResponse<JobDetails> deleteJob(String accountId, String jobId) throws TwitterException;
 }

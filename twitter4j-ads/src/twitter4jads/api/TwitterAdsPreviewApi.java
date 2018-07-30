@@ -40,7 +40,7 @@ public interface TwitterAdsPreviewApi {
      * @throws TwitterException - Exception class for when TwitterApi calls fail.
      */
     BaseAdsListResponse<TwitterCreativePreview> getUnpublishedTweetPreview(String accountId, String status, String asUserId, List<String> mediaIds,
-                                                                           String cardId, TwitterPreviewTarget twitterPreviewTarget)
+                                                                           String cardId, TwitterPreviewTarget twitterPreviewTarget, String videoId)
             throws TwitterException;
 
     /**

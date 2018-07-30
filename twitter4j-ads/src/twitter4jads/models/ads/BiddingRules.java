@@ -18,6 +18,9 @@ public class BiddingRules {
     @SerializedName("maximum_cpe_bid_local_micro")
     private long maximumCpeBidMicro;
 
+    @SerializedName("minimum_denomination")
+    private long minimumDenomination;
+
     public long getMaximumCpeBidMicro() {
         return maximumCpeBidMicro;
     }
@@ -40,5 +43,13 @@ public class BiddingRules {
 
     public void setMinimumCpeBidMicro(long minimumCpeBidMicro) {
         this.minimumCpeBidMicro = minimumCpeBidMicro;
+    }
+
+    public long getMinimumDenomination() {
+        return minimumDenomination;
+    }
+
+    public void setMinimumDenomination(long minimumDenomination) {
+        this.minimumDenomination = minimumDenomination;
     }
 }

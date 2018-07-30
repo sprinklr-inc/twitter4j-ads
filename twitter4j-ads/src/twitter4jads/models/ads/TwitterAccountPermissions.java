@@ -10,36 +10,23 @@ import java.util.Map;
  * User: abhishekanand
  * Date: 18/04/16 12:19 PM.
  */
-public enum TwitterAccountPermissions {
+public class TwitterAccountPermissions {
 
-    AGE_TARGETING,
-    BRAND_TPN,
-    CPI_CHARGING,
-    INSTALLED_APP_CATEGORY_TARGETING,
-    MOBILE_CONVERSION_TRANSACTION_VALUE,
-    OPTIMIZED_ACTION_BIDDING,
-    OPTIMIZED_WEBSITE_CONVERSION,
-    VIDEO_VIEWS_OBJECTIVE,
-    REACH_AND_FREQUENCY_ANALYTICS,
-    ALLOW_SKIPPABLE_VIDEOS_FOR_VIDEO_VIEWS_PREROLL_OBJECTIVE,
-    VIDEO_APP_DOWNLOAD_CARD,
-    EVENT_TARGETING, ENGAGER_RETARGETING, DR_TAP, QUALIFIED_IMPRESSIONS_OBJECTIVE,
-    VIDEO_VIEWS_PREROLL_OBJECTIVE;
-
-    private static final Map<String, TwitterAccountPermissions> KEY_TO_PERMISSION;
-
-    static {
-        Map<String, TwitterAccountPermissions> keyToPermissions = Maps.newHashMap();
-        for (TwitterAccountPermissions twitterAccountPermissions : TwitterAccountPermissions.values()) {
-            keyToPermissions.put(twitterAccountPermissions.name(), twitterAccountPermissions);
-        }
-        KEY_TO_PERMISSION = Collections.<String, TwitterAccountPermissions>unmodifiableMap(keyToPermissions);
-    }
-
-    public static TwitterAccountPermissions getAccountPermission(String key) {
-        if (StringUtils.isBlank(key)) {
-            return null;
-        }
-        return KEY_TO_PERMISSION.get(key);
-    }
+    public static final String AGE_TARGETING = "AGE_TARGETING";
+    public static final String BRAND_TPN = "BRAND_TPN";
+    public static final String CPI_CHARGING = "CPI_CHARGING";
+    public static final String INSTALLED_APP_CATEGORY_TARGETING = "INSTALLED_APP_CATEGORY_TARGETING";
+    public static final String MOBILE_CONVERSION_TRANSACTION_VALUE = "MOBILE_CONVERSION_TRANSACTION_VALUE";
+    public static final String OPTIMIZED_ACTION_BIDDING = "OPTIMIZED_ACTION_BIDDING";
+    public static final String OPTIMIZED_WEBSITE_CONVERSION = "OPTIMIZED_WEBSITE_CONVERSION";
+    public static final String VIDEO_VIEWS_OBJECTIVE = "VIDEO_VIEWS_OBJECTIVE";
+    public static final String REACH_AND_FREQUENCY_ANALYTICS = "REACH_AND_FREQUENCY_ANALYTICS";
+    public static final String ALLOW_SKIPPABLE_VIDEOS_FOR_VIDEO_VIEWS_PREROLL_OBJECTIVE = "ALLOW_SKIPPABLE_VIDEOS_FOR_VIDEO_VIEWS_PREROLL_OBJECTIVE";
+    public static final String VIDEO_APP_DOWNLOAD_CARD = "VIDEO_APP_DOWNLOAD_CARD";
+    public static final String EVENT_TARGETING = "EVENT_TARGETING";
+    public static final String ENGAGER_RETARGETING = "ENGAGER_RETARGETING";
+    public static final String DR_TAP = "DR_TAP";
+    public static final String QUALIFIED_IMPRESSIONS_OBJECTIVE = "QUALIFIED_IMPRESSIONS_OBJECTIVE";
+    public static final String VIDEO_VIEWS_PREROLL_OBJECTIVE = "VIDEO_VIEWS_PREROLL_OBJECTIVE";
+    public static final String VALIDATED_AGE_TARGETING = "VALIDATED_AGE_TARGETING";
 }

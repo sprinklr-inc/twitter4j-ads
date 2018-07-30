@@ -12,16 +12,28 @@ public abstract class AbstractConversationCard extends AbstractTwitterCard {
     private String title;
 
     @SerializedName("first_cta")
-    private String firstCta;
+    private String firstHashtag;
 
     @SerializedName("first_cta_tweet")
-    private String firstCtaTweet;
+    private String firstTweet;
 
     @SerializedName("second_cta")
-    private String secondCta;
+    private String secondHashtag;
 
     @SerializedName("second_cta_tweet")
-    private String secondCtaTweet;
+    private String secondTweet;
+
+    @SerializedName("third_cta")
+    private String thirdHashtag;
+
+    @SerializedName("third_cta_tweet")
+    private String thirdTweet;
+
+    @SerializedName("fourth_cta")
+    private String fourthHashtag;
+
+    @SerializedName("fourth_cta_tweet")
+    private String fourthTweet;
 
     @SerializedName("thank_you_text")
     private String thankText;
@@ -37,36 +49,68 @@ public abstract class AbstractConversationCard extends AbstractTwitterCard {
         this.title = title;
     }
 
-    public String getFirstCta() {
-        return firstCta;
+    public String getFirstHashtag() {
+        return firstHashtag;
     }
 
-    public void setFirstCta(String firstCta) {
-        this.firstCta = firstCta;
+    public void setFirstHashtag(String firstHashtag) {
+        this.firstHashtag = firstHashtag;
     }
 
-    public String getFirstCtaTweet() {
-        return firstCtaTweet;
+    public String getFirstTweet() {
+        return firstTweet;
     }
 
-    public void setFirstCtaTweet(String firstCtaTweet) {
-        this.firstCtaTweet = firstCtaTweet;
+    public void setFirstTweet(String firstTweet) {
+        this.firstTweet = firstTweet;
     }
 
-    public String getSecondCta() {
-        return secondCta;
+    public String getSecondHashtag() {
+        return secondHashtag;
     }
 
-    public void setSecondCta(String secondCta) {
-        this.secondCta = secondCta;
+    public void setSecondHashtag(String secondHashtag) {
+        this.secondHashtag = secondHashtag;
     }
 
-    public String getSecondCtaTweet() {
-        return secondCtaTweet;
+    public String getSecondTweet() {
+        return secondTweet;
     }
 
-    public void setSecondCtaTweet(String secondCtaTweet) {
-        this.secondCtaTweet = secondCtaTweet;
+    public void setSecondTweet(String secondTweet) {
+        this.secondTweet = secondTweet;
+    }
+
+    public String getThirdHashtag() {
+        return thirdHashtag;
+    }
+
+    public void setThirdHashtag(String thirdHashtag) {
+        this.thirdHashtag = thirdHashtag;
+    }
+
+    public String getThirdTweet() {
+        return thirdTweet;
+    }
+
+    public void setThirdTweet(String thirdTweet) {
+        this.thirdTweet = thirdTweet;
+    }
+
+    public String getFourthHashtag() {
+        return fourthHashtag;
+    }
+
+    public void setFourthHashtag(String fourthHashtag) {
+        this.fourthHashtag = fourthHashtag;
+    }
+
+    public String getFourthTweet() {
+        return fourthTweet;
+    }
+
+    public void setFourthTweet(String fourthTweet) {
+        this.fourthTweet = fourthTweet;
     }
 
     public String getThankText() {

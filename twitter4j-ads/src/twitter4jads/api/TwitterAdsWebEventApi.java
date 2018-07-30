@@ -3,6 +3,8 @@ package twitter4jads.api;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ads.TwitterWebsiteTag;
+import twitter4jads.models.ads.TwitterWebsiteTag.WebsiteTagType;
 import twitter4jads.models.ads.tags.WebEventTag;
 import twitter4jads.models.ads.tags.WebEventTagType;
 
@@ -76,5 +78,36 @@ public interface TwitterAdsWebEventApi {
      * @see <a href="https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/web_event_tags/%3Aid">https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/web_event_tags/%3Aid</a>
      */
     BaseAdsResponse<WebEventTag> deleteWebEventTag(String accountId, String webEventTagId) throws TwitterException;
+
+    /**
+     * Website Tags related API
+     */
+
+    /**
+     * @param accountId   The identifier for the leveraged account. (required)
+     * @param withDeleted Include deleted results in your request. Defaults to false.
+     * @param count       Specifies the number of web event tags to retrieve, up to a maximum of 200 per distinct request.
+     * @return Website Tags for the account
+     * @throws TwitterException
+     */
+    BaseAdsListResponseIterable<TwitterWebsiteTag> getAllWebsiteTags(String accountId, boolean withDeleted, Integer count, String cursor)
+            throws TwitterException;
+
+    /**
+     * @param accountId     The identifier for the leveraged account. (required)
+     * @param withDeleted   Include deleted results in your request. Defaults to false.
+     * @param websiteTagId The identifier for the website tag to retrieve
+     * @return Queried web event tag
+     * @throws TwitterException
+     */
+    BaseAdsResponse<TwitterWebsiteTag> getWebsiteTag(String accountId, boolean withDeleted, String websiteTagId) throws TwitterException;
+
+    /**
+     * @param accountId          The identifier for the leveraged account. (required)
+     * @param type               The type of website tag.
+     * @return created Website Tag
+     * @throws TwitterException
+     */
+    BaseAdsResponse<TwitterWebsiteTag> createWebsiteTag(String accountId, WebsiteTagType type) throws TwitterException;
 
 }

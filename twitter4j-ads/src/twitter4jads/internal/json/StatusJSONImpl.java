@@ -16,6 +16,7 @@
 
 package twitter4jads.internal.json;
 
+import org.apache.commons.lang3.StringUtils;
 import twitter4jads.conf.Configuration;
 import twitter4jads.internal.http.HttpResponse;
 import twitter4jads.internal.logging.Logger;
@@ -63,6 +64,7 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
 
     private Status retweetedStatus;
     private Status quotedStatus;
+    private Status extendedTweet;
     private long quotedStatusId;
     private String quotedStatusIdStr;
     private UserMentionEntity[] userMentionEntities;
@@ -74,6 +76,8 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
     private String[] placeIds;
     private TweetScope scopes;
     private String language;
+
+    private Boolean hierarchicalMessage = false;
 
     /*package*/StatusJSONImpl(HttpResponse res, Configuration conf) throws TwitterException {
         super(res);
@@ -231,10 +235,26 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
                 actualText = fullText;
             }
 
-            text = HTMLEntity.unescapeAndSlideEntityIncdices(actualText, userMentionEntities, urlEntities, hashtagEntities, mediaEntities);
             if (!json.isNull("current_user_retweet")) {
                 currentUserRetweetId = json.getJSONObject("current_user_retweet").getLong("id");
             }
+
+            if (!json.isNull("extended_tweet")) {
+                extendedTweet = new StatusJSONImpl(json.getJSONObject("extended_tweet"));
+                String extendedTweetText = StringUtils.isNotEmpty(extendedTweet.getFullText()) ? extendedTweet.getFullText() : extendedTweet.getText();
+                if (extendedTweet != null && StringUtils.isNotEmpty(extendedTweetText)) {
+                    actualText = extendedTweet.getFullText();
+                    userMentionEntities = extendedTweet.getUserMentionEntities();
+                    urlEntities = extendedTweet.getURLEntities();
+                    hashtagEntities = extendedTweet.getHashtagEntities();
+                    mediaEntities = extendedTweet.getMediaEntities();
+                    extendedMediaEntities = extendedTweet.getExtendedMediaEntities();
+                }
+
+            }
+
+            text = HTMLEntity.unescapeAndSlideEntityIncdices(actualText, userMentionEntities, urlEntities, hashtagEntities, mediaEntities);
+
         } catch (JSONException jsone) {
             throw new TwitterException(jsone);
         }
@@ -275,6 +295,11 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
     @Override
     public String[] getDisplayTextRange() {
         return displayTextRange;
+    }
+
+    @Override
+    public Status getExtendedTweet() {
+        return extendedTweet;
     }
 
     /**
@@ -581,11 +606,27 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
     }
 
     @Override
+    public Boolean getHierarchicalMessage() {
+        return hierarchicalMessage;
+    }
+
+    @Override
+    public void setHierarchicalMessage(Boolean hierarchicalMessage) {
+        this.hierarchicalMessage = hierarchicalMessage;
+    }
+
+    @Override
     public String toString() {
         return "StatusJSONImpl{" +
                "createdAt=" + createdAt +
                ", id=" + id +
+               ", idStr='" + idStr + '\'' +
+               ", inReplyToUserIdStr='" + inReplyToUserIdStr + '\'' +
+               ", inReplyToStatusIdStr='" + inReplyToStatusIdStr + '\'' +
                ", text='" + text + '\'' +
+               ", actualText='" + actualText + '\'' +
+               ", fullText='" + fullText + '\'' +
+               ", displayTextRange=" + Arrays.toString(displayTextRange) +
                ", source='" + source + '\'' +
                ", isTruncated=" + isTruncated +
                ", inReplyToStatusId=" + inReplyToStatusId +
@@ -595,15 +636,24 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
                ", geoLocation=" + geoLocation +
                ", place=" + place +
                ", retweetCount=" + retweetCount +
+               ", favoriteCount=" + favoriteCount +
                ", isPossiblySensitive=" + isPossiblySensitive +
-               ", contributorsIDs=" + contributorsIDs +
+               ", contributorsIDs=" + Arrays.toString(contributorsIDs) +
                ", retweetedStatus=" + retweetedStatus +
                ", quotedStatus=" + quotedStatus +
-               ", userMentionEntities=" + (userMentionEntities == null ? null : Arrays.asList(userMentionEntities)) +
-               ", urlEntities=" + (urlEntities == null ? null : Arrays.asList(urlEntities)) +
-               ", hashtagEntities=" + (hashtagEntities == null ? null : Arrays.asList(hashtagEntities)) +
-               ", mediaEntities=" + (mediaEntities == null ? null : Arrays.asList(mediaEntities)) +
+               ", extendedTweet=" + extendedTweet +
+               ", quotedStatusId=" + quotedStatusId +
+               ", quotedStatusIdStr='" + quotedStatusIdStr + '\'' +
+               ", userMentionEntities=" + Arrays.toString(userMentionEntities) +
+               ", urlEntities=" + Arrays.toString(urlEntities) +
+               ", hashtagEntities=" + Arrays.toString(hashtagEntities) +
+               ", mediaEntities=" + Arrays.toString(mediaEntities) +
+               ", extendedMediaEntities=" + Arrays.toString(extendedMediaEntities) +
                ", currentUserRetweetId=" + currentUserRetweetId +
+               ", placeIds=" + Arrays.toString(placeIds) +
+               ", scopes=" + scopes +
+               ", language='" + language + '\'' +
+               ", hierarchicalMessage=" + hierarchicalMessage +
                ", user=" + user +
                '}';
     }

@@ -15,7 +15,7 @@ public class TwitterMetricsBySegmentation {
     private NewSegment segment;
 
     @SerializedName(METRICS)
-    private NewTwitterAdStatistics metrics;
+    private TwitterAdStatistics metrics;
 
     public NewSegment getSegment() {
         return segment;
@@ -25,11 +25,11 @@ public class TwitterMetricsBySegmentation {
         this.segment = segment;
     }
 
-    public NewTwitterAdStatistics getMetrics() {
+    public TwitterAdStatistics getMetrics() {
         return metrics;
     }
 
-    public void setMetrics(NewTwitterAdStatistics metrics) {
+    public void setMetrics(TwitterAdStatistics metrics) {
         this.metrics = metrics;
     }
 }

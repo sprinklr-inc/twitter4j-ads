@@ -10,7 +10,7 @@ import java.util.Date;
  * User: Roota
  * Date: 17/02/14.
  */
-public class NewTwitterAdStatistics extends TwitterEntity {
+public class TwitterAdStatistics extends TwitterEntity {
     public static final String SEGMENT = "segment";
     public static final String GRANULARITY = "granularity";
     public static final String START_TIME = "start_time";
@@ -45,17 +45,18 @@ public class NewTwitterAdStatistics extends TwitterEntity {
     public static final String VIDEO_CTA_CLICKS = "video_cta_clicks";
     public static final String VIDEO_CONTENT_STARTS = "video_content_starts";
     public static final String VIDEO_MRC_VIEWS = "video_mrc_views";
-    public static final String VIDEO_3S100PCT_VIEWS = "video_3s100pct_views";
+    public static final String VIDEO_3S_100_VIEWS = "video_3s100pct_views";
 
     //MEDIA
     public static final String MEDIA_VIEWS = "media_views";
+    public static final String MEDIA_ENGAGEMENTS = "media_engagements";
 
     //WEB_CONVERSIONS
     public static final String CONVERSION_PURCHASES = "conversion_purchases";
     public static final String CONVERSION_SIGN_UPS = "conversion_sign_ups";
     public static final String CONVERSION_SITE_VISITS = "conversion_site_visits";
     public static final String CONVERSION_DOWNLOADS = "conversion_downloads";
-    public static final String CONVERSION_CUSTOM  = "conversion_custom";
+    public static final String CONVERSION_CUSTOM = "conversion_custom";
 
     //MOBILE_CONVERSION
     public static final String MOBILE_CONVERSION_SPENT_CREDITS = "mobile_conversion_spent_credits";
@@ -72,10 +73,15 @@ public class NewTwitterAdStatistics extends TwitterEntity {
     public static final String MOBILE_CONVERSION_RE_ENGAGES = "mobile_conversion_re_engages";
     public static final String MOBILE_CONVERSION_SHARES = "mobile_conversion_shares";
     public static final String MOBILE_CONVERSION_RATES = "mobile_conversion_rates";
+    public static final String MOBILE_CONVERSION_LOGINS = "mobile_conversion_logins";
     public static final String MOBILE_CONVERSION_UPDATES = "mobile_conversion_updates";
     public static final String MOBILE_CONVERSION_LEVELS_ACHIEVED = "mobile_conversion_levels_achieved";
     public static final String MOBILE_CONVERSION_INVITES = "mobile_conversion_invites";
     public static final String MOBILE_CONVERSION_KEY_PAGE_VIEWS = "mobile_conversion_key_page_views";
+    public static final String MOBILE_CONVERSION_SITE_VISITS = "mobile_conversion_site_visits";
+    public static final String MOBILE_CONVERSION_PURCHASES = "mobile_conversion_purchases";
+    public static final String MOBILE_CONVERSION_DOWNLOADS = "mobile_conversion_downloads";
+    public static final String MOBILE_CONVERSION_SIGN_UPS = "mobile_conversion_sign_ups";
 
 
     //LIFE_TIME_VALUE_MOBILE_CONVERSION
@@ -94,8 +100,125 @@ public class NewTwitterAdStatistics extends TwitterEntity {
     public static final String MOBILE_CONVERSION_LIFETIME_VALUE_PAYMENT_INFO_ADDITIONS = "mobile_conversion_lifetime_value_payment_info_additions";
     public static final String MOBILE_CONVERSION_LIFETIME_VALUE_SPENT_CREDITS = "mobile_conversion_lifetime_value_spent_credits";
     public static final String MOBILE_CONVERSION_LIFETIME_VALUE_RATES = "mobile_conversion_lifetime_value_rates";
-    public static final String MOBILE_CONVERSION_LIFETIME_VALUE_LOGINS ="mobile_conversion_lifetime_value_logins";
-    public static final String MOBILE_CONVERSION_LIFETIME_VALUE_CONTENT_VIEWS ="mobile_conversion_lifetime_value_content_views";
+    public static final String MOBILE_CONVERSION_LIFETIME_VALUE_LOGINS = "mobile_conversion_lifetime_value_logins";
+    public static final String MOBILE_CONVERSION_LIFETIME_VALUE_SEARCHES = "mobile_conversion_lifetime_value_searches";
+    public static final String MOBILE_CONVERSION_LIFETIME_VALUE_CONTENT_VIEWS = "mobile_conversion_lifetime_value_content_views";
+
+    public static final String BILLED_FOLLOWS = "billed_follows";
+    public static final String ESTIMATED_CHARGE_LOCAL_MICRO = "estimated_charge_local_micro";
+
+    public static final String CONVERSION_APP_OPEN = "conversion_app_open";
+    public static final String CONVERSION_KEY_PAGE_VIEWS = "conversion_key_page_views";
+    public static final String CONVERSION_ORDER_QUANTITY = "conversion_order_quantity";
+    public static final String CONVERSION_SALE_AMOUNT = "conversion_sale_amount";
+
+    public static final String PROMOTION_CARD_RESPONSES = "promotion_card_responses";
+    public static final String PROMOTED_TWEET_APP_INSTALL_ATTEMPTS = "promoted_tweet_app_install_attempts";
+    public static final String PROMOTED_TWEET_APP_OPEN_ATTEMPTS = "promoted_tweet_app_open_attempts";
+    public static final String PROMOTED_TWEET_APP_OPEN_ATTEMPTS_BREAKDOWN = "promoted_tweet_app_open_attempts_breakdown";
+    public static final String PROMOTED_TWEET_APP_INSTALL_ATTEMPTS_BREAKDOWN = "promoted_tweet_app_install_attempts_breakdown";
+
+    public static final String PROMOTED_VIDEO_TOTAL_VIEWS = "promoted_video_total_views";
+    public static final String PROMOTED_VIDEO_REPLAYS = "promoted_video_replays";
+    public static final String PROMOTED_VIDEO_VIEWS_100 = "promoted_video_views_100";
+    public static final String PROMOTED_VIDEO_VIEWS_75 = "promoted_video_views_75";
+    public static final String PROMOTED_VIDEO_VIEWS_50 = "promoted_video_views_50";
+    public static final String PROMOTED_VIDEO_VIEWS_25 = "promoted_video_views_25";
+    public static final String PROMOTED_VIDEO_CTA_CLICKS = "promoted_video_cta_clicks";
+
+    public static final String MOBILE_CONVERSION_TUTORIAL_COMPLETED = "mobile_conversion_tutorial_completes";
+    public static final String MOBILE_CONVERSION_ADD_TO_CART = "mobile_conversion_add_to_cart";
+    public static final String MOBILE_CONVERSION_ADD_TO_WISHLIST = "mobile_conversion_add_to_wishlist";
+    public static final String MOBILE_CONVERSION_CHECKOUT_INITIATED = "mobile_conversion_checkout_initiated";
+    public static final String MOBILE_CONVERSION_LEVEL_ACHIEVED = "mobile_conversion_level_achieved";
+    public static final String MOBILE_CONVERSION_ACHIEVEMENT_UNLOCKED = "mobile_conversion_achievement_unlocked";
+    public static final String MOBILE_CONVERSION_ADDED_PAYMENT_INFOS = "mobile_conversion_added_payment_infos";
+    public static final String MOBILE_CONVERSION_RATED = "mobile_conversion_rated";
+    public static final String MOBILE_CONVERSION_SALE_AMOUNT_LOCAL_MICRO = "mobile_conversion_sale_amount_local_micro";
+    public static final String MOBILE_CONVERSION_ORDER_QUANTITY = "mobile_conversion_order_quantity";
+
+    public static final String MOBILE_LIFETIME_VALUE_CONVERSION_BREAKDOWN = "mobile_lifetime_value_conversion_breakdown";
+    public static final String MOBILE_LIFETIME_VALUE_CONVERSION_SALE_AMOUNT_LOCAL_MICRO_BREAKDOWN = "mobile_lifetime_value_conversion_sale_amount_local_micro_breakdown";
+    public static final String MOBILE_LIFETIME_VALUE_CONVERSION_ORDER_QUANTITY_BREAKDOWN = "mobile_lifetime_value_conversion_order_quantity_breakdown";
+
+    public static final String MOBILE_CONVERSION_INVITES_BREAKDOWN = "mobile_conversion_invites_breakdown";
+    public static final String MOBILE_CONVERSION_RE_ENGAGES_BREAKDOWN = "mobile_conversion_re_engages_breakdown";
+    public static final String MOBILE_CONVERSION_ADD_TO_CART_BREAKDOWN = "mobile_conversion_add_to_cart_breakdown";
+    public static final String MOBILE_CONVERSION_CONTENT_VIEWS_BREAKDOWN = "mobile_conversion_content_views_breakdown";
+    public static final String MOBILE_CONVERSION_SPENT_CREDITS_BREAKDOWN = "mobile_conversion_spent_credits_breakdown";
+    public static final String MOBILE_CONVERSION_SHARES_BREAKDOWN = "mobile_conversion_shares_breakdown";
+    public static final String MOBILE_CONVERSION_SEARCHES_BREAKDOWN = "mobile_conversion_searches_breakdown";
+    public static final String MOBILE_CONVERSION_ADDED_PAYMENT_INFOS_BREAKDOWN = "mobile_conversion_added_payment_infos_breakdown";
+    public static final String MOBILE_CONVERSION_ACHIEVEMENT_UNLOCKED_BREAKDOWN = "mobile_conversion_achievement_unlocked_breakdown";
+    public static final String MOBILE_CONVERSION_ADD_TO_WISHLIST_BREAKDOWN = "mobile_conversion_add_to_wishlist_breakdown";
+    public static final String MOBILE_CONVERSION_LEVEL_ACHIEVED_BREAKDOWN = "mobile_conversion_level_achieved_breakdown";
+    public static final String MOBILE_CONVERSION_RESERVATIONS_BREAKDOWN = "mobile_conversion_reservations_breakdown";
+    public static final String MOBILE_CONVERSION_SIGN_UPS_BREAKDOWN = "mobile_conversion_sign_ups_breakdown";
+    public static final String MOBILE_CONVERSION_LOGINS_BREAKDOWN = "mobile_conversion_logins_breakdown";
+    public static final String MOBILE_CONVERSION_RATED_BREAKDOWN = "mobile_conversion_rated_breakdown";
+    public static final String MOBILE_CONVERSION_UPDATES_BREAKDOWN = "mobile_conversion_updates_breakdown";
+    public static final String MOBILE_CONVERSION_CHECKOUT_INITIATED_BREAKDOWN = "mobile_conversion_checkout_initiated_breakdown";
+    public static final String MOBILE_CONVERSION_INSTALLS_BREAKDOWN = "mobile_conversion_installs_breakdown";
+    public static final String MOBILE_CONVERSION_PURCHASES_BREAKDOWN = "mobile_conversion_purchases_breakdown";
+    public static final String MOBILE_CONVERSION_TUTORIAL_COMPLETES_BREAKDOWN = "mobile_conversion_tutorial_completes_breakdown";
+
+    public static final String PROMOTED_ACCOUNT_FOLLOW_RATE = "promoted_account_follow_rate";
+    public static final String PROMOTED_ACCOUNT_IMPRESSIONS = "promoted_account_impressions";
+    public static final String PROMOTED_ACCOUNT_PROFILE_VISITS = "promoted_account_profile_visits";
+    public static final String PROMOTED_ACCOUNT_FOLLOWS = "promoted_account_follows";
+
+    public static final String PROMOTED_TWEET_SEARCH_CLICKS = "promoted_tweet_search_clicks";
+    public static final String PROMOTED_TWEET_SEARCH_URL_CLICKS = "promoted_tweet_search_url_clicks";
+    public static final String PROMOTED_TWEET_SEARCH_IMPRESSIONS = "promoted_tweet_search_impressions";
+    public static final String PROMOTED_TWEET_SEARCH_FOLLOWS = "promoted_tweet_search_follows";
+    public static final String PROMOTED_TWEET_SEARCH_ENGAGEMENTS = "promoted_tweet_search_engagements";
+    public static final String PROMOTED_TWEET_SEARCH_CARD_ENGAGEMENTS = "promoted_tweet_search_card_engagements";
+    public static final String PROMOTED_TWEET_SEARCH_ENGAGEMENT_RATE = "promoted_tweet_search_engagement_rate";
+    public static final String PROMOTED_TWEET_SEARCH_REPLIES = "promoted_tweet_search_replies";
+    public static final String PROMOTED_TWEET_SEARCH_RETWEETS = "promoted_tweet_search_retweets";
+    public static final String PROMOTED_TWEET_SEARCH_FAVOURITES = "promoted_tweet_search_favorites";
+    public static final String PROMOTED_TWEET_SEARCH_QUALIFIED_IMPRESSIONS = "promoted_tweet_search_qualified_impressions";
+
+    public static final String PROMOTED_TWEET_TIMELINE_CLICKS = "promoted_tweet_timeline_clicks";
+    public static final String PROMOTED_TWEET_TIMELINE_URL_CLICKS = "promoted_tweet_timeline_url_clicks";
+    public static final String PROMOTED_TWEET_TIMELINE_IMPRESSIONS = "promoted_tweet_timeline_impressions";
+    public static final String PROMOTED_TWEET_TIMELINE_FOLLOWS = "promoted_tweet_timeline_follows";
+    public static final String PROMOTED_TWEET_TIMELINE_ENGAGEMENTS = "promoted_tweet_timeline_engagements";
+    public static final String PROMOTED_TWEET_TIMELINE_CARD_ENGAGEMENTS = "promoted_tweet_timeline_card_engagements";
+    public static final String PROMOTED_TWEET_TIMELINE_ENGAGEMENT_RATE = "promoted_tweet_timeline_engagement_rate";
+    public static final String PROMOTED_TWEET_TIMELINE_REPLIES = "promoted_tweet_timeline_replies";
+    public static final String PROMOTED_TWEET_TIMELINE_RETWEETS = "promoted_tweet_timeline_retweets";
+    public static final String PROMOTED_TWEET_TIMELINE_FAVOURITES = "promoted_tweet_timeline_favorites";
+    public static final String PROMOTED_TWEET_TIMELINE_QUALIFIED_IMPRESSIONS = "promoted_tweet_timeline_qualified_impressions";
+
+    public static final String PROMOTED_TWEET_PROFILE_CLICKS = "promoted_tweet_profile_clicks";
+    public static final String PROMOTED_TWEET_PROFILE_URL_CLICKS = "promoted_tweet_profile_url_clicks";
+    public static final String PROMOTED_TWEET_PROFILE_IMPRESSIONS = "promoted_tweet_profile_impressions";
+    public static final String PROMOTED_TWEET_PROFILE_FOLLOWS = "promoted_tweet_profile_follows";
+    public static final String PROMOTED_TWEET_PROFILE_ENGAGEMENTS = "promoted_tweet_profile_engagements";
+    public static final String PROMOTED_TWEET_PROFILE_CARD_ENGAGEMENTS = "promoted_tweet_profile_card_engagements";
+    public static final String PROMOTED_TWEET_PROFILE_ENGAGEMENT_RATE = "promoted_tweet_profile_engagement_rate";
+    public static final String PROMOTED_TWEET_PROFILE_REPLIES = "promoted_tweet_profile_replies";
+    public static final String PROMOTED_TWEET_PROFILE_RETWEETS = "promoted_tweet_profile_retweets";
+    public static final String PROMOTED_TWEET_PROFILE_FAVORITES = "promoted_tweet_profile_favorites";
+    public static final String PROMOTED_TWEET_PROFILE_QUALIFIED_IMPRESSIONS = "promoted_tweet_profile_qualified_impressions";
+
+    public static final String PROMOTED_TWEET_TPN_CLICKS = "promoted_tweet_tpn_clicks";
+    public static final String PROMOTED_TWEET_TPN_URL_CLICKS = "promoted_tweet_tpn_url_clicks";
+    public static final String PROMOTED_TWEET_TPN_ENGAGEMENTS = "promoted_tweet_tpn_engagements";
+    public static final String PROMOTED_TWEET_TPN_FOLLOWS = "promoted_tweet_tpn_follows";
+    public static final String PROMOTED_TWEET_TPN_IMPRESSIONS = "promoted_tweet_tpn_impressions";
+    public static final String PROMOTED_TWEET_TPN_REPLIES = "promoted_tweet_tpn_replies";
+    public static final String PROMOTED_TWEET_TPN_RETWEETS = "promoted_tweet_tpn_retweets";
+    public static final String PROMOTED_TWEET_TPN_FAVORITES = "promoted_tweet_tpn_favorites";
+    public static final String PROMOTED_TWEET_TPN_ENGAGEMENT_RATE = "promoted_tweet_tpn_engagement_rate";
+    public static final String PROMOTED_TWEET_TPN_CARD_ENGAGEMENTS = "promoted_tweet_tpn_card_engagements";
+    public static final String PROMOTED_TWEET_TPN_QUALIFIED_IMPRESSIONS = "promoted_tweet_tpn_qualified_impressions";
+
+    public static final String PROMOTED_TWEET_TIMELINE_MEDIA_VIEWS = "promoted_tweet_timeline_media_views";
+    public static final String PROMOTED_TWEET_SEARCH_MEDIA_VIEWS = "promoted_tweet_search_media_views";
+    public static final String PROMOTED_TWEET_PROFILE_MEDIA_VIEWS = "promoted_tweet_profile_media_views";
+    public static final String PROMOTED_TWEET_TPN_MEDIA_VIEWS = "promoted_tweet_tpn_media_views";
 
     @SerializedName(START_TIME)
     private Date startTime;
@@ -175,11 +298,14 @@ public class NewTwitterAdStatistics extends TwitterEntity {
     @SerializedName(VIDEO_MRC_VIEWS)
     private String[] videoMrcViews;
 
-    @SerializedName(VIDEO_3S100PCT_VIEWS)
-    private String[] video3s100pctViews;
+    @SerializedName(VIDEO_3S_100_VIEWS)
+    private String[] video3s100PercentViews;
 
     @SerializedName(MEDIA_VIEWS)
     private String[] mediaViews;
+
+    @SerializedName(MEDIA_ENGAGEMENTS)
+    private String[] mediaEngagements;
 
     @SerializedName(SEGMENT)
     private NewSegment segment;
@@ -241,6 +367,9 @@ public class NewTwitterAdStatistics extends TwitterEntity {
     @SerializedName(MOBILE_CONVERSION_RATES)
     private TwitterAdStatsBreakdown mobileConversionRates;
 
+    @SerializedName(MOBILE_CONVERSION_LOGINS)
+    private TwitterAdStatsBreakdown mobileConversionLogins;
+
     @SerializedName(MOBILE_CONVERSION_UPDATES)
     private TwitterAdStatsBreakdown mobileConversionUpdates;
 
@@ -252,6 +381,18 @@ public class NewTwitterAdStatistics extends TwitterEntity {
 
     @SerializedName(MOBILE_CONVERSION_KEY_PAGE_VIEWS)
     private TwitterAdStatsBreakdown mobileConversionKeyPageViews;
+
+    @SerializedName(MOBILE_CONVERSION_SITE_VISITS)
+    private TwitterAdStatsBreakdown mobileConversionSiteVisits;
+
+    @SerializedName(MOBILE_CONVERSION_PURCHASES)
+    private TwitterAdStatsBreakdown mobileConversionPurchases;
+
+    @SerializedName(MOBILE_CONVERSION_DOWNLOADS)
+    private TwitterAdStatsBreakdown mobileConversionDownloads;
+
+    @SerializedName(MOBILE_CONVERSION_SIGN_UPS)
+    private TwitterAdStatsBreakdown mobileConversionSignUps;
 
     @SerializedName(MOBILE_CONVERSION_LIFETIME_VALUE_PURCHASES)
     private TwitterAdStatsBreakdown mobileConversionLifetimeValuePurchases;
@@ -300,6 +441,9 @@ public class NewTwitterAdStatistics extends TwitterEntity {
 
     @SerializedName(MOBILE_CONVERSION_LIFETIME_VALUE_LOGINS)
     private TwitterAdStatsBreakdown mobileConversionLifetimeValueLogins;
+
+    @SerializedName(MOBILE_CONVERSION_LIFETIME_VALUE_SEARCHES)
+    private TwitterAdStatsBreakdown mobileConversionLifetimeValueSearches;
 
     @SerializedName(MOBILE_CONVERSION_LIFETIME_VALUE_CONTENT_VIEWS)
     private TwitterAdStatsBreakdown mobileConversionLifetimeValueContentViews;
@@ -359,6 +503,46 @@ public class NewTwitterAdStatistics extends TwitterEntity {
 
     public void setMobileConversionKeyPageViews(TwitterAdStatsBreakdown mobileConversionKeyPageViews) {
         this.mobileConversionKeyPageViews = mobileConversionKeyPageViews;
+    }
+
+    public TwitterAdStatsBreakdown getMobileConversionLogins() {
+        return mobileConversionLogins;
+    }
+
+    public void setMobileConversionLogins(TwitterAdStatsBreakdown mobileConversionLogins) {
+        this.mobileConversionLogins = mobileConversionLogins;
+    }
+
+    public TwitterAdStatsBreakdown getMobileConversionSiteVisits() {
+        return mobileConversionSiteVisits;
+    }
+
+    public void setMobileConversionSiteVisits(TwitterAdStatsBreakdown mobileConversionSiteVisits) {
+        this.mobileConversionSiteVisits = mobileConversionSiteVisits;
+    }
+
+    public TwitterAdStatsBreakdown getMobileConversionPurchases() {
+        return mobileConversionPurchases;
+    }
+
+    public void setMobileConversionPurchases(TwitterAdStatsBreakdown mobileConversionPurchases) {
+        this.mobileConversionPurchases = mobileConversionPurchases;
+    }
+
+    public TwitterAdStatsBreakdown getMobileConversionDownloads() {
+        return mobileConversionDownloads;
+    }
+
+    public void setMobileConversionDownloads(TwitterAdStatsBreakdown mobileConversionDownloads) {
+        this.mobileConversionDownloads = mobileConversionDownloads;
+    }
+
+    public TwitterAdStatsBreakdown getMobileConversionSignUps() {
+        return mobileConversionSignUps;
+    }
+
+    public void setMobileConversionSignUps(TwitterAdStatsBreakdown mobileConversionSignUps) {
+        this.mobileConversionSignUps = mobileConversionSignUps;
     }
 
     public TwitterAdStatsBreakdown getMobileConversionLifetimeValuePurchases() {
@@ -471,6 +655,14 @@ public class NewTwitterAdStatistics extends TwitterEntity {
 
     public void setMobileConversionLifetimeValueSpentCredits(TwitterAdStatsBreakdown mobileConversionLifetimeValueSpentCredits) {
         this.mobileConversionLifetimeValueSpentCredits = mobileConversionLifetimeValueSpentCredits;
+    }
+
+    public TwitterAdStatsBreakdown getMobileConversionLifetimeValueSearches() {
+        return mobileConversionLifetimeValueSearches;
+    }
+
+    public void setMobileConversionLifetimeValueSearches(TwitterAdStatsBreakdown mobileConversionLifetimeValueSearches) {
+        this.mobileConversionLifetimeValueSearches = mobileConversionLifetimeValueSearches;
     }
 
     public Date getStartTime() {
@@ -665,12 +857,12 @@ public class NewTwitterAdStatistics extends TwitterEntity {
         this.videoMrcViews = videoMrcViews;
     }
 
-    public String[] getVideo3s100pctViews() {
-        return video3s100pctViews;
+    public String[] getVideo3s100PercentViews() {
+        return video3s100PercentViews;
     }
 
-    public void setVideo3s100pctViews(String[] video3s100pctViews) {
-        this.video3s100pctViews = video3s100pctViews;
+    public void setVideo3s100PercentViews(String[] video3s100PercentViews) {
+        this.video3s100PercentViews = video3s100PercentViews;
     }
 
     public String[] getMediaViews() {
@@ -858,78 +1050,93 @@ public class NewTwitterAdStatistics extends TwitterEntity {
         this.mobileConversionLifetimeValueContentViews = mobileConversionLifetimeValueContentViews;
     }
 
+    public String[] getMediaEngagements() {
+        return mediaEngagements;
+    }
+
+    public void setMediaEngagements(String[] mediaEngagements) {
+        this.mediaEngagements = mediaEngagements;
+    }
+
     @Override
     public String toString() {
-        return "TwitterAdStatistics{" +
-               "startTime=" + startTime +
-               ", endTime=" + endTime +
-               ", granularity=" + granularity +
-               ", placement='" + placement + '\'' +
-               ", engagements=" + Arrays.toString(engagements) +
-               ", impressions=" + Arrays.toString(impressions) +
-               ", retweets=" + Arrays.toString(retweets) +
-               ", replies=" + Arrays.toString(replies) +
-               ", likes=" + Arrays.toString(likes) +
-               ", follows=" + Arrays.toString(follows) +
-               ", cardEngagements=" + Arrays.toString(cardEngagements) +
-               ", clicks=" + Arrays.toString(clicks) +
-               ", appClicks=" + Arrays.toString(appClicks) +
-               ", urlClicks=" + Arrays.toString(urlClicks) +
-               ", qualifiedImpressions=" + Arrays.toString(qualifiedImpressions) +
-               ", carouselSwipes=" + Arrays.toString(carouselSwipes) +
-               ", billedEngagements=" + Arrays.toString(billedEngagements) +
-               ", billedChargeLocalMicro=" + Arrays.toString(billedChargeLocalMicro) +
-               ", videoTotalViews=" + Arrays.toString(videoTotalViews) +
-               ", videoViews25=" + Arrays.toString(videoViews25) +
-               ", videoViews50=" + Arrays.toString(videoViews50) +
-               ", videoViews75=" + Arrays.toString(videoViews75) +
-               ", videoViews100=" + Arrays.toString(videoViews100) +
-               ", videoCtaClicks=" + Arrays.toString(videoCtaClicks) +
-               ", videoContentStarts=" + Arrays.toString(videoContentStarts) +
-               ", videoMrcViews=" + Arrays.toString(videoMrcViews) +
-               ", video3s100pctViews=" + Arrays.toString(video3s100pctViews) +
-               ", mediaViews=" + Arrays.toString(mediaViews) +
-               ", segment=" + segment +
-               ", conversionPurchases=" + conversionPurchases +
-               ", conversionSignUps=" + conversionSignUps +
-               ", conversionSiteVisits=" + conversionSiteVisits +
-               ", conversionDownloads=" + conversionDownloads +
-               ", conversionCustom=" + conversionCustom +
-               ", mobileConversionSpentCredits=" + mobileConversionSpentCredits +
-               ", mobileConversionInstalls=" + mobileConversionInstalls +
-               ", mobileConversionContentViews=" + mobileConversionContentViews +
-               ", mobileConversionAddToWishlist=" + mobileConversionAddToWishlist +
-               ", mobileConversionCheckoutInitiated=" + mobileConversionCheckoutInitiated +
-               ", mobileConversionReservations=" + mobileConversionReservations +
-               ", mobileConversionTutorialsCompleted=" + mobileConversionTutorialsCompleted +
-               ", mobileConversionAchievementsUnlocked=" + mobileConversionAchievementsUnlocked +
-               ", mobileConversionSearches=" + mobileConversionSearches +
-               ", mobileConversionAddToCarts=" + mobileConversionAddToCarts +
-               ", mobileConversionPaymentInfoAdditions=" + mobileConversionPaymentInfoAdditions +
-               ", mobileConversionReengages=" + mobileConversionReengages +
-               ", mobileConversionShares=" + mobileConversionShares +
-               ", mobileConversionRates=" + mobileConversionRates +
-               ", mobileConversionUpdates=" + mobileConversionUpdates +
-               ", mobileConversionLevelsAchieved=" + mobileConversionLevelsAchieved +
-               ", mobileConversionInvites=" + mobileConversionInvites +
-               ", mobileConversionKeyPageViews=" + mobileConversionKeyPageViews +
-               ", mobileConversionLifetimeValuePurchases=" + mobileConversionLifetimeValuePurchases +
-               ", mobileConversionLifetimeValueSignUps=" + mobileConversionLifetimeValueSignUps +
-               ", mobileConversionLifetimeValueUpdates=" + mobileConversionLifetimeValueUpdates +
-               ", mobileConversionLifetimeValueTutorialsCompleted=" + mobileConversionLifetimeValueTutorialsCompleted +
-               ", mobileConversionLifetimeValueReservations=" + mobileConversionLifetimeValueReservations +
-               ", mobileConversionLifetimeValueAddToCarts=" + mobileConversionLifetimeValueAddToCarts +
-               ", mobileConversionLifetimeValueAddToWishlists=" + mobileConversionLifetimeValueAddToWishlists +
-               ", mobileConversionLifetimeValueCheckoutsInitiated=" + mobileConversionLifetimeValueCheckoutsInitiated +
-               ", mobileConversionLifetimeValueLevelsAchieved=" + mobileConversionLifetimeValueLevelsAchieved +
-               ", mobileConversionLifetimeValueAchievementsUnlocked=" + mobileConversionLifetimeValueAchievementsUnlocked +
-               ", mobileConversionLifetimeValueShares=" + mobileConversionLifetimeValueShares +
-               ", mobileConversionLifetimeValueInvites=" + mobileConversionLifetimeValueInvites +
-               ", mobileConversionLifetimeValuePaymentInfoAdditions=" + mobileConversionLifetimeValuePaymentInfoAdditions +
-               ", mobileConversionLifetimeValueSpentCredits=" + mobileConversionLifetimeValueSpentCredits +
-               ", mobileConversionLifetimeValueRates=" + mobileConversionLifetimeValueRates +
-               ", mobileConversionLifetimeValueLogins=" + mobileConversionLifetimeValueLogins +
-               ", mobileConversionLifetimeValueContentViews=" + mobileConversionLifetimeValueContentViews +
-               '}';
+        return "NewTwitterAdStatistics{" +
+                "appClicks=" + Arrays.toString(appClicks) +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", granularity=" + granularity +
+                ", placement='" + placement + '\'' +
+                ", engagements=" + Arrays.toString(engagements) +
+                ", impressions=" + Arrays.toString(impressions) +
+                ", retweets=" + Arrays.toString(retweets) +
+                ", replies=" + Arrays.toString(replies) +
+                ", likes=" + Arrays.toString(likes) +
+                ", follows=" + Arrays.toString(follows) +
+                ", cardEngagements=" + Arrays.toString(cardEngagements) +
+                ", clicks=" + Arrays.toString(clicks) +
+                ", urlClicks=" + Arrays.toString(urlClicks) +
+                ", qualifiedImpressions=" + Arrays.toString(qualifiedImpressions) +
+                ", carouselSwipes=" + Arrays.toString(carouselSwipes) +
+                ", billedEngagements=" + Arrays.toString(billedEngagements) +
+                ", billedChargeLocalMicro=" + Arrays.toString(billedChargeLocalMicro) +
+                ", videoTotalViews=" + Arrays.toString(videoTotalViews) +
+                ", videoViews25=" + Arrays.toString(videoViews25) +
+                ", videoViews50=" + Arrays.toString(videoViews50) +
+                ", videoViews75=" + Arrays.toString(videoViews75) +
+                ", videoViews100=" + Arrays.toString(videoViews100) +
+                ", videoCtaClicks=" + Arrays.toString(videoCtaClicks) +
+                ", videoContentStarts=" + Arrays.toString(videoContentStarts) +
+                ", videoMrcViews=" + Arrays.toString(videoMrcViews) +
+                ", video3s100PercentViews=" + Arrays.toString(video3s100PercentViews) +
+                ", mediaViews=" + Arrays.toString(mediaViews) +
+                ", mediaEngagements=" + Arrays.toString(mediaEngagements) +
+                ", segment=" + segment +
+                ", conversionPurchases=" + conversionPurchases +
+                ", conversionSignUps=" + conversionSignUps +
+                ", conversionSiteVisits=" + conversionSiteVisits +
+                ", conversionDownloads=" + conversionDownloads +
+                ", conversionCustom=" + conversionCustom +
+                ", mobileConversionSpentCredits=" + mobileConversionSpentCredits +
+                ", mobileConversionInstalls=" + mobileConversionInstalls +
+                ", mobileConversionContentViews=" + mobileConversionContentViews +
+                ", mobileConversionAddToWishlist=" + mobileConversionAddToWishlist +
+                ", mobileConversionCheckoutInitiated=" + mobileConversionCheckoutInitiated +
+                ", mobileConversionReservations=" + mobileConversionReservations +
+                ", mobileConversionTutorialsCompleted=" + mobileConversionTutorialsCompleted +
+                ", mobileConversionAchievementsUnlocked=" + mobileConversionAchievementsUnlocked +
+                ", mobileConversionSearches=" + mobileConversionSearches +
+                ", mobileConversionAddToCarts=" + mobileConversionAddToCarts +
+                ", mobileConversionPaymentInfoAdditions=" + mobileConversionPaymentInfoAdditions +
+                ", mobileConversionReengages=" + mobileConversionReengages +
+                ", mobileConversionShares=" + mobileConversionShares +
+                ", mobileConversionRates=" + mobileConversionRates +
+                ", mobileConversionLogins=" + mobileConversionLogins +
+                ", mobileConversionUpdates=" + mobileConversionUpdates +
+                ", mobileConversionLevelsAchieved=" + mobileConversionLevelsAchieved +
+                ", mobileConversionInvites=" + mobileConversionInvites +
+                ", mobileConversionKeyPageViews=" + mobileConversionKeyPageViews +
+                ", mobileConversionSiteVisits=" + mobileConversionSiteVisits +
+                ", mobileConversionPurchases=" + mobileConversionPurchases +
+                ", mobileConversionDownloads=" + mobileConversionDownloads +
+                ", mobileConversionSignUps=" + mobileConversionSignUps +
+                ", mobileConversionLifetimeValuePurchases=" + mobileConversionLifetimeValuePurchases +
+                ", mobileConversionLifetimeValueSignUps=" + mobileConversionLifetimeValueSignUps +
+                ", mobileConversionLifetimeValueUpdates=" + mobileConversionLifetimeValueUpdates +
+                ", mobileConversionLifetimeValueTutorialsCompleted=" + mobileConversionLifetimeValueTutorialsCompleted +
+                ", mobileConversionLifetimeValueReservations=" + mobileConversionLifetimeValueReservations +
+                ", mobileConversionLifetimeValueAddToCarts=" + mobileConversionLifetimeValueAddToCarts +
+                ", mobileConversionLifetimeValueAddToWishlists=" + mobileConversionLifetimeValueAddToWishlists +
+                ", mobileConversionLifetimeValueCheckoutsInitiated=" + mobileConversionLifetimeValueCheckoutsInitiated +
+                ", mobileConversionLifetimeValueLevelsAchieved=" + mobileConversionLifetimeValueLevelsAchieved +
+                ", mobileConversionLifetimeValueAchievementsUnlocked=" + mobileConversionLifetimeValueAchievementsUnlocked +
+                ", mobileConversionLifetimeValueShares=" + mobileConversionLifetimeValueShares +
+                ", mobileConversionLifetimeValueInvites=" + mobileConversionLifetimeValueInvites +
+                ", mobileConversionLifetimeValuePaymentInfoAdditions=" + mobileConversionLifetimeValuePaymentInfoAdditions +
+                ", mobileConversionLifetimeValueSpentCredits=" + mobileConversionLifetimeValueSpentCredits +
+                ", mobileConversionLifetimeValueRates=" + mobileConversionLifetimeValueRates +
+                ", mobileConversionLifetimeValueLogins=" + mobileConversionLifetimeValueLogins +
+                ", mobileConversionLifetimeValueSearches=" + mobileConversionLifetimeValueSearches +
+                ", mobileConversionLifetimeValueContentViews=" + mobileConversionLifetimeValueContentViews +
+                '}';
     }
 }

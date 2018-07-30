@@ -15,9 +15,6 @@ import java.io.Serializable;
  */
 public class BaseAdsResponse<T> implements Serializable, TwitterResponse {
 
-    @SerializedName("data_type")
-    private String dataType;
-
     @SerializedName("data")
     private T data;
 
@@ -27,14 +24,6 @@ public class BaseAdsResponse<T> implements Serializable, TwitterResponse {
     private RateLimitStatus rateLimitStatus;
 
     private int accessLevel = NONE;
-
-    public String getDataType() {
-        return dataType;
-    }
-
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
-    }
 
     public T getData() {
         return data;

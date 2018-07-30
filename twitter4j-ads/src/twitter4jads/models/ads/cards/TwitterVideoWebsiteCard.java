@@ -63,6 +63,7 @@ public class TwitterVideoWebsiteCard extends AbstractTwitterCard {
         return videoHlsUrl;
     }
 
+    @SuppressWarnings("unused")
     public void setVideoHlsUrl(String videoHlsUrl) {
         this.videoHlsUrl = videoHlsUrl;
     }
@@ -71,6 +72,7 @@ public class TwitterVideoWebsiteCard extends AbstractTwitterCard {
         return videoPosterUrl;
     }
 
+    @SuppressWarnings("unused")
     public void setVideoPosterUrl(String videoPosterUrl) {
         this.videoPosterUrl = videoPosterUrl;
     }

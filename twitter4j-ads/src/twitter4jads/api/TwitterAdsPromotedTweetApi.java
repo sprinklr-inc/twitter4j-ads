@@ -32,7 +32,6 @@ public interface TwitterAdsPromotedTweetApi {
     BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, boolean withDeleted, Optional<Collection<String>> lineItemIds,
                                                                      Optional<Integer> count, String cursor, Optional<PromotedTweetsSortByField> sortByField) throws TwitterException;
 
-
     /**
      * @param accountId       The identifier for the leveraged account.
      * @param promotedTweetId A reference to the promoted tweet you are operating with in the request.
@@ -47,8 +46,6 @@ public interface TwitterAdsPromotedTweetApi {
      * @param lineItemId Scope the response to just the desired line item
      * @param tweetIds   tweet ids to promote
      * @return created promoted tweet details
-     * @throws TwitterException
-     * @see <a href="https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/promoted_tweets">https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/promoted_tweets</a>
      */
     BaseAdsListResponse<PromotedTweets> createPromotedTweets(String accountId, String lineItemId, Collection<String> tweetIds)
             throws TwitterException;
@@ -66,17 +63,16 @@ public interface TwitterAdsPromotedTweetApi {
                                     String videoDescription, String callToAction, String ctaValue)
             throws TwitterException, IOException, InterruptedException;
 
+    Status createPromotedTweetV2(String accountId, String targetUserId, String tweetText, List<String> mediaIds,
+                                 String videoId, String videoTitle, String videoDescription, String videoCallToAction, String videoCtaValue,
+                                 String cardUri, boolean promotedOnly) throws TwitterException, IOException;
+
 
     BaseAdsResponse<PromotedTweets> createScheduledPromotedTweets(String accountId, String lineItemId, String scheduledTweetId)
             throws TwitterException;
 
 
     BaseAdsResponse<PromotedTweets> deleteScheduledPromotedTweet(String accountId, String scheduledPromotedTweet) throws TwitterException;
-
-
-    Status createPromotedTweetV2(String accountId, String targetUserId, String tweetText, List<String> mediaIds,
-                                 String videoId, String videoTitle, String videoDescription, String videoCallToAction, String videoCtaValue,
-                                 String cardUri, boolean promotedOnly) throws TwitterException, IOException;
 
       /*
     @param accountId: The identifier for the leveraged account.

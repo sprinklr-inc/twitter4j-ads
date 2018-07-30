@@ -162,6 +162,8 @@ public interface Status extends Comparable<Status>, TwitterResponse, EntitySuppo
 
     String[] getDisplayTextRange();
 
+    Status getExtendedTweet();
+
     /**
      * Returns an array of contributors, or null if no contributor is associated with this status.
      *
@@ -218,4 +220,8 @@ public interface Status extends Comparable<Status>, TwitterResponse, EntitySuppo
      */
     String[] getPlaceIds();
 
+
+    void setHierarchicalMessage(Boolean hierarchicalMessage);
+
+    Boolean getHierarchicalMessage();
 }

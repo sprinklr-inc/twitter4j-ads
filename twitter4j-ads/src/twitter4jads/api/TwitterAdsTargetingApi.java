@@ -1,6 +1,7 @@
 package twitter4jads.api;
 
 import com.google.common.base.Optional;
+import twitter4jads.models.ads.Conversations;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
@@ -64,6 +65,7 @@ public interface TwitterAdsTargetingApi {
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/targeting_criteria">https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/targeting_criteria</a>
      */
+    //deprecated in v3
     List<TargetingCriteria> createTargetingCriterias(String accountId, String lineItemId, List<TargetingCriteria> targetingCriteriaValues)
             throws TwitterException;
 
@@ -152,6 +154,12 @@ public interface TwitterAdsTargetingApi {
     BaseAdsListResponseIterable<PlatformVersions> getAllTargetingPlatformVersions() throws TwitterException;
 
     /**
+     * @return all possible targeting conversations to choose from
+     * @throws TwitterException
+     */
+    BaseAdsListResponseIterable<Conversations> getAllTargetingConversations() throws TwitterException;
+
+    /**
      * @param q (optional) Search results for matching a specific device.
      * @return all possible targeting devices to choose from
      * @throws TwitterException
@@ -217,8 +225,8 @@ public interface TwitterAdsTargetingApi {
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/get/targeting_criteria/behaviors">https://dev.twitter.com/ads/reference/get/targeting_criteria/behaviors</a>
      */
-    BaseAdsListResponseIterable<TwitterBehavior> getBehaviors(Optional<Integer> count, Optional<String> cursor, List<String> behaviorIds)
-            throws TwitterException;
+    BaseAdsListResponseIterable<TwitterBehavior> getBehaviors(Optional<Integer> count, Optional<String> cursor, List<String> behaviorIds,
+                                                              Optional<String> countryCode) throws TwitterException;
 
     /**
      * @param behaviorTaxonomyIds       (optional) List of behavior taxonomy identifiers by which to filter the response.

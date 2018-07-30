@@ -30,5 +30,4 @@ public class TwitterCreativePreview {
     public void setPreview(String preview) {
         this.preview = preview;
     }
-
 }
