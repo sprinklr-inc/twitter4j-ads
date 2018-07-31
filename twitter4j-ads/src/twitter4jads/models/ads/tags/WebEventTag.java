@@ -27,6 +27,9 @@ public class WebEventTag extends TwitterEntity {
     @SerializedName("embed_code")
     private String embedCode;
 
+    @SerializedName("website_tag_id")
+    private String websiteTagId;
+
     public boolean getRetargetingEnabled() {
         return retargetingEnabled;
     }
@@ -73,5 +76,13 @@ public class WebEventTag extends TwitterEntity {
 
     public void setEmbedCode(String embedCode) {
         this.embedCode = embedCode;
+    }
+
+    public String getWebsiteTagId() {
+        return websiteTagId;
+    }
+
+    public void setWebsiteTagId(String websiteTagId) {
+        this.websiteTagId = websiteTagId;
     }
 }

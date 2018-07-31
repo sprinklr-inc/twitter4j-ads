@@ -17,7 +17,6 @@ public class UploadMediaProcessingInfo {
     @SerializedName("progress_percent")
     private Integer progressPercentage;
 
-
     @SerializedName("error")
     private UploadErrorInfo uploadErrorInfo;
 

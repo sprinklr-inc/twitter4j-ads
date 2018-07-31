@@ -2,6 +2,7 @@ package twitter4jads.models.ads;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -54,9 +55,6 @@ public class LineItem extends TwitterEntity {
     @SerializedName("include_sentiment")
     private Sentiments sentiment;
 
-    @SerializedName("paused")
-    private Boolean paused;
-
     @SerializedName("primary_web_event_tag")
     private String webEventTag;
 
@@ -65,6 +63,9 @@ public class LineItem extends TwitterEntity {
 
     @SerializedName("suggested_low_cpe_bid_local_micro")
     private Long suggestedLowCpeBidInMicro;
+
+    @SerializedName("target_cpa_local_micro")
+    private Long targetCpaLocalMicro;
 
     @SerializedName("updated_at")
     private Date updatedAt;
@@ -101,6 +102,15 @@ public class LineItem extends TwitterEntity {
 
     @SerializedName("end_time")
     private Date endTimeInUTC;
+
+    @SerializedName("total_budget_amount_local_micro")
+    private Long budget;
+
+    @SerializedName("tracking_tags")
+    private List<TrackingTag> trackingTags;
+
+    @SerializedName("entity_status")
+    private EntityStatus status;
 
     public String getCreativeSource() {
         return creativeSource;
@@ -191,14 +201,6 @@ public class LineItem extends TwitterEntity {
         this.sentiment = sentiment;
     }
 
-    public Boolean getPaused() {
-        return paused;
-    }
-
-    public void setPaused(Boolean paused) {
-        this.paused = paused;
-    }
-
     public Long getSuggestedHighCpeBidInMicro() {
         return suggestedHighCpeBidInMicro;
     }
@@ -287,13 +289,21 @@ public class LineItem extends TwitterEntity {
         this.webEventTag = webEventTag;
     }
 
-    public String getAdvertiserDomain() { return advertiserDomain; }
+    public String getAdvertiserDomain() {
+        return advertiserDomain;
+    }
 
-    public void setAdvertiserDomain(String advertiserDomain) { this.advertiserDomain = advertiserDomain; }
+    public void setAdvertiserDomain(String advertiserDomain) {
+        this.advertiserDomain = advertiserDomain;
+    }
 
-    public String[] getCategories() { return categories; }
+    public String[] getCategories() {
+        return categories;
+    }
 
-    public void setCategories(String[] categories) { this.categories = categories; }
+    public void setCategories(String[] categories) {
+        this.categories = categories;
+    }
 
     public String getName() {
         return name;
@@ -309,6 +319,14 @@ public class LineItem extends TwitterEntity {
 
     public void setAdvertiserUserId(String advertiserUserId) {
         this.advertiserUserId = advertiserUserId;
+    }
+
+    public List<TrackingTag> getTrackingTags() {
+        return trackingTags;
+    }
+
+    public void setTrackingTags(List<TrackingTag> trackingTags) {
+        this.trackingTags = trackingTags;
     }
 
     public String getEntityStatus() {
@@ -333,5 +351,66 @@ public class LineItem extends TwitterEntity {
 
     public void setEndTime(Date endTimeInUTC) {
         this.endTimeInUTC = endTimeInUTC;
+    }
+
+    public Long getTargetCpaLocalMicro() {
+        return targetCpaLocalMicro;
+    }
+
+    public void setTargetCpaLocalMicro(Long targetCpaLocalMicro) {
+        this.targetCpaLocalMicro = targetCpaLocalMicro;
+    }
+
+    public Long getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Long budget) {
+        this.budget = budget;
+    }
+
+    public EntityStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EntityStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "LineItem{" +
+               "accountId='" + accountId + '\'' +
+               ", name='" + name + '\'' +
+               ", bidAmtInMicro=" + bidAmtInMicro +
+               ", campaignId='" + campaignId + '\'' +
+               ", createdAt=" + createdAt +
+               ", currency='" + currency + '\'' +
+               ", goalSettings='" + goalSettings + '\'' +
+               ", matchRelevantPopularQueries=" + matchRelevantPopularQueries +
+               ", objective='" + objective + '\'' +
+               ", deleted=" + deleted +
+               ", placements=" + placements +
+               ", productType=" + productType +
+               ", sentiment=" + sentiment +
+               ", status=" + status +
+               ", webEventTag='" + webEventTag + '\'' +
+               ", suggestedHighCpeBidInMicro=" + suggestedHighCpeBidInMicro +
+               ", suggestedLowCpeBidInMicro=" + suggestedLowCpeBidInMicro +
+               ", targetCpaLocalMicro=" + targetCpaLocalMicro +
+               ", updatedAt=" + updatedAt +
+               ", automaticallySelectBid=" + automaticallySelectBid +
+               ", bidType=" + bidType +
+               ", chargeBy='" + chargeBy + '\'' +
+               ", bidUnit='" + bidUnit + '\'' +
+               ", advertiserDomain='" + advertiserDomain + '\'' +
+               ", advertiserUserId='" + advertiserUserId + '\'' +
+               ", categories=" + Arrays.toString(categories) +
+               ", startTime=" + startTimeInUTC +
+               ", endTime=" + endTimeInUTC +
+               ", optimization='" + optimization + '\'' +
+               ", creativeSource='" + creativeSource + '\'' +
+               ", budget='" + budget + '\'' +
+               '}';
     }
 }

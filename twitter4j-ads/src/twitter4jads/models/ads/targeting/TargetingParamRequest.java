@@ -14,7 +14,7 @@ public class TargetingParamRequest {
     @SerializedName("operation_type")
     private String operation;
 
-
+    @SuppressWarnings("unused")
     public TargetingParam getTargetingParam() {
         return targetingParam;
     }

@@ -1,5 +1,10 @@
 Release Notes
 
+#Week 1 August 2018
+
+1. Release Ads API Version 3 support
+2. Added new endpoints in existing services
+
 #Week 2 January 2017
 
 1. Remove support from Twitter4j by adding/modifying HttpClient Package (Credits to Yusuke Yamamoto - yusuke at mac.com)

@@ -8,13 +8,11 @@ import com.google.gson.annotations.SerializedName;
  */
 public class UploadMediaObjectResponse {
 
-
     @SerializedName("media_id_string")
     private String mediaIdString;
 
     @SerializedName("media_id")
     private Long mediaId;
-
 
     @SerializedName("size")
     private Long size;
@@ -27,7 +25,6 @@ public class UploadMediaObjectResponse {
 
     @SerializedName("processing_info")
     private UploadMediaProcessingInfo uploadMediaProcessingInfo;
-
 
     public String getMediaIdString() {
         return mediaIdString;

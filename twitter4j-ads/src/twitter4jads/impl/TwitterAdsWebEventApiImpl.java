@@ -10,6 +10,8 @@ import twitter4jads.api.TwitterAdsWebEventApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.ads.HttpVerb;
+import twitter4jads.models.ads.TwitterWebsiteTag;
+import twitter4jads.models.ads.TwitterWebsiteTag.WebsiteTagType;
 import twitter4jads.models.ads.tags.WebEventTag;
 import twitter4jads.models.ads.tags.WebEventTagType;
 import twitter4jads.util.TwitterAdUtil;
@@ -25,23 +27,26 @@ import static twitter4jads.TwitterAdsConstants.*;
  * Time: 12:16 PM
  */
 public class TwitterAdsWebEventApiImpl implements TwitterAdsWebEventApi {
+
     private final TwitterAdsClient twitterAdsClient;
 
     public TwitterAdsWebEventApiImpl(TwitterAdsClient twitterAdsClient) {
         this.twitterAdsClient = twitterAdsClient;
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public BaseAdsListResponseIterable<WebEventTag> getAllWebEventTags(String accountId, boolean withDeleted, Integer count, String cursor)
-            throws TwitterException {
+        throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        List<HttpParameter> params = Lists.newArrayList();
+
+        final List<HttpParameter> params = Lists.newArrayList();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         if (TwitterAdUtil.isNotNull(count)) {
             params.add(new HttpParameter(PARAM_COUNT, count));
         }
 
-        if (TwitterAdUtil.isNotNull(count)) {
+        if (TwitterAdUtil.isNotNullOrEmpty(cursor)) {
             params.add(new HttpParameter(PARAM_CURSOR, cursor));
         }
 
@@ -75,7 +80,7 @@ public class TwitterAdsWebEventApiImpl implements TwitterAdsWebEventApi {
     @Override
     public BaseAdsResponse<WebEventTag> updateWebEventTag(String accountId, String webEventTagId, String name, Integer clickWindow,
                                                           Integer viewThroughWindow, WebEventTagType type, boolean retargetingEnabled)
-            throws TwitterException {
+        throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(webEventTagId, "Web Event Tag Id");
         List<HttpParameter> params = validateAndCreateParamsForUpdateWebEventTag(name, clickWindow, viewThroughWindow, type, retargetingEnabled);
@@ -93,16 +98,56 @@ public class TwitterAdsWebEventApiImpl implements TwitterAdsWebEventApi {
         return twitterAdsClient.executeHttpRequest(url, null, typeToken, HttpVerb.DELETE);
     }
 
-    // -------------------------------------- Private Methods --------------------------------------------
+    @SuppressWarnings("Duplicates")
+    @Override
+    public BaseAdsListResponseIterable<TwitterWebsiteTag> getAllWebsiteTags(String accountId, boolean withDeleted, Integer count, String cursor)
+        throws TwitterException {
+        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
+
+        final List<HttpParameter> params = Lists.newArrayList();
+        params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
+        if (TwitterAdUtil.isNotNull(count)) {
+            params.add(new HttpParameter(PARAM_COUNT, count));
+        }
+        if (TwitterAdUtil.isNotNullOrEmpty(cursor)) {
+            params.add(new HttpParameter(PARAM_CURSOR, cursor));
+        }
+
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEBSITE_TAGS;
+        final Type type = new TypeToken<BaseAdsListResponse<TwitterWebsiteTag>>() {
+        }.getType();
+        return twitterAdsClient.executeHttpListRequest(url, params, type);
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterWebsiteTag> getWebsiteTag(String accountId, boolean withDeleted, String websiteTagId) throws TwitterException {
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEBSITE_TAGS + websiteTagId;
+        final Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteTag>>() {
+        }.getType();
+        return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
+    }
+
+    @Override
+    public BaseAdsResponse<TwitterWebsiteTag> createWebsiteTag(String accountId, WebsiteTagType websiteTagType) throws TwitterException {
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEBSITE_TAGS;
+        final Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteTag>>() {
+        }.getType();
+
+        final List<HttpParameter> params = Lists.newArrayList();
+        params.add(new HttpParameter(TAG_TYPE, websiteTagType.name()));
+        return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.POST);
+    }
+
+    // -------------------------------------------------------------- PRIVATE METHODS -------------------------------------------------------------
 
     private List<HttpParameter> validateAndCreateParamsForCreateWebEventTag(String name, Integer clickWindow, Integer viewThroughWindow,
                                                                             WebEventTagType type, boolean retargetingEnabled) {
-        List<HttpParameter> params = Lists.newArrayList();
         TwitterAdUtil.ensureNotNull(name, "Name");
         TwitterAdUtil.ensureNotNull(clickWindow, "Click Window");
         TwitterAdUtil.ensureNotNull(type, "Web Event Tag type");
         TwitterAdUtil.ensureNotNull(retargetingEnabled, "Retargeting");
 
+        final List<HttpParameter> params = Lists.newArrayList();
         params.add(new HttpParameter(PARAM_NAME, name));
         params.add(new HttpParameter(PARAM_CLICK_WINDOW, clickWindow));
         if (viewThroughWindow == null) {
@@ -112,12 +157,13 @@ public class TwitterAdsWebEventApiImpl implements TwitterAdsWebEventApi {
         }
         params.add(new HttpParameter(PARAM_TYPE, type.name()));
         params.add(new HttpParameter(PARAM_RETARGETING_ENABLED, retargetingEnabled));
+
         return params;
     }
 
     private List<HttpParameter> validateAndCreateParamsForUpdateWebEventTag(String name, Integer clickWindow, Integer viewThroughWindow,
                                                                             WebEventTagType type, boolean retargetingEnabled) {
-        List<HttpParameter> params = Lists.newArrayList();
+        final List<HttpParameter> params = Lists.newArrayList();
         if (TwitterAdUtil.isNotNullOrEmpty(name)) {
             params.add(new HttpParameter(PARAM_NAME, name));
         }

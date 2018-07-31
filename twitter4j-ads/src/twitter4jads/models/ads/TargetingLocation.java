@@ -21,6 +21,9 @@ public class TargetingLocation implements Serializable, Comparable<TargetingLoca
     @SerializedName("targeting_value")
     private String targetingValue;
 
+    @SerializedName("country_code")
+    private String countryCode;
+
     @SerializedName("targeting_type")
     private TargetingType targetingType;
 
@@ -41,6 +44,14 @@ public class TargetingLocation implements Serializable, Comparable<TargetingLoca
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public String getTargetingValue() {

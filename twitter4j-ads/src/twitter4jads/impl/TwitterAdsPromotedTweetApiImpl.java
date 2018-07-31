@@ -43,7 +43,7 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
     public BaseAdsListResponseIterable<PromotedTweets> getAllPromotedTweets(String accountId, boolean withDeleted, Optional<Collection<String>> lineItemIds,
                                                                             Optional<Integer> count, String cursor, Optional<PromotedTweetsSortByField> sortByField) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
-        List<HttpParameter> params = new ArrayList<>();
+        final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
@@ -58,8 +58,9 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
         if (sortByField != null && sortByField.isPresent()) {
             params.add(new HttpParameter(PARAM_SORT_BY, sortByField.get().getField()));
         }
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_PROMOTED_TWEETS;
-        Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {
+
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_PROMOTED_TWEETS;
+        final Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
@@ -68,19 +69,22 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
     public BaseAdsResponse<PromotedTweets> getPromotedTweetsById(String accountId, String promotedTweetsId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(promotedTweetsId, "promotedTweetsId");
-        Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>() {
+
+        final Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>() {
         }.getType();
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_PROMOTED_TWEETS + promotedTweetsId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_PROMOTED_TWEETS + promotedTweetsId;
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.GET);
     }
 
     @Override
     public BaseAdsListResponse<PromotedTweets> createPromotedTweets(String accountId, String lineItemId, Collection<String> tweetIds)
-            throws TwitterException {
+        throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(lineItemId, "Line Item Id");
-        List<HttpParameter> params = new ArrayList<>();
+
+        final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_LINE_ITEM_ID, lineItemId));
+
         String tweetIdsAsString;
         if (TwitterAdUtil.isNotEmpty(tweetIds)) {
             TwitterAdUtil.ensureMaxSize(tweetIds, MAX_REQUEST_PARAMETER_SIZE);
@@ -90,7 +94,7 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
         HttpResponse httpResponse = twitterAdsClient.postRequest(twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId +
                 PATH_PROMOTED_TWEETS, params.toArray(new HttpParameter[params.size()]));
         try {
-            Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {
+            final Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {
             }.getType();
             return TwitterAdUtil.constructBaseAdsListResponse(httpResponse, httpResponse.asString(), type);
         } catch (IOException e) {
@@ -98,6 +102,7 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public BaseAdsResponse<PromotedTweets> deletePromotedTweets(String accountId, String tweetId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
@@ -145,8 +150,9 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
             HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
             Type type = new TypeToken<BaseAdsResponse<PromotedTweet>>() {
             }.getType();
-            BaseAdsResponse<PromotedTweet> response = twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
-            PromotedTweet tweet = response.getData();
+
+            final BaseAdsResponse<PromotedTweet> response = twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
+            final PromotedTweet tweet = response.getData();
             if (tweet == null) {
                 throw new TwitterException("Unable to create Video promoted Tweet. Definitely something is wrong here.");
             }
@@ -161,12 +167,13 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(lineItemId, "Line Item Id");
         TwitterAdUtil.ensureNotNull(scheduledTweetId, "Scheduled Tweet Id");
-        List<HttpParameter> params = new ArrayList<>();
+
+        final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_LINE_ITEM_ID, lineItemId));
         params.add(new HttpParameter(PARAM_SCHEDULED_TWEET_ID, scheduledTweetId));
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_SCHEDULED_PROMOTED_TWEETS;
-        Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>() {
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_SCHEDULED_PROMOTED_TWEETS;
+        final Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.POST);
     }
@@ -183,65 +190,9 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
     }
 
     @Override
-    public Status createPromotedTweetV2(String accountId, String targetUserId, String tweetText, List<String> mediaIds, String videoId, String videoTitle, String videoDescription, String videoCallToAction, String videoCtaValue, String cardUri, boolean promotedOnly) throws TwitterException, IOException {
-        try {
-            TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-            TwitterAdUtil.ensureNotNull(tweetText, "Tweet text");
-            List<HttpParameter> params = Lists.newArrayList();
-
-            params.add(new HttpParameter(PARAM_NULLCAST, promotedOnly));
-
-            if (TwitterAdUtil.isNotNullOrEmpty(targetUserId)) {
-                params.add(new HttpParameter(PARAM_AS_USER_ID, targetUserId));
-            }
-
-            if (TwitterAdUtil.isNotNullOrEmpty(tweetText)) {
-                params.add(new HttpParameter(PARAM_TEXT, tweetText));
-            }
-
-            if (TwitterAdUtil.isNotNullOrEmpty(cardUri)) {
-                params.add(new HttpParameter(PARAM_CARD_URI, cardUri));
-            }
-
-            if (TwitterAdUtil.isNotEmpty(mediaIds)) {
-                params.add(new HttpParameter(PARAM_MEDIA_IDS, TwitterAdUtil.getCsv(mediaIds)));
-            }
-            if (TwitterAdUtil.isNotNullOrEmpty(videoId)) {
-                params.add(new HttpParameter(PARAM_VIDEO_ID, videoId));
-            }
-
-            if (TwitterAdUtil.isNotNullOrEmpty(videoTitle)) {
-                params.add(new HttpParameter(PARAM_VIDEO_TITLE, videoTitle));
-            }
-
-            if (TwitterAdUtil.isNotNullOrEmpty(videoDescription)) {
-                params.add(new HttpParameter(PARAM_VIDEO_DESCRIPTION, videoDescription));
-            }
-
-            if (TwitterAdUtil.isNotNullOrEmpty(videoCallToAction) && TwitterAdUtil.isNotNullOrEmpty(videoCtaValue)) {
-                params.add(new HttpParameter(PARAM_VIDEO_CTA, videoCallToAction));
-                params.add(new HttpParameter(PARAM_VIDEO_CTA_VALUE, videoCtaValue));
-            }
-
-            String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_PROMOTED_TWEETS;
-            HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
-            Type type = new TypeToken<BaseAdsResponse<PromotedTweet>>() {
-            }.getType();
-            BaseAdsResponse<PromotedTweet> response = twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
-            PromotedTweet tweet = response.getData();
-            if (tweet == null) {
-                throw new TwitterException("Unable to create the tweet. What is this, something is definitely wrong");
-            }
-            return tweet;
-        } catch (Exception eX) {
-            throw new TwitterException("Unable to create the tweet. " + eX.getMessage());
-        }
-    }
-
-    @Override
     public BaseAdsListResponseIterable<PromotedTweets> getScheduledPromotedTweets(String accountId, List<String> lineItemIds, List<String> scheduledPromotedTweetIds, Integer count, String cursor, String sortBy, boolean withDeleted, boolean includeTotalCount) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
-        List<HttpParameter> params = new ArrayList<>();
+        final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         params.add(new HttpParameter(TwitterAdsConstants.PARAM_WITH_TOTAL_COUNT, includeTotalCount));
         if (TwitterAdUtil.isNotNullOrEmpty(sortBy)) {
@@ -260,9 +211,80 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
         if (CollectionUtils.isNotEmpty(scheduledPromotedTweetIds)) {
             params.add(new HttpParameter(TwitterAdsConstants.PARAM_SCHEDULED_PROMOTED_TWEET_IDS, TwitterAdUtil.getCsv(scheduledPromotedTweetIds)));
         }
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_SCHEDULED_PROMOTED_TWEETS;
-        Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {
+
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_SCHEDULED_PROMOTED_TWEETS;
+        final Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
+    }
+
+
+    @Override
+    public Status createPromotedTweetV2(String accountId, String targetUserId, String tweetText, List<String> mediaIds, String videoId,
+                                        String videoTitle, String videoDescription, String videoCallToAction, String videoCtaValue, String cardUri,
+                                        boolean promotedOnly) throws TwitterException, IOException {
+        try {
+            final List<HttpParameter> params =
+                    validateAndCreateParamsForPromotedTweet(accountId, targetUserId, tweetText, mediaIds, videoId, videoTitle, videoDescription,
+                            videoCallToAction, videoCtaValue, cardUri, promotedOnly);
+
+            final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_PROMOTED_TWEET_V2;
+            final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
+            final Type type = new TypeToken<BaseAdsResponse<PromotedTweet>>() {
+            }.getType();
+
+            final BaseAdsResponse<PromotedTweet> response = twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
+            final PromotedTweet tweet = response.getData();
+            if (tweet == null) {
+                throw new TwitterException("Unable to create the tweet. Please contact support.");
+            }
+
+            return tweet;
+        } catch (Exception eX) {
+            throw new TwitterException("Unable to create the tweet. " + eX.getMessage());
+        }
+    }
+
+    private List<HttpParameter> validateAndCreateParamsForPromotedTweet(String accountId, String targetUserId, String tweetText,
+                                                                        List<String> mediaIds, String videoId, String videoTitle,
+                                                                        String videoDescription, String videoCallToAction, String videoCtaValue,
+                                                                        String cardUri, boolean promotedOnly) throws TwitterException {
+        List<HttpParameter> params = Lists.newArrayList();
+        TwitterAdUtil.ensureNotNull(accountId, "AccountId");
+        TwitterAdUtil.ensureNotNull(tweetText, "Tweet text");
+
+        params.add(new HttpParameter(PARAM_NULLCAST, promotedOnly));
+
+        if (TwitterAdUtil.isNotNullOrEmpty(targetUserId)) {
+            params.add(new HttpParameter(PARAM_AS_USER_ID, targetUserId));
+        }
+        if (TwitterAdUtil.isNotNullOrEmpty(tweetText)) {
+            params.add(new HttpParameter(PARAM_TEXT, tweetText));
+        }
+
+        if (TwitterAdUtil.isNotNullOrEmpty(cardUri)) {
+            params.add(new HttpParameter(PARAM_CARD_URI, cardUri));
+        }
+
+        if (TwitterAdUtil.isNotEmpty(mediaIds)) {
+            params.add(new HttpParameter(PARAM_MEDIA_IDS, TwitterAdUtil.getCsv(mediaIds)));
+        }
+        if (TwitterAdUtil.isNotNullOrEmpty(videoId)) {
+            params.add(new HttpParameter(PARAM_VIDEO_ID, videoId));
+        }
+        if (TwitterAdUtil.isNotNullOrEmpty(videoTitle)) {
+            params.add(new HttpParameter(PARAM_VIDEO_TITLE, videoTitle));
+        }
+
+        if (TwitterAdUtil.isNotNullOrEmpty(videoDescription)) {
+            params.add(new HttpParameter(PARAM_VIDEO_DESCRIPTION, videoDescription));
+        }
+
+        if (TwitterAdUtil.isNotNullOrEmpty(videoCallToAction) && TwitterAdUtil.isNotNullOrEmpty(videoCtaValue)) {
+            params.add(new HttpParameter(PARAM_VIDEO_CTA, videoCallToAction));
+            params.add(new HttpParameter(PARAM_VIDEO_CTA_VALUE, videoCtaValue));
+        }
+
+        return params;
     }
 }

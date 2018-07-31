@@ -37,6 +37,7 @@ public final class StatusUpdate implements java.io.Serializable {
     private long inReplyToStatusId = -1L;
     private GeoLocation location = null;
     private String placeId = null;
+    private String cardUri = null;
     private boolean displayCoordinates = true;
     private boolean possiblySensitive;
     private String mediaName;
@@ -215,6 +216,14 @@ public final class StatusUpdate implements java.io.Serializable {
         return possiblySensitive;
     }
 
+    public String getCardUri() {
+        return cardUri;
+    }
+
+    public void setCardUri(String cardUri) {
+        this.cardUri = cardUri;
+    }
+
     /*package*/ HttpParameter[] asHttpParameterArray() {
         ArrayList<HttpParameter> params = new ArrayList<HttpParameter>();
         appendParameter("status", status, params);
@@ -241,6 +250,11 @@ public final class StatusUpdate implements java.io.Serializable {
         if (CollectionUtils.isNotEmpty(narrowcastPlaceIds)) {
             appendParameter("narrowcast_place_ids", Joiner.on(',').join(narrowcastPlaceIds), params);
         }
+
+        if (StringUtils.isNotBlank(cardUri)) {
+            params.add(new HttpParameter("card_uri", cardUri));
+        }
+
         if (promotedOnly) {
             params.add(new HttpParameter("nullcast", true));
         }

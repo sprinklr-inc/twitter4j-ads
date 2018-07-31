@@ -6,10 +6,7 @@ import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.TwitterTonUploadResponse;
-import twitter4jads.models.ads.TailoredAudience;
-import twitter4jads.models.ads.TailoredAudienceChangeInfo;
-import twitter4jads.models.ads.TailoredAudienceDataType;
-import twitter4jads.models.ads.TailoredAudienceOperation;
+import twitter4jads.models.ads.*;
 
 import java.io.File;
 import java.io.InputStream;
@@ -64,6 +61,16 @@ public interface TwitterAdsAudienceApi {
             throws TwitterException;
 
     /**
+     * @param tailoredAudienceMatchingRules
+     * @param accountId The identifier for the leveraged account.
+     * @return Resultant matching rules for tailored audiences
+     * @throws TwitterException
+     */
+    BaseAdsResponse<TailoredAudienceMatchingRules> addMatchingRulesToAudience(TailoredAudienceMatchingRules tailoredAudienceMatchingRules,
+                                                                              String accountId)
+            throws TwitterException;
+
+    /**
      * @param accountId The identifier for the leveraged account.
      * @param tailoredAudienceId The identifier for a specific tailored audience.
      * @return detailed information on the status of changes being processed for tailored audience.
@@ -110,5 +117,11 @@ public interface TwitterAdsAudienceApi {
 
     void getGlobalOptOutListOfTailoredAudience(String accountId, String location) throws TwitterException;
 
+    /**
+     * @param accountId
+     * @param requestBody
+     * @return
+     * @throws TwitterException
+     */
     BaseAdsListBatchPostResponse<TailoredAudience> createFlexibleTailoredAudience(String accountId, String requestBody) throws TwitterException;
 }

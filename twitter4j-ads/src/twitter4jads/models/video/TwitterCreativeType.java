@@ -7,5 +7,11 @@ package twitter4jads.models.video;
 public enum TwitterCreativeType {
     BANNER,
     INTERSTITIAL,
-    PREROLL;
+    PREROLL,
+    MEDIUM_RECTANGLE,
+    INTERSTITIAL_LANDSCAPE_TABLET,
+    BANNER_TABLET,
+    INTERSTITIAL_LANDSCAPE,
+    VAST_PREROLL,
+    INTERSTITIAL_TABLET
 }

@@ -18,6 +18,7 @@ public class TwitterEntityStatisticsMetrics {
     public static final Map<TwitterAdObjective, Set<String>> METRIC_GROUPS_BY_OBJECTIVE;
     public static final Set<String> WEB_CONVERSION_METRIC_GROUP = Collections.unmodifiableSet(Sets.newHashSet(MetricGroup.WEB_CONVERSION.name()));
     public static final Set<MetricGroup> ORGANIC_METRIC_GROUPS = Sets.newHashSet(MetricGroup.ENGAGEMENT, MetricGroup.VIDEO);
+    public static final Set<MetricGroup> ENGAGEMENT_METRIC_GROUPS = Sets.newHashSet(MetricGroup.ENGAGEMENT);
 
     static {
         Set<String> metricGroups = Sets.newHashSet();
@@ -38,18 +39,11 @@ public class TwitterEntityStatisticsMetrics {
         METRIC_GROUPS_BY_OBJECTIVE = Collections.unmodifiableMap(metricsGroupsByObjective);
     }
 
-    public static Set<String> getMetricGroups(TwitterAdObjective objective, TwitterSegmentationType twitterSegmentationType) {
-        if (objective == null) {
-            return ALL_METRIC_GROUPS;
-        }
+    public static Set<String> getMetricGroups(TwitterSegmentationType twitterSegmentationType) {
         if (twitterSegmentationType != null && TwitterSegmentationType.CONVERSION_TAGS == twitterSegmentationType) {
             return WEB_CONVERSION_METRIC_GROUP;
         }
 
-        Set<String> toReturn = METRIC_GROUPS_BY_OBJECTIVE.get(objective);
-        if (toReturn == null) {
-            return ALL_METRIC_GROUPS;
-        }
-        return toReturn;
+        return ALL_METRIC_GROUPS;
     }
 }

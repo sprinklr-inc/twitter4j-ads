@@ -30,6 +30,9 @@ public class TwitterVideo extends TwitterEntity {
     @SerializedName("preview_url")
     private String previewUrl;
 
+    @SerializedName("poster_url")
+    private String posterUrl;
+
     @SerializedName("created_at")
     private String createdAt;
 
@@ -120,5 +123,13 @@ public class TwitterVideo extends TwitterEntity {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 }

@@ -6,5 +6,5 @@ package twitter4jads.models.ads;
  * Time: 10:54 PM
  */
 public enum TailoredAudienceDataType {
-    EMAIL, DEVICE_ID, TWITTER_ID, HANDLE, PHONE_NUMBER
+    EMAIL, DEVICE_ID, TWITTER_ID, HANDLE, PHONE_NUMBER,TWITTER_COOKIE_ID
 }

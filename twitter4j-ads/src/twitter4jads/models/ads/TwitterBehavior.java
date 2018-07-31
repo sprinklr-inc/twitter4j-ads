@@ -13,6 +13,9 @@ public class TwitterBehavior extends TwitterEntity {
     @SerializedName("name")
     private String name;
 
+    @SerializedName("country_code")
+    private String countryCode;
+
     @SerializedName("partner_source")
     private String partnerSource;
 
@@ -40,6 +43,14 @@ public class TwitterBehavior extends TwitterEntity {
 
     public String getPartnerSource() {
         return partnerSource;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public void setPartnerSource(String partnerSource) {

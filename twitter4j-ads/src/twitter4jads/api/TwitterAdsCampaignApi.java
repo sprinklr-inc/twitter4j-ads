@@ -45,7 +45,7 @@ public interface TwitterAdsCampaignApi {
 
 
     /**
-     * @param campaign    A Campaign object representing the campaign to be created.
+     * @param campaign A Campaign object representing the campaign to be created.
      * @return created campaign response.
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/campaigns">https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/campaigns</a>
@@ -53,17 +53,17 @@ public interface TwitterAdsCampaignApi {
     BaseAdsResponse<Campaign> createCampaign(Campaign campaign) throws TwitterException;
 
     /**
-     * @param accountId                    The identifier for the leveraged account.
-     * @param campaignId                   The identifier of campaign to update.
-     * @param name                         (optional) Name to update the cmapaign with.
-     * @param totalBudgetAmountLocalMicro  Name to update the cmapaign with.
-     * @param dailyBudgetAmountLocalMicro  (optional) Name to update the cmapaign with.
-     * @param startTime                    (optional) Start time to update the cmapaign with.
-     * @param endTime                      (optional) End time to update the cmapaign with.
-     * @param status                       Status of the campaign
-     * @param standardDelivery             (optional) Update the standard delivery setting of campaign.
-     * @param frequencyCap                 (if value passed greater than 0) Update integer representing the number of times for which one user could be delivered an ad to.
-     * @param durationInDays               (if value passed greater than 0) Update integer representing the time period within which the frequency_cap frequency is achieved. Only supports values of: 1, 7 and 30.
+     * @param accountId                   The identifier for the leveraged account.
+     * @param campaignId                  The identifier of campaign to update.
+     * @param name                        (optional) Name to update the cmapaign with.
+     * @param totalBudgetAmountLocalMicro Name to update the cmapaign with.
+     * @param dailyBudgetAmountLocalMicro (optional) Name to update the cmapaign with.
+     * @param startTime                   (optional) Start time to update the cmapaign with.
+     * @param endTime                     (optional) End time to update the cmapaign with.
+     * @param status                      Status of the campaign
+     * @param standardDelivery            (optional) Update the standard delivery setting of campaign.
+     * @param frequencyCap                (if value passed greater than 0) Update integer representing the number of times for which one user could be delivered an ad to.
+     * @param durationInDays              (if value passed greater than 0) Update integer representing the time period within which the frequency_cap frequency is achieved. Only supports values of: 1, 7 and 30.
      * @return updated campaign response.
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/campaigns/%3Acampaign_id">https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/campaigns/%3Acampaign_id</a>
@@ -74,18 +74,8 @@ public interface TwitterAdsCampaignApi {
                                              Optional<Boolean> standardDelivery, int frequencyCap, int durationInDays) throws TwitterException;
 
     /**
-     * @param accountId                    The identifier for the leveraged account.
-     * @param campaignId                   The identifier of campaign to update.
-     * @param paused                       The paused state of campaign.
-     * @return updated campaign response.
-     * @throws TwitterException
-     * @see <a href="https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/campaigns/%3Acampaign_id">https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/campaigns/%3Acampaign_id</a>
-     */
-    BaseAdsResponse<Campaign> updateCampaignStatus(String accountId, String campaignId, Boolean paused) throws TwitterException;
-
-    /**
-     * @param accountId                    The identifier for the leveraged account.
-     * @param campaignId                   The identifier of campaign to delete.
+     * @param accountId  The identifier for the leveraged account.
+     * @param campaignId The identifier of campaign to delete.
      * @return Campaign to be deleted with deleted field set to true
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/campaigns/%3Acampaign_id">https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/campaigns/%3Acampaign_id</a>
