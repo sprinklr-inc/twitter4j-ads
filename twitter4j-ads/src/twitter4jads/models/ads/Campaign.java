@@ -64,9 +64,6 @@ public class Campaign extends TwitterEntity implements Serializable {
     @SerializedName("duration_in_days")
     private Integer durationInDays;
 
-    @SerializedName("entity_status")
-    private EntityStatus status;
-
     public String getName() {
         return name;
     }
