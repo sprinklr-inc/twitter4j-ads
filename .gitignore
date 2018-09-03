@@ -6,3 +6,4 @@ build/
 twitter4j-ads-examples/twitter4j-ads-examples.iml
 twitter4j-ads/twitter4j-ads.iml
 twitter4j.iml
+gradle*

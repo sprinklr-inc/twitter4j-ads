@@ -3,19 +3,6 @@ package twitter4jads.impl;
 import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.lang3.StringUtils;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
-import twitter4jads.api.TwitterAdsStatApi;
-import twitter4jads.internal.http.HttpParameter;
-import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.Granularity;
-import twitter4jads.models.TwitterSegmentationType;
-import twitter4jads.models.ads.*;
-import twitter4jads.util.TwitterAdUtil;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -25,13 +12,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
-
+import org.apache.commons.lang3.StringUtils;
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.BaseAdsListResponseIterable;
+import twitter4jads.BaseAdsResponse;
+import twitter4jads.TwitterAdsClient;
 import static twitter4jads.TwitterAdsConstants.*;
+import twitter4jads.api.TwitterAdsStatApi;
+import twitter4jads.internal.http.HttpParameter;
+import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.Granularity;
+import twitter4jads.models.TwitterSegmentationType;
+import twitter4jads.models.ads.*;
+import twitter4jads.util.TwitterAdUtil;
 
 /**
- * User: abhay
- * Date: 4/5/16
- * Time: 11:35 AM
+ * User: abhay Date: 4/5/16 Time: 11:35 AM
  */
 public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
@@ -42,8 +38,8 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
     }
 
     public BaseAdsListResponseIterable<TwitterEntityStatistics> fetchStatsSync(String accountId, TwitterEntityType twitterEntity,
-                                                                               Collection<String> entityIds, long startTime, long endTime,
-                                                                               boolean withDeleted, Granularity granularity, Placement placement)
+            Collection<String> entityIds, long startTime, long endTime,
+            boolean withDeleted, Granularity granularity, Placement placement)
             throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(startTime, "startTime");
@@ -76,7 +72,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
     @Override
     public BaseAdsListResponseIterable<TwitterAuctionInsights> fetchAuctionInsights(String accountId, Collection<String> lineItemIds, long startTime,
-                                                                                    long endTime, Granularity granularity, Placement placement)
+            long endTime, Granularity granularity, Placement placement)
             throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(startTime, "startTime");
@@ -104,8 +100,8 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
     @Override
     public BaseAdsResponse<JobDetails> createAsyncJob(String accountId, TwitterEntityType twitterEntityType, Collection<String> ids, long startTime,
-                                                      long endTime, boolean withDeleted, Granularity granularity, Placement placement,
-                                                      Optional<TwitterSegmentationType> twitterSegmentationType) throws TwitterException {
+            long endTime, boolean withDeleted, Granularity granularity, Placement placement,
+            Optional<TwitterSegmentationType> twitterSegmentationType) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(startTime, "startTime");
         TwitterAdUtil.ensureNotNull(ids, "entityIds");
@@ -129,7 +125,6 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
             segmentationType = twitterSegmentationType.get();
             params.add(new HttpParameter(PARAM_SEGMENTATION_TYPE, twitterSegmentationType.get().name()));
         }
-
 
         String metrics = StringUtils.join(getMetrics(twitterEntityType, segmentationType), ",");
         params.add(new HttpParameter(PARAM_METRIC_GROUPS, metrics));
@@ -165,7 +160,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
     @Override
     public BaseAdsListResponseIterable<TwitterAdStatistics> fetchCampaignStats(String accountId, Collection<String> campaignIds, long startTime,
-                                                                               long endTime) throws TwitterException {
+            long endTime) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(startTime, "startTime");
         TwitterAdUtil.ensureNotNull(campaignIds, "campaignIds");
@@ -199,9 +194,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
     }
 
     // ----------------------------------------- Private Methods -------------------------------------------------
-
     // ------------------------------------------------------------------ PRIVATE METHODS -----------------------------------------------------------
-
     private String getResponseFromGZipStream(String urlString) {
         try {
             final URL url = new URL(urlString);

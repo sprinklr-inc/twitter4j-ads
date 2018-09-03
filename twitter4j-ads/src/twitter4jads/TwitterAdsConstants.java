@@ -3,9 +3,7 @@ package twitter4jads;
 import java.util.concurrent.TimeUnit;
 
 /**
- * User: poly
- * Date: 13/03/14
- * Time: 11:52 AM
+ * User: poly Date: 13/03/14 Time: 11:52 AM
  */
 public interface TwitterAdsConstants {
 
@@ -24,7 +22,7 @@ public interface TwitterAdsConstants {
     String PREFIX_BATCH_ACCOUNTS_V2 = "2/batch/accounts/";
     String V2_PREFIX_STATS_JOB_ACCOUNTS_URI = "3/stats/jobs/accounts/";
     String PREFIX_VIDEOS = "/videos";
-    String PREFIX_STATS_ACCOUNTS_URI = "2/stats/accounts/";
+    String PREFIX_STATS_ACCOUNTS_URI = "3/stats/accounts/";
     String PARAM_WITH_DELETED = "with_deleted";
     String GRANULARITY = "granularity";
     String PARAM_FUNDING_INSTRUMENT_IDS = "funding_instrument_ids";
@@ -146,7 +144,7 @@ public interface TwitterAdsConstants {
     String APP_CTA = "app_cta";
     String PARAM_COUNTRY = "country";
     String PARAM_PLATFORM = "platform";
-    String PARAM_PROMOTED_TWEET_IDS="promoted_tweet_ids";
+    String PARAM_PROMOTED_TWEET_IDS = "promoted_tweet_ids";
     String PARAM_PRIMARY_WEB_EVENT_TAG = "primary_web_event_tag";
     String PATH_FEATURES = "/features";
 
@@ -214,8 +212,7 @@ public interface TwitterAdsConstants {
 
     /*
     for direct message cards
-    */
-
+     */
     String PARAM_RECIPIENT_USER_ID = "recipient_user_id";
     String PARAM_FIRST_CTA_WELCOME_MESSAGE_ID = "first_cta_welcome_message_id";
     String PARAM_SECOND_CTA_WELCOME_MESSAGE_ID = "second_cta_welcome_message_id";
@@ -246,7 +243,6 @@ public interface TwitterAdsConstants {
     String PARAM_VIDEO_CTA = "video_cta";
     String PARAM_VIDEO_CTA_VALUE = "video_cta_value";
 
-
     Long MAX_VIDEO_SIZE_IN_BYTES = (long) 524277511; // 500 MB.
     int TWO_MIB = 2 * 1024 * 1024;
     Long FIFTY_MIB = 50 * 1024 * 1024L;
@@ -269,7 +265,6 @@ public interface TwitterAdsConstants {
     /**
      * for lead generation card stat
      */
-
     String PARAM_GRANULARITY = "granularity";
     String PARAM_METRICS = "metrics";
 
@@ -352,7 +347,6 @@ public interface TwitterAdsConstants {
     /**
      * for web event tags
      */
-
     String PARAM_CLICK_WINDOW = "click_window";
     String PARAM_VIEW_THROUGH_WINDOW = "view_through_window";
     String PARAM_TYPE = "type";
@@ -363,7 +357,7 @@ public interface TwitterAdsConstants {
     String TAG_TYPE = "tag_type";
     String PATH_VIDEO_WEBSITE_CARDS = "/cards/video_website/";
 
-    String PATH_ORGANIC_TWEETS_STATS ="/organic_tweets";
+    String PATH_ORGANIC_TWEETS_STATS = "/organic_tweets";
 
     String PATH_REACH_STATS = "/reach/campaigns/";
     String SLASH = "/";
@@ -371,7 +365,6 @@ public interface TwitterAdsConstants {
     /**
      * for Twitter preview
      */
-
     String TWEET_PATH_PREVIEW = "/tweet/preview/";
     String PARAM_PREVIEW_TARGET = "preview_target";
     String PARAM_TWEET_MODE = "tweet_mode";

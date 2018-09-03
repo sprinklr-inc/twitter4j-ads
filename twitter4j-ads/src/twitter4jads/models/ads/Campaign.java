@@ -6,11 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * User: poly
- * Date: 29/01/14
- * Time: 11:55 AM
+ * User: poly Date: 29/01/14 Time: 11:55 AM
  */
-
 public class Campaign extends TwitterEntity implements Serializable {
 
     @SerializedName("name")
