@@ -2,10 +2,7 @@ package twitter4jads.impl;
 
 import com.google.common.base.Optional;
 import com.google.gson.reflect.TypeToken;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
+import twitter4jads.*;
 import twitter4jads.api.TwitterAdsFundingInstrumentApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.models4j.TwitterException;
@@ -54,7 +51,7 @@ public class TwitterAdsFundingInstrumentApiImpl implements TwitterAdsFundingInst
         if(sortByField != null && sortByField.isPresent()) {
             params.add(new HttpParameter(PARAM_SORT_BY, sortByField.get().getField()));
         }
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_FUNDING_INSTRUMENTS;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_FUNDING_INSTRUMENTS;
         Type type = new TypeToken<BaseAdsListResponse<FundingInstrument>>() {}.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
@@ -64,7 +61,7 @@ public class TwitterAdsFundingInstrumentApiImpl implements TwitterAdsFundingInst
         throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(fundingInstrumentId, "fundingInstrumentId");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_FUNDING_INSTRUMENTS + fundingInstrumentId;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_FUNDING_INSTRUMENTS + fundingInstrumentId;
         HttpParameter[] param  = new HttpParameter[]{new HttpParameter(PARAM_WITH_DELETED, withDeleted)};
 
         final Type type = new TypeToken<BaseAdsResponse<FundingInstrument>>() {

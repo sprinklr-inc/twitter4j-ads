@@ -9,22 +9,17 @@ import java.util.concurrent.TimeUnit;
  */
 public interface TwitterAdsConstants {
 
-    String V1_PREFIX_STATS_ACCOUNTS_URI = "2/stats/accounts/";
-    String V1_PREFIX_STATS_JOB_ACCOUNTS_URI = "2/stats/jobs/accounts/";
-    String V1_PREFIX_TAILORED_AUDIENCE_MEMBERSHIPS = "1/tailored_audience_memberships";
-
     Long MAX_IMAGE_SIZE_FOR_WEBSITE_IN_BYTES = 3 * 1040000L; //3 Mebibyte
     long MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH = 80L;
     long MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH = 70L;
 
-    String PREFIX_ACCOUNTS_URI_2 = "2/accounts/";
     String TWEET_PREVIEW_PATH = "/tweet/preview/";
     String UPLOAD_MEDIA_URL = "1.1/media/";
     String UPLOAD_JSON = "upload.json";
-    String PREFIX_BATCH_ACCOUNTS_V2 = "2/batch/accounts/";
-    String V2_PREFIX_STATS_JOB_ACCOUNTS_URI = "3/stats/jobs/accounts/";
+    String PREFIX_BATCH_ACCOUNTS_V3 = "3/batch/accounts/";
+    String V3_PREFIX_STATS_JOB_ACCOUNTS_URI = "3/stats/jobs/accounts/";
     String PREFIX_VIDEOS = "/videos";
-    String PREFIX_STATS_ACCOUNTS_URI = "2/stats/accounts/";
+    String PREFIX_STATS_ACCOUNTS_URI = "3/stats/accounts/";
     String PARAM_WITH_DELETED = "with_deleted";
     String GRANULARITY = "granularity";
     String PARAM_FUNDING_INSTRUMENT_IDS = "funding_instrument_ids";
@@ -64,10 +59,6 @@ public interface TwitterAdsConstants {
     String PARAM_SCOPED_TO = "scoped_to";
     String PARAM_SCHEDULED_AT = "scheduled_at";
     String PREFIX_ACCOUNTS_URI_3 = "3/accounts/";
-    String PREFIX_BATCH_URI_3 = "3/batch/";
-    String PREFIX_BATCH_ACCOUNTS_URI_3 = "3/batch/accounts/";
-    String V3_PREFIX_STATS_JOB_ACCOUNTS_URI = "3/stats/jobs/accounts/";
-    String V3_PREFIX_TAILORED_AUDIENCE_MEMBERSHIPS = "3/tailored_audience_memberships";
     String PARAM_CARD_URI = "card_uri";
     String PARAM_DAILY_BUDGET_AMOUNT_LOCAL_MICRO = "daily_budget_amount_local_micro";
     String PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO = "total_budget_amount_local_micro";

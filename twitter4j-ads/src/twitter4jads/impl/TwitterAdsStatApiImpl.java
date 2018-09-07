@@ -4,10 +4,7 @@ import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
+import twitter4jads.*;
 import twitter4jads.api.TwitterAdsStatApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.models4j.TwitterException;
@@ -192,7 +189,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(jobId, "jobId");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + V1_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId + "/" + jobId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.V3_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId + "/" + jobId;
         final Type type = new TypeToken<BaseAdsResponse<JobDetails>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);

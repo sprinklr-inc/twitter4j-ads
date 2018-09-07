@@ -5,11 +5,8 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
+import twitter4jads.*;
 import twitter4jads.models.ads.Conversations;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
 import twitter4jads.api.TwitterAdsTargetingApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.http.HttpResponse;
@@ -67,7 +64,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(targetingId, "Targeting Id");
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_TARGETING_CRITERIA +
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_TARGETING_CRITERIA +
                 targetingId;
         HttpParameter[] params = new HttpParameter[]{new HttpParameter(PARAM_WITH_DELETED, withDeleted)};
         Type type = new TypeToken<BaseAdsResponse<TargetingCriteria>>() {
@@ -80,7 +77,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     public BaseAdsResponse<TargetingCriteria> deleteTargetingCriteria(String accountId, String targetingCriteriaId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(targetingCriteriaId, "Targeting Id");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_TARGETING_CRITERIA +
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_TARGETING_CRITERIA +
                 targetingCriteriaId;
         Type type = new TypeToken<BaseAdsResponse<TargetingCriteria>>() {
         }.getType();
@@ -258,7 +255,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     public TargetingParamResponse createTargetingBatchRequest(String accountId, List<TargetingParamRequest> targetingParamRequests) throws TwitterException {
         validateTargetingBatch(targetingParamRequests);
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_BATCH_ACCOUNTS_V2 + PATH_ACCOUNTS + accountId + PATH_TARGETING_CRITERIA;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_BATCH_ACCOUNTS_V3 + PATH_ACCOUNTS + accountId + PATH_TARGETING_CRITERIA;
         HttpResponse httpResponse = twitterAdsClient.postBatchRequest(baseUrl, GSON.toJson(targetingParamRequests));
         Type typeToken = new TypeToken<TargetingParamResponse>() {
         }.getType();

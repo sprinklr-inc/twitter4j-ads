@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.TwitterAdsClient;
+import twitter4jads.TwitterAdsConstants;
 import twitter4jads.api.TwitterAdsVideoApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.http.HttpResponse;
@@ -51,7 +52,7 @@ public class TwitterAdsVideoApiImpl implements TwitterAdsVideoApi {
             params.add(new HttpParameter(PARAM_MEDIA_ID, mediaId));
         }
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_ACCOUNT_MEDIA;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_ACCOUNT_MEDIA;
         HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             Type type = new TypeToken<BaseAdsResponse<TwitterAccountMediaResponse>>() {}.getType();
@@ -64,7 +65,7 @@ public class TwitterAdsVideoApiImpl implements TwitterAdsVideoApi {
     @Override
     public BaseAdsResponse<AssociateVideoToAccountResponse> associateVideoWithAccount(String accountId, String mediaId, String title,
                                                                                       String description) throws TwitterException {
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + VIDEOS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + VIDEOS;
         List<HttpParameter> params = Lists.newArrayList();
         params.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
         params.add(new HttpParameter(PARAM_VIDEO_MEDIA_ID, mediaId));

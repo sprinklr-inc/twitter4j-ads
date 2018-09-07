@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.TwitterAdsClient;
+import twitter4jads.TwitterAdsConstants;
 import twitter4jads.api.TwitterCallToActionApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.http.HttpResponse;
@@ -93,7 +94,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
             params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         }
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PRE_ROLL_CALL_TO_ACTION;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PRE_ROLL_CALL_TO_ACTION;
         Type type = new TypeToken<BaseAdsListResponseIterable<TwitterMediaCallToAction>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);

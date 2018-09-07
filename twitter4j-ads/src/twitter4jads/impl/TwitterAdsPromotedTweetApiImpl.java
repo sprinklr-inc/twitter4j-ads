@@ -91,7 +91,7 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
             tweetIdsAsString = TwitterAdUtil.getCsv(tweetIds);
             params.add(new HttpParameter(PARAM_TWEET_IDS, tweetIdsAsString));
         }
-        HttpResponse httpResponse = twitterAdsClient.postRequest(twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId +
+        HttpResponse httpResponse = twitterAdsClient.postRequest(twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId +
                 PATH_PROMOTED_TWEETS, params.toArray(new HttpParameter[params.size()]));
         try {
             final Type type = new TypeToken<BaseAdsListResponse<PromotedTweets>>() {
@@ -107,7 +107,7 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
     public BaseAdsResponse<PromotedTweets> deletePromotedTweets(String accountId, String tweetId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(tweetId, "Tweet Id");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_PROMOTED_TWEETS +
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_PROMOTED_TWEETS +
                 tweetId;
         Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>() {
         }.getType();
@@ -146,7 +146,7 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
                 params.add(new HttpParameter(PARAM_VIDEO_CTA, callToAction));
                 params.add(new HttpParameter(PARAM_VIDEO_CTA_VALUE, ctaValue));
             }
-            String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_PROMOTED_VIDEO_TWEET;
+            String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_PROMOTED_VIDEO_TWEET;
             HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
             Type type = new TypeToken<BaseAdsResponse<PromotedTweet>>() {
             }.getType();
@@ -182,7 +182,7 @@ public class TwitterAdsPromotedTweetApiImpl implements TwitterAdsPromotedTweetAp
     public BaseAdsResponse<PromotedTweets> deleteScheduledPromotedTweet(String accountId, String scheduledPromotedTweet) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(scheduledPromotedTweet, "scheduledPromotedTweet");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_SCHEDULED_PROMOTED_TWEETS +
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_SCHEDULED_PROMOTED_TWEETS +
                 scheduledPromotedTweet;
         Type type = new TypeToken<BaseAdsResponse<PromotedTweets>>() {
         }.getType();

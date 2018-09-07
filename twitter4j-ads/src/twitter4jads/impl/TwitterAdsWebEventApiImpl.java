@@ -2,10 +2,7 @@ package twitter4jads.impl;
 
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
+import twitter4jads.*;
 import twitter4jads.api.TwitterAdsWebEventApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.models4j.TwitterException;
@@ -50,7 +47,7 @@ public class TwitterAdsWebEventApiImpl implements TwitterAdsWebEventApi {
             params.add(new HttpParameter(PARAM_CURSOR, cursor));
         }
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_WEB_EVENT_TAGS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEB_EVENT_TAGS;
         Type type = new TypeToken<BaseAdsListResponse<WebEventTag>>() {}.getType();
 
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -61,7 +58,7 @@ public class TwitterAdsWebEventApiImpl implements TwitterAdsWebEventApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(webEventTagId, "Web Event Tag Id");
         HttpParameter[] params = new HttpParameter[]{new HttpParameter(PARAM_WITH_DELETED, withDeleted)};
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_WEB_EVENT_TAGS + webEventTagId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEB_EVENT_TAGS + webEventTagId;
         Type type = new TypeToken<BaseAdsResponse<WebEventTag>>() {}.getType();
         return twitterAdsClient.executeHttpRequest(url, params, type, HttpVerb.GET);
     }
@@ -72,7 +69,7 @@ public class TwitterAdsWebEventApiImpl implements TwitterAdsWebEventApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
 
         List<HttpParameter> params = validateAndCreateParamsForCreateWebEventTag(name, clickWindow, viewThroughWindow, type, retargetingEnabled);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_WEB_EVENT_TAGS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEB_EVENT_TAGS;
         Type typeToken = new TypeToken<BaseAdsResponse<WebEventTag>>() {}.getType();
         return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), typeToken, HttpVerb.POST);
     }
@@ -84,7 +81,7 @@ public class TwitterAdsWebEventApiImpl implements TwitterAdsWebEventApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(webEventTagId, "Web Event Tag Id");
         List<HttpParameter> params = validateAndCreateParamsForUpdateWebEventTag(name, clickWindow, viewThroughWindow, type, retargetingEnabled);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_WEB_EVENT_TAGS + webEventTagId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEB_EVENT_TAGS + webEventTagId;
         Type typeToken = new TypeToken<BaseAdsResponse<WebEventTag>>() {}.getType();
         return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), typeToken, HttpVerb.PUT);
     }
@@ -93,7 +90,7 @@ public class TwitterAdsWebEventApiImpl implements TwitterAdsWebEventApi {
     public BaseAdsResponse<WebEventTag> deleteWebEventTag(String accountId, String webEventTagId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(webEventTagId, "Web Event Tag Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_WEB_EVENT_TAGS + webEventTagId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEB_EVENT_TAGS + webEventTagId;
         Type typeToken = new TypeToken<BaseAdsResponse<WebEventTag>>() {}.getType();
         return twitterAdsClient.executeHttpRequest(url, null, typeToken, HttpVerb.DELETE);
     }

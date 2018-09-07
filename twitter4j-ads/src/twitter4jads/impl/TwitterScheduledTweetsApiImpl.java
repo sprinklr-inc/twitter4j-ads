@@ -123,7 +123,7 @@ public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetApi {
     public BaseAdsResponse<ScheduledTweet> delete(String accountId, String scheduledTweetId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(scheduledTweetId, "Tweet Id");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_2 + accountId + PATH_SCHEDULED_TWEETS + scheduledTweetId;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_SCHEDULED_TWEETS + scheduledTweetId;
         Type type = new TypeToken<BaseAdsResponse<ScheduledTweet>>() {}.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);
     }
