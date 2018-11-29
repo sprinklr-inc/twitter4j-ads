@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import twitter4jads.*;
-import twitter4jads.models.ads.TrackingTag;
 import twitter4jads.api.TwitterAdsLineItemApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.http.HttpResponse;
@@ -20,6 +19,8 @@ import twitter4jads.util.TwitterAdUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static twitter4jads.TwitterAdsConstants.*;
@@ -238,7 +239,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
     @Override
     public BaseAdsResponse<AssociateMediaCreativeResponse> associateMediaCreativeWithAccount(String accountId, String lineItemId,
                                                                                              String accountMediaId, String landingUrl)
-        throws TwitterException {
+            throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(lineItemId, "Line Item Id");
         TwitterAdUtil.ensureNotNull(accountMediaId, "Account Media Id");
@@ -364,7 +365,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
     @Override
     public BaseAdsListResponseIterable<LineItemAppResponse> getForLineItemAppIds(String accountId, String lineItemId, List<String> lineItemAppIds,
                                                                                  Integer count, String cursor, boolean withDeleted)
-        throws TwitterException {
+            throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         if (StringUtils.isBlank(lineItemId) && CollectionUtils.isEmpty(lineItemAppIds) && StringUtils.isBlank(cursor)) {
             throw new TwitterException("Details for fetching Apps are missing, either Line Item Id or App Ids or Cursor should be provided");
@@ -421,9 +422,9 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         }
         if (TwitterAdUtil.isNotNull(bidAmountLocalMicro) && bidAmountLocalMicro.isPresent()) {
             params.add(new HttpParameter(PARAM_BID_AMOUNT_LOCAL_MICRO, bidAmountLocalMicro.get()));
-            if (bidType != null) {
-                params.add(new HttpParameter(PARAM_BID_TYPE, bidType.name()));
-            }
+        }
+        if (bidType != null) {
+            params.add(new HttpParameter(PARAM_BID_TYPE, bidType.name()));
         }
 
         if (chargeBy != null && chargeBy.isPresent()) {
@@ -474,11 +475,12 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             }
         }
 
-        if (startTime == null || !startTime.isPresent()) {
-            params.add(new HttpParameter(PARAM_START_TIME, String.valueOf(startTime)));
+        final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        if (startTime != null && startTime.isPresent()) {
+            params.add(new HttpParameter(PARAM_START_TIME, df.format(startTime.get())));
         }
-        if (endTime == null || !endTime.isPresent()) {
-            params.add(new HttpParameter(PARAM_END_TIME, String.valueOf(endTime)));
+        if (endTime != null && endTime.isPresent()) {
+            params.add(new HttpParameter(PARAM_END_TIME, df.format(endTime.get())));
         }
         if (TwitterAdUtil.isNotNull(budget)) {
             params.add(new HttpParameter(PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO, budget));
@@ -512,7 +514,9 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         if (TwitterAdUtil.isNotNull(bidAmountLocalMicro) && bidAmountLocalMicro.isPresent()) {
             params.add(new HttpParameter(PARAM_BID_AMOUNT_LOCAL_MICRO, bidAmountLocalMicro.get()));
         }
-        params.add(new HttpParameter(PARAM_BID_TYPE, bidType.name()));
+        if (bidType != null) {
+            params.add(new HttpParameter(PARAM_BID_TYPE, bidType.name()));
+        }
 
         if (chargeBy != null && chargeBy.isPresent()) {
             params.add(new HttpParameter(PARAM_CHARGE_BY, chargeBy.get()));
@@ -526,19 +530,15 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         if (TwitterAdUtil.isNotNull(targetCPA)) {
             params.add(new HttpParameter(PARAM_TARGET_CPA_LOCAL_MICRO, targetCPA));
         }
-        if (startTime == null || !startTime.isEmpty()) {
-            params.add(new HttpParameter(PARAM_START_TIME, String.valueOf(startTime)));
+        if (startTime != null && !startTime.isEmpty()) {
+            params.add(new HttpParameter(PARAM_START_TIME, startTime));
         }
-        if (endTime == null || !endTime.isEmpty()) {
-            params.add(new HttpParameter(PARAM_END_TIME, String.valueOf(endTime)));
+        if (endTime != null && !endTime.isEmpty()) {
+            params.add(new HttpParameter(PARAM_END_TIME, endTime));
         }
 
         if (TwitterAdUtil.isNotNullOrEmpty(optimization)) {
             params.add(new HttpParameter(PARAM_OPTIMIZATION, optimization));
-        }
-
-        if (bidType == BidType.AUTO) {
-            params.add(new HttpParameter(PARAM_BID_AMOUNT_LOCAL_MICRO, "null"));
         }
 
         if (status != null) {

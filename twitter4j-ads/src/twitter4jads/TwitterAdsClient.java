@@ -58,7 +58,7 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
 
 
     public String getBaseAdsAPIUrl() {
-        return ADS_API_URL;//conf.getAdsAPIURL();
+        return conf.getAdsAPIURL();
     }
 
     public String getMediaUploadBaseUrl() {

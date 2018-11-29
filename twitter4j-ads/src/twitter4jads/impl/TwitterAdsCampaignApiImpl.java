@@ -206,9 +206,6 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
             params.add(new HttpParameter(PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO, String.valueOf(totalBudgetAmountLocalMicro)));
         }
 
-        if (endTime != null && endTime.isPresent()) {
-            params.add(new HttpParameter(PARAM_END_TIME, String.valueOf(endTime)));
-        }
         //The Ones that cannot be changed to null below
         if (name != null && name.isPresent()) {
             params.add(new HttpParameter(PARAM_NAME, name.get()));
