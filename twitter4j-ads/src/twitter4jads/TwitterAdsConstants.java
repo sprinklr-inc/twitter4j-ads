@@ -14,7 +14,7 @@ public interface TwitterAdsConstants {
     long MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH = 70L;
 
     String TWEET_PREVIEW_PATH = "/tweet/preview/";
-    String UPLOAD_MEDIA_URL = "1.1/media/";
+    String UPLOAD_MEDIA_URL = "media/";
     String UPLOAD_JSON = "upload.json";
     String PREFIX_BATCH_ACCOUNTS_V3 = "3/batch/accounts/";
     String V3_PREFIX_STATS_JOB_ACCOUNTS_URI = "3/stats/jobs/accounts/";
