@@ -17,6 +17,9 @@ public class RequestParameters {
     @SerializedName("total_count")
     private Long totalCount;
 
+    @SerializedName("operation_type")
+    private String operationType;
+
     public Map<String, Object> getParams() {
         return params;
     }
@@ -31,5 +34,13 @@ public class RequestParameters {
 
     public void setTotalCount(Long totalCount) {
         this.totalCount = totalCount;
+    }
+
+    public String getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 }

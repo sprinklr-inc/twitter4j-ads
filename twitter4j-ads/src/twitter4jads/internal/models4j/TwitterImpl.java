@@ -27,7 +27,12 @@ import twitter4jads.internal.json.TwitterUploadMediaResponseImpl;
 import twitter4jads.internal.util.z_T4JInternalStringUtil;
 import twitter4jads.util.TwitterAdUtil;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -133,7 +138,7 @@ public class TwitterImpl extends TwitterBaseImpl implements Twitter {
      */
     @Override
     public Status showStatus(long id) throws TwitterException {
-        return factory.createStatus(get(conf.getRestBaseURL() + "statuses/show/" + id + ".json",
+        return factory.createStatus(get(conf.getRestBaseURL() + "statuses/show/" + id + ".json?include_card_uri=true",
                                         mergeParameters(new HttpParameter[]{INCLUDE_MY_RETWEET}, new HttpParameter[]{TWEET_MODE})));
     }
 
@@ -180,7 +185,7 @@ public class TwitterImpl extends TwitterBaseImpl implements Twitter {
             throw new TwitterException("Illegal argument: Status Ids cannot be null, and maximum upto 100 tweets per request");
         }
         return factory.createStatusList(
-                get(conf.getRestBaseURL() + "statuses/lookup.json?id=" + z_T4JInternalStringUtil.join(statusIds), new HttpParameter[]{TWEET_MODE}));
+                get(conf.getRestBaseURL() + "statuses/lookup.json?id=" + z_T4JInternalStringUtil.join(statusIds) + "&include_card_uri=true", new HttpParameter[]{TWEET_MODE}));
     }
 
     @Override

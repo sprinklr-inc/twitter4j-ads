@@ -4,13 +4,27 @@ import com.google.common.base.Optional;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import twitter4jads.*;
-import twitter4jads.models.ads.TrackingTag;
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.BaseAdsListResponseIterable;
+import twitter4jads.BaseAdsResponse;
+import twitter4jads.TwitterAdsClient;
+import twitter4jads.TwitterAdsConstants;
 import twitter4jads.api.TwitterAdsLineItemApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.http.HttpResponse;
 import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.ads.*;
+import twitter4jads.models.ads.BidType;
+import twitter4jads.models.ads.EntityStatus;
+import twitter4jads.models.ads.HttpVerb;
+import twitter4jads.models.ads.LineItem;
+import twitter4jads.models.ads.LineItemAppResponse;
+import twitter4jads.models.ads.Placement;
+import twitter4jads.models.ads.ProductType;
+import twitter4jads.models.ads.PromotedAccount;
+import twitter4jads.models.ads.Sentiments;
+import twitter4jads.models.ads.TrackingTag;
+import twitter4jads.models.ads.TwitterAdObjective;
+import twitter4jads.models.ads.TwitterOSType;
 import twitter4jads.models.ads.sort.LineItemsSortByField;
 import twitter4jads.models.ads.sort.PromotedAccountsSortByField;
 import twitter4jads.models.media.TwitterMediaCallToAction;
@@ -20,9 +34,58 @@ import twitter4jads.util.TwitterAdUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
-import static twitter4jads.TwitterAdsConstants.*;
+import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_MEDIA_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_ADVERTISER_DOMAIN;
+import static twitter4jads.TwitterAdsConstants.PARAM_APP_STORE_IDENTIFIER;
+import static twitter4jads.TwitterAdsConstants.PARAM_BID_AMOUNT_LOCAL_MICRO;
+import static twitter4jads.TwitterAdsConstants.PARAM_BID_TYPE;
+import static twitter4jads.TwitterAdsConstants.PARAM_BID_UNIT;
+import static twitter4jads.TwitterAdsConstants.PARAM_CALL_TO_ACTION;
+import static twitter4jads.TwitterAdsConstants.PARAM_CALL_TO_ACTION_URL;
+import static twitter4jads.TwitterAdsConstants.PARAM_CAMPAIGN_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_CAMPAIGN_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_CATEGORIES;
+import static twitter4jads.TwitterAdsConstants.PARAM_CHARGE_BY;
+import static twitter4jads.TwitterAdsConstants.PARAM_COUNT;
+import static twitter4jads.TwitterAdsConstants.PARAM_CURSOR;
+import static twitter4jads.TwitterAdsConstants.PARAM_END_TIME;
+import static twitter4jads.TwitterAdsConstants.PARAM_ENTITY_STATUS;
+import static twitter4jads.TwitterAdsConstants.PARAM_FUNDING_INSTRUMENT_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_INCLUDE_SENTIMENT;
+import static twitter4jads.TwitterAdsConstants.PARAM_LANDING_URL;
+import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_APP_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_MATCH_RELEVANT_POPULAR_QUERIES;
+import static twitter4jads.TwitterAdsConstants.PARAM_NAME;
+import static twitter4jads.TwitterAdsConstants.PARAM_OBJECTIVE;
+import static twitter4jads.TwitterAdsConstants.PARAM_OPTIMIZATION;
+import static twitter4jads.TwitterAdsConstants.PARAM_OS_TYPE;
+import static twitter4jads.TwitterAdsConstants.PARAM_PLACEMENTS;
+import static twitter4jads.TwitterAdsConstants.PARAM_PRIMARY_WEB_EVENT_TAG;
+import static twitter4jads.TwitterAdsConstants.PARAM_PRODUCT_TYPE;
+import static twitter4jads.TwitterAdsConstants.PARAM_PROMOTED_ACCOUNTS_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_SORT_BY;
+import static twitter4jads.TwitterAdsConstants.PARAM_START_TIME;
+import static twitter4jads.TwitterAdsConstants.PARAM_TARGET_CPA_LOCAL_MICRO;
+import static twitter4jads.TwitterAdsConstants.PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO;
+import static twitter4jads.TwitterAdsConstants.PARAM_TRACKING_TAGS;
+import static twitter4jads.TwitterAdsConstants.PARAM_USER_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
+import static twitter4jads.TwitterAdsConstants.PATH_LINE_ITEMS;
+import static twitter4jads.TwitterAdsConstants.PATH_LINE_ITEM_APPS;
+import static twitter4jads.TwitterAdsConstants.PATH_MEDIA_CREATIVES;
+import static twitter4jads.TwitterAdsConstants.PATH_PROMOTED_ACCOUNTS;
+import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
+import static twitter4jads.TwitterAdsConstants.PRE_ROLL_CALL_TO_ACTION;
 
 /**
  * User: abhay
@@ -73,7 +136,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             parameters = params.toArray(new HttpParameter[params.size()]);
         }
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_LINE_ITEMS;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_LINE_ITEMS;
         final HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, parameters);
         try {
             Type type = new TypeToken<BaseAdsResponse<LineItem>>() {
@@ -99,7 +162,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         final List<HttpParameter> params =
                 validateUpdateLineItemParameters(accountId, lineItemId, bidType, automaticallySelectBid, bidAmountLocalMicro, status,
                         includeSentiment, matchRelevantPopularQueries, chargeBy, bidUnit, optimization, advertiserDomain, iabCategories, budget, name, startTime, endTime, targetCPA, trackingTags);
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_LINE_ITEMS +
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_LINE_ITEMS +
                 lineItemId;
         Type type = new TypeToken<BaseAdsResponse<LineItem>>() {
         }.getType();
@@ -112,7 +175,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(lineItemId, "LineItem Id");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_LINE_ITEMS + lineItemId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_LINE_ITEMS + lineItemId;
         final Type type = new TypeToken<BaseAdsResponse<LineItem>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);
@@ -145,7 +208,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         if (sortByField != null && sortByField.isPresent()) {
             params.add(new HttpParameter(PARAM_SORT_BY, sortByField.get().getField()));
         }
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_LINE_ITEMS;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_LINE_ITEMS;
         final Type type = new TypeToken<BaseAdsListResponse<LineItem>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
@@ -155,7 +218,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
     public BaseAdsResponse<LineItem> getLineItemById(String accountId, String lineItemId, boolean withDeleted) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(lineItemId, "lineItemId");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_LINE_ITEMS + lineItemId;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_LINE_ITEMS + lineItemId;
         HttpParameter[] params = new HttpParameter[]{new HttpParameter(PARAM_WITH_DELETED, withDeleted)};
         Type type = new TypeToken<BaseAdsResponse<LineItem>>() {
         }.getType();
@@ -172,7 +235,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         params.add(new HttpParameter(PARAM_LINE_ITEM_ID, lineItemId));
         params.add(new HttpParameter(PARAM_USER_ID, userId));
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_PROMOTED_ACCOUNTS;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_PROMOTED_ACCOUNTS;
         final HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             final Type type = new TypeToken<BaseAdsResponse<PromotedAccount>>() {
@@ -202,7 +265,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         if (StringUtils.isNotBlank(promotedAccountsIdsAsString)) {
             params.add(new HttpParameter(PARAM_PROMOTED_ACCOUNTS_IDS, promotedAccountsIdsAsString));
         }
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_PROMOTED_ACCOUNTS;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_PROMOTED_ACCOUNTS;
         Type type = new TypeToken<BaseAdsListResponse<PromotedAccount>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
@@ -223,7 +286,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         params.add(new HttpParameter(PARAM_CALL_TO_ACTION, twitterCallToActionType.name()));
         params.add(new HttpParameter(PARAM_CALL_TO_ACTION_URL, callToActionUrl));
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PRE_ROLL_CALL_TO_ACTION;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PRE_ROLL_CALL_TO_ACTION;
         final HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             final Type type = new TypeToken<BaseAdsResponse<TwitterMediaCallToAction>>() {
@@ -251,7 +314,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         if (TwitterAdUtil.isNotNullOrEmpty(landingUrl)) {
             params.add(new HttpParameter(PARAM_LANDING_URL, landingUrl));
         }
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_MEDIA_CREATIVES;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_CREATIVES;
         final HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             final Type type = new TypeToken<BaseAdsResponse<AssociateMediaCreativeResponse>>() {
@@ -281,7 +344,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             params.add(new HttpParameter(PARAM_PROMOTED_ACCOUNTS_IDS, promotedAccountsIdsAsString));
         }
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_PROMOTED_ACCOUNTS;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_PROMOTED_ACCOUNTS;
         final Type type = new TypeToken<BaseAdsListResponse<PromotedAccount>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
@@ -304,7 +367,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             params.add(new HttpParameter(PARAM_CALL_TO_ACTION, twitterCallToActionType.name()));
         }
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + channelId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + channelId;
         final HttpResponse httpResponse = twitterAdsClient.putRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             final Type type = new TypeToken<BaseAdsResponse<TwitterMediaCallToAction>>() {
@@ -323,7 +386,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_ID, channelId));
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + channelId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + channelId;
         final Type type = new TypeToken<BaseAdsResponse<TwitterMediaCallToAction>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.DELETE);
@@ -344,7 +407,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         params.add(new HttpParameter(PARAM_APP_STORE_IDENTIFIER, appStoreIdentifier));
         params.add(new HttpParameter(PARAM_OS_TYPE, twitterOSType.name()));
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_LINE_ITEM_APPS;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_LINE_ITEM_APPS;
         final Type type = new TypeToken<BaseAdsResponse<LineItemAppResponse>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.POST);
@@ -355,7 +418,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(lineItemAppId, "Line Item App Id");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_LINE_ITEM_APPS + "/" + lineItemAppId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_LINE_ITEM_APPS + "/" + lineItemAppId;
         final Type type = new TypeToken<BaseAdsResponse<LineItemAppResponse>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.GET);
@@ -385,7 +448,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             params.add(new HttpParameter(PARAM_COUNT, count.toString()));
         }
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_LINE_ITEM_APPS;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_LINE_ITEM_APPS;
         final Type type = new TypeToken<BaseAdsListResponse<LineItemAppResponse>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
@@ -396,7 +459,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(lineItemAppId, "Line Item App Id");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_LINE_ITEM_APPS + "/" + lineItemAppId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_LINE_ITEM_APPS + "/" + lineItemAppId;
         final Type type = new TypeToken<BaseAdsResponse<LineItemAppResponse>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);

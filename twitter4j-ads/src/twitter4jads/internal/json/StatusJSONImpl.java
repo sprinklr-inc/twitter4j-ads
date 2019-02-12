@@ -20,7 +20,18 @@ import org.apache.commons.lang3.StringUtils;
 import twitter4jads.conf.Configuration;
 import twitter4jads.internal.http.HttpResponse;
 import twitter4jads.internal.logging.Logger;
-import twitter4jads.internal.models4j.*;
+import twitter4jads.internal.models4j.GeoLocation;
+import twitter4jads.internal.models4j.HashtagEntity;
+import twitter4jads.internal.models4j.JSONResponse;
+import twitter4jads.internal.models4j.MediaEntity;
+import twitter4jads.internal.models4j.Place;
+import twitter4jads.internal.models4j.ResponseList;
+import twitter4jads.internal.models4j.Status;
+import twitter4jads.internal.models4j.TweetScope;
+import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.internal.models4j.URLEntity;
+import twitter4jads.internal.models4j.User;
+import twitter4jads.internal.models4j.UserMentionEntity;
 import twitter4jads.internal.org.json.JSONArray;
 import twitter4jads.internal.org.json.JSONException;
 import twitter4jads.internal.org.json.JSONObject;
@@ -28,7 +39,11 @@ import twitter4jads.internal.org.json.JSONObject;
 import java.util.Arrays;
 import java.util.Date;
 
-import static twitter4jads.internal.json.z_T4JInternalParseUtil.*;
+import static twitter4jads.internal.json.z_T4JInternalParseUtil.getBoolean;
+import static twitter4jads.internal.json.z_T4JInternalParseUtil.getDate;
+import static twitter4jads.internal.json.z_T4JInternalParseUtil.getLong;
+import static twitter4jads.internal.json.z_T4JInternalParseUtil.getRawString;
+import static twitter4jads.internal.json.z_T4JInternalParseUtil.getUnescapedString;
 
 /**
  * A data class representing one single status of a user.
@@ -76,8 +91,10 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
     private String[] placeIds;
     private TweetScope scopes;
     private String language;
+    private String cardUri;
 
     private Boolean hierarchicalMessage = false;
+    private String hierarchicalMessageId;
 
     /*package*/StatusJSONImpl(HttpResponse res, Configuration conf) throws TwitterException {
         super(res);
@@ -102,173 +119,60 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
     }
 
     /* Only for serialization purposes. */
-    /*package*/ StatusJSONImpl() {
+    /*package*/
+    @SuppressWarnings("unused")
+    StatusJSONImpl() {
 
     }
 
-    private void init(JSONObject json) throws TwitterException {
-        id = getLong("id", json);
-        idStr = getRawString("id_str", json);
-        source = getUnescapedString("source", json);
-        createdAt = getDate("created_at", json);
-        isTruncated = getBoolean("truncated", json);
-        inReplyToStatusId = getLong("in_reply_to_status_id", json);
-        inReplyToStatusIdStr = getRawString("in_reply_to_status_id_str", json);
-        quotedStatusId = getLong("quoted_status_id", json);
-        quotedStatusIdStr = getRawString("quoted_status_id_str", json);
-        inReplyToUserId = getLong("in_reply_to_user_id", json);
-        inReplyToUserIdStr = getRawString("in_reply_to_user_id_str", json);
-        isFavorited = getBoolean("favorited", json);
-        inReplyToScreenName = getUnescapedString("in_reply_to_screen_name", json);
-        retweetCount = getLong("retweet_count", json);
-        favoriteCount = getLong("favorite_count", json);
-        isPossiblySensitive = getBoolean("possibly_sensitive", json);
+    public static ResponseList<Status> createStatusList(HttpResponse res, Configuration conf) throws TwitterException {
         try {
-            if (!json.isNull("user")) {
-                user = new UserJSONImpl(json.getJSONObject("user"));
-            }
-            geoLocation = z_T4JInternalJSONImplFactory.createGeoLocation(json);
-            if (!json.isNull("place")) {
-                place = new PlaceJSONImpl(json.getJSONObject("place"));
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.clearThreadLocalMap();
             }
 
-            if (!json.isNull("retweeted_status")) {
-                retweetedStatus = new StatusJSONImpl(json.getJSONObject("retweeted_status"));
-            }
+            JSONArray list = res.asJSONArray();
+            int size = list.length();
+            ResponseList<Status> statuses = new ResponseListImpl<>(size, res);
 
-            if (!json.isNull("quoted_status")) {
-                quotedStatus = new StatusJSONImpl(json.getJSONObject("quoted_status"));
-            }
-
-            if (!json.isNull("contributors")) {
-                JSONArray contributorsArray = json.getJSONArray("contributors");
-                contributorsIDs = new long[contributorsArray.length()];
-                for (int i = 0; i < contributorsArray.length(); i++) {
-                    contributorsIDs[i] = Long.parseLong(contributorsArray.getString(i));
+            //noinspection Duplicates
+            for (int i = 0; i < size; i++) {
+                JSONObject json = list.getJSONObject(i);
+                Status status = new StatusJSONImpl(json);
+                if (conf.isJSONStoreEnabled()) {
+                    DataObjectFactoryUtil.registerJSONObject(status, json);
                 }
-            } else {
-                contributorsIDs = new long[0];
+                statuses.add(status);
             }
-            language = getRawString("lang", json);
-            if (!json.isNull("scopes")) {
-                JSONObject scopes = json.getJSONObject("scopes");
-                if (!scopes.isNull("place_ids")) {
-                    JSONArray placeIdArray = scopes.getJSONArray("place_ids");
-                    int len = placeIdArray.length();
-                    placeIds = new String[len];
-                    for (int i = 0; i < len; i++) {
-                        placeIds[i] = placeIdArray.getString(i);
-                    }
-                }
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.registerJSONObject(statuses, list);
             }
-            if (!json.isNull("entities")) {
-                JSONObject entities = json.getJSONObject("entities");
-                int len;
-                if (!entities.isNull("user_mentions")) {
-                    JSONArray userMentionsArray = entities.getJSONArray("user_mentions");
-                    len = userMentionsArray.length();
-                    userMentionEntities = new UserMentionEntity[len];
-                    for (int i = 0; i < len; i++) {
-                        userMentionEntities[i] = new UserMentionEntityJSONImpl(userMentionsArray.getJSONObject(i));
-                    }
-                }
-                if (!entities.isNull("urls")) {
-                    JSONArray urlsArray = entities.getJSONArray("urls");
-                    len = urlsArray.length();
-                    urlEntities = new URLEntity[len];
-                    for (int i = 0; i < len; i++) {
-                        urlEntities[i] = new URLEntityJSONImpl(urlsArray.getJSONObject(i));
-                    }
-                }
-
-                if (!entities.isNull("hashtags")) {
-                    JSONArray hashtagsArray = entities.getJSONArray("hashtags");
-                    len = hashtagsArray.length();
-                    hashtagEntities = new HashtagEntity[len];
-                    for (int i = 0; i < len; i++) {
-                        hashtagEntities[i] = new HashtagEntityJSONImpl(hashtagsArray.getJSONObject(i));
-                    }
-                }
-
-                if (!entities.isNull("media")) {
-                    JSONArray mediaArray = entities.getJSONArray("media");
-                    len = mediaArray.length();
-                    mediaEntities = new MediaEntity[len];
-                    for (int i = 0; i < len; i++) {
-                        mediaEntities[i] = new MediaEntityJSONImpl(mediaArray.getJSONObject(i));
-                    }
-                }
-            }
-
-            if (!json.isNull("extended_entities")) {
-                JSONObject entities = json.getJSONObject("extended_entities");
-                int len;
-                if (!entities.isNull("media")) {
-                    JSONArray mediaArray = entities.getJSONArray("media");
-                    len = mediaArray.length();
-                    extendedMediaEntities = new MediaEntity[len];
-                    for (int i = 0; i < len; i++) {
-                        extendedMediaEntities[i] = new MediaEntityJSONImpl(mediaArray.getJSONObject(i));
-                    }
-                }
-            }
-
-            if (!json.isNull("display_text_range")) {
-                JSONArray displayTextRangeArray = json.getJSONArray("display_text_range");
-                int len = displayTextRangeArray.length();
-                displayTextRange = new String[len];
-                for (int i = 0; i < len; i++) {
-                    displayTextRange[i] = displayTextRangeArray.getString(i);
-                }
-            }
-
-            userMentionEntities = userMentionEntities == null ? new UserMentionEntity[0] : userMentionEntities;
-            urlEntities = urlEntities == null ? new URLEntity[0] : urlEntities;
-            hashtagEntities = hashtagEntities == null ? new HashtagEntity[0] : hashtagEntities;
-            mediaEntities = mediaEntities == null ? new MediaEntity[0] : mediaEntities;
-            extendedMediaEntities = extendedMediaEntities == null ? mediaEntities : extendedMediaEntities;
-
-            fullText = getRawString("full_text", json);
-            actualText = getRawString("text", json);
-
-            if (fullText != null) {
-                actualText = fullText;
-            }
-
-            if (!json.isNull("current_user_retweet")) {
-                currentUserRetweetId = json.getJSONObject("current_user_retweet").getLong("id");
-            }
-
-            if (!json.isNull("extended_tweet")) {
-                extendedTweet = new StatusJSONImpl(json.getJSONObject("extended_tweet"));
-                String extendedTweetText = StringUtils.isNotEmpty(extendedTweet.getFullText()) ? extendedTweet.getFullText() : extendedTweet.getText();
-                if (extendedTweet != null && StringUtils.isNotEmpty(extendedTweetText)) {
-                    actualText = extendedTweet.getFullText();
-                    userMentionEntities = extendedTweet.getUserMentionEntities();
-                    urlEntities = extendedTweet.getURLEntities();
-                    hashtagEntities = extendedTweet.getHashtagEntities();
-                    mediaEntities = extendedTweet.getMediaEntities();
-                    extendedMediaEntities = extendedTweet.getExtendedMediaEntities();
-                }
-
-            }
-
-            text = HTMLEntity.unescapeAndSlideEntityIncdices(actualText, userMentionEntities, urlEntities, hashtagEntities, mediaEntities);
-
+            return statuses;
         } catch (JSONException jsone) {
             throw new TwitterException(jsone);
         }
     }
 
-    @Override
-    public int compareTo(Status that) {
-        long delta = this.id - that.getId();
-        if (delta < Integer.MIN_VALUE) {
-            return Integer.MIN_VALUE;
-        } else if (delta > Integer.MAX_VALUE) {
-            return Integer.MAX_VALUE;
+    public static ResponseList<Status> parseStatuses(Configuration conf, JSONArray list) throws JSONException, TwitterException {
+        if (conf.isJSONStoreEnabled()) {
+            DataObjectFactoryUtil.clearThreadLocalMap();
         }
-        return (int) delta;
+
+        int size = list.length();
+        ResponseList<Status> statuses = new ResponseListImpl<>(size, null);
+        //noinspection Duplicates
+        for (int i = 0; i < size; i++) {
+            JSONObject json = list.getJSONObject(i);
+            Status status = new StatusJSONImpl(json);
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.registerJSONObject(status, json);
+            }
+            statuses.add(status);
+        }
+        if (conf.isJSONStoreEnabled()) {
+            DataObjectFactoryUtil.registerJSONObject(statuses, list);
+        }
+        return statuses;
     }
 
     /**
@@ -517,53 +421,180 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
         return placeIds;
     }
 
-    public void setPlaceIds(String[] placeIds) {
-        this.placeIds = placeIds;
-    }
-
-    public static ResponseList<Status> createStatusList(HttpResponse res, Configuration conf) throws TwitterException {
+    @SuppressWarnings("Duplicates")
+    private void init(JSONObject json) throws TwitterException {
+        id = getLong("id", json);
+        idStr = getRawString("id_str", json);
+        source = getUnescapedString("source", json);
+        createdAt = getDate("created_at", json);
+        isTruncated = getBoolean("truncated", json);
+        inReplyToStatusId = getLong("in_reply_to_status_id", json);
+        inReplyToStatusIdStr = getRawString("in_reply_to_status_id_str", json);
+        quotedStatusId = getLong("quoted_status_id", json);
+        quotedStatusIdStr = getRawString("quoted_status_id_str", json);
+        inReplyToUserId = getLong("in_reply_to_user_id", json);
+        inReplyToUserIdStr = getRawString("in_reply_to_user_id_str", json);
+        isFavorited = getBoolean("favorited", json);
+        inReplyToScreenName = getUnescapedString("in_reply_to_screen_name", json);
+        retweetCount = getLong("retweet_count", json);
+        favoriteCount = getLong("favorite_count", json);
+        isPossiblySensitive = getBoolean("possibly_sensitive", json);
         try {
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.clearThreadLocalMap();
+            if (!json.isNull("user")) {
+                user = new UserJSONImpl(json.getJSONObject("user"));
             }
-            JSONArray list = res.asJSONArray();
-            int size = list.length();
-            ResponseList<Status> statuses = new ResponseListImpl<Status>(size, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject json = list.getJSONObject(i);
-                Status status = new StatusJSONImpl(json);
-                if (conf.isJSONStoreEnabled()) {
-                    DataObjectFactoryUtil.registerJSONObject(status, json);
+            geoLocation = z_T4JInternalJSONImplFactory.createGeoLocation(json);
+            if (!json.isNull("place")) {
+                place = new PlaceJSONImpl(json.getJSONObject("place"));
+            }
+
+            if (!json.isNull("retweeted_status")) {
+                retweetedStatus = new StatusJSONImpl(json.getJSONObject("retweeted_status"));
+            }
+
+            if (!json.isNull("quoted_status")) {
+                quotedStatus = new StatusJSONImpl(json.getJSONObject("quoted_status"));
+            }
+
+            if (!json.isNull("contributors")) {
+                JSONArray contributorsArray = json.getJSONArray("contributors");
+                contributorsIDs = new long[contributorsArray.length()];
+                for (int i = 0; i < contributorsArray.length(); i++) {
+                    contributorsIDs[i] = Long.parseLong(contributorsArray.getString(i));
                 }
-                statuses.add(status);
+            } else {
+                contributorsIDs = new long[0];
             }
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.registerJSONObject(statuses, list);
+            language = getRawString("lang", json);
+            if (!json.isNull("scopes")) {
+                JSONObject scopes = json.getJSONObject("scopes");
+                if (!scopes.isNull("place_ids")) {
+                    JSONArray placeIdArray = scopes.getJSONArray("place_ids");
+                    int len = placeIdArray.length();
+                    placeIds = new String[len];
+                    for (int i = 0; i < len; i++) {
+                        placeIds[i] = placeIdArray.getString(i);
+                    }
+                }
             }
-            return statuses;
+            if (!json.isNull("entities")) {
+                JSONObject entities = json.getJSONObject("entities");
+                int len;
+                if (!entities.isNull("user_mentions")) {
+                    JSONArray userMentionsArray = entities.getJSONArray("user_mentions");
+                    len = userMentionsArray.length();
+                    userMentionEntities = new UserMentionEntity[len];
+                    for (int i = 0; i < len; i++) {
+                        userMentionEntities[i] = new UserMentionEntityJSONImpl(userMentionsArray.getJSONObject(i));
+                    }
+                }
+                if (!entities.isNull("urls")) {
+                    JSONArray urlsArray = entities.getJSONArray("urls");
+                    len = urlsArray.length();
+                    urlEntities = new URLEntity[len];
+                    for (int i = 0; i < len; i++) {
+                        urlEntities[i] = new URLEntityJSONImpl(urlsArray.getJSONObject(i));
+                    }
+                }
+
+                if (!entities.isNull("hashtags")) {
+                    JSONArray hashtagsArray = entities.getJSONArray("hashtags");
+                    len = hashtagsArray.length();
+                    hashtagEntities = new HashtagEntity[len];
+                    for (int i = 0; i < len; i++) {
+                        hashtagEntities[i] = new HashtagEntityJSONImpl(hashtagsArray.getJSONObject(i));
+                    }
+                }
+
+                if (!entities.isNull("media")) {
+                    JSONArray mediaArray = entities.getJSONArray("media");
+                    len = mediaArray.length();
+                    mediaEntities = new MediaEntity[len];
+                    for (int i = 0; i < len; i++) {
+                        mediaEntities[i] = new MediaEntityJSONImpl(mediaArray.getJSONObject(i));
+                    }
+                }
+            }
+
+            if (!json.isNull("extended_entities")) {
+                JSONObject entities = json.getJSONObject("extended_entities");
+                int len;
+                if (!entities.isNull("media")) {
+                    JSONArray mediaArray = entities.getJSONArray("media");
+                    len = mediaArray.length();
+                    extendedMediaEntities = new MediaEntity[len];
+                    for (int i = 0; i < len; i++) {
+                        extendedMediaEntities[i] = new MediaEntityJSONImpl(mediaArray.getJSONObject(i));
+                    }
+                }
+            }
+
+            if (!json.isNull("display_text_range")) {
+                JSONArray displayTextRangeArray = json.getJSONArray("display_text_range");
+                int len = displayTextRangeArray.length();
+                displayTextRange = new String[len];
+                for (int i = 0; i < len; i++) {
+                    displayTextRange[i] = displayTextRangeArray.getString(i);
+                }
+            }
+
+            userMentionEntities = userMentionEntities == null ? new UserMentionEntity[0] : userMentionEntities;
+            urlEntities = urlEntities == null ? new URLEntity[0] : urlEntities;
+            hashtagEntities = hashtagEntities == null ? new HashtagEntity[0] : hashtagEntities;
+            mediaEntities = mediaEntities == null ? new MediaEntity[0] : mediaEntities;
+            extendedMediaEntities = extendedMediaEntities == null ? mediaEntities : extendedMediaEntities;
+
+            fullText = getRawString("full_text", json);
+            actualText = getRawString("text", json);
+
+            if (fullText != null) {
+                actualText = fullText;
+            }
+
+            if (!json.isNull("current_user_retweet")) {
+                currentUserRetweetId = json.getJSONObject("current_user_retweet").getLong("id");
+            }
+
+            if (!json.isNull("extended_tweet")) {
+                extendedTweet = new StatusJSONImpl(json.getJSONObject("extended_tweet"));
+                String extendedTweetText = StringUtils.isNotEmpty(extendedTweet.getFullText()) ? extendedTweet.getFullText() : extendedTweet.getText();
+                if (extendedTweet != null && StringUtils.isNotEmpty(extendedTweetText)) {
+                    actualText = extendedTweet.getFullText();
+                    userMentionEntities = extendedTweet.getUserMentionEntities();
+                    urlEntities = extendedTweet.getURLEntities();
+                    hashtagEntities = extendedTweet.getHashtagEntities();
+                    mediaEntities = extendedTweet.getMediaEntities();
+                    extendedMediaEntities = extendedTweet.getExtendedMediaEntities();
+                }
+
+            }
+
+            text = HTMLEntity.unescapeAndSlideEntityIncdices(actualText, userMentionEntities, urlEntities, hashtagEntities, mediaEntities);
+
+            if (!json.isNull("card_uri")) {
+                cardUri = json.getString("card_uri");
+            }
+
         } catch (JSONException jsone) {
             throw new TwitterException(jsone);
         }
     }
 
-    public static ResponseList<Status> parseStatuses(Configuration conf, JSONArray list) throws JSONException, TwitterException {
-        if (conf.isJSONStoreEnabled()) {
-            DataObjectFactoryUtil.clearThreadLocalMap();
+    @SuppressWarnings("NullableProblems")
+    @Override
+    public int compareTo(Status that) {
+        long delta = this.id - that.getId();
+        if (delta < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        } else if (delta > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
         }
-        int size = list.length();
-        ResponseList<Status> statuses = new ResponseListImpl<Status>(size, null);
-        for (int i = 0; i < size; i++) {
-            JSONObject json = list.getJSONObject(i);
-            Status status = new StatusJSONImpl(json);
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.registerJSONObject(status, json);
-            }
-            statuses.add(status);
-        }
-        if (conf.isJSONStoreEnabled()) {
-            DataObjectFactoryUtil.registerJSONObject(statuses, list);
-        }
-        return statuses;
+        return (int) delta;
+    }
+
+    @SuppressWarnings("unused")
+    public void setPlaceIds(String[] placeIds) {
+        this.placeIds = placeIds;
     }
 
     @Override
@@ -616,6 +647,25 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
     }
 
     @Override
+    public String getHierarchicalMessageId() {
+        return hierarchicalMessageId;
+    }
+
+    @Override
+    public void setHierarchicalMessageId(String statusId) {
+        this.hierarchicalMessageId = statusId;
+    }
+
+    @Override
+    public String getCardUri() {
+        return cardUri;
+    }
+
+    public void setCardUri(String cardUri) {
+        this.cardUri = cardUri;
+    }
+
+    @Override
     public String toString() {
         return "StatusJSONImpl{" +
                "createdAt=" + createdAt +
@@ -653,7 +703,9 @@ public final class StatusJSONImpl extends TwitterResponseImpl implements Status,
                ", placeIds=" + Arrays.toString(placeIds) +
                ", scopes=" + scopes +
                ", language='" + language + '\'' +
+                ", cardUri='" + cardUri + '\'' +
                ", hierarchicalMessage=" + hierarchicalMessage +
+                ", hierarchicalMessageId='" + hierarchicalMessageId + '\'' +
                ", user=" + user +
                '}';
     }

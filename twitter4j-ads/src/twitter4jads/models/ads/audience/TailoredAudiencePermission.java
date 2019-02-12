@@ -1,7 +1,8 @@
-package twitter4jads.models.ads;
+package twitter4jads.models.ads.audience;
 
 
 import com.google.gson.annotations.SerializedName;
+import twitter4jads.models.ads.TwitterEntity;
 
 import java.util.Date;
 

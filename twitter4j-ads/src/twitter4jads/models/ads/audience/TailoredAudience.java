@@ -1,6 +1,8 @@
 package twitter4jads.models.ads;
 
 import com.google.gson.annotations.SerializedName;
+import twitter4jads.models.ads.audience.TailoredAudiencePermissionLevel;
+import twitter4jads.models.ads.audience.TailoredAudienceType;
 
 import java.util.Date;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
  * Time: 10:51 PM
  */
 public class TailoredAudience extends TwitterEntity {
+
     public static final String CREATED_AT = "created_at";
     public static final String UPDATED_AT = "updated_at";
     public static final String NAME = "name";
@@ -20,7 +23,6 @@ public class TailoredAudience extends TwitterEntity {
     public static final String TARGETABLE = "targetable";
     public static final String TARGETABLE_TYPES = "targetable_types";
     public static final String REASONS_NOT_TARGETABLE = "reasons_not_targetable";
-    public static final String LIST_TYPE = "list_type";
     public static final String DELETED = "deleted";
     public static final String PARTNER_SOURCE = "partner_source";
     public static final String PERMISSION_LEVEL = "permission_level";
@@ -52,9 +54,6 @@ public class TailoredAudience extends TwitterEntity {
 
     @SerializedName(REASONS_NOT_TARGETABLE)
     private List<String> reasonsNotTargetable;
-
-    @SerializedName(LIST_TYPE)
-    private TailoredAudienceDataType tailoredAudienceDataType;
 
     @SerializedName(DELETED)
     private Boolean deleted;
@@ -122,14 +121,6 @@ public class TailoredAudience extends TwitterEntity {
 
     public void setReasonsNotTargetable(List<String> reasonsNotTargetable) {
         this.reasonsNotTargetable = reasonsNotTargetable;
-    }
-
-    public TailoredAudienceDataType getTailoredAudienceDataType() {
-        return tailoredAudienceDataType;
-    }
-
-    public void setTailoredAudienceDataType(TailoredAudienceDataType tailoredAudienceDataType) {
-        this.tailoredAudienceDataType = tailoredAudienceDataType;
     }
 
     public TailoredAudienceType getTailoredAudienceType() {

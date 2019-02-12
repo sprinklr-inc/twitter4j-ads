@@ -35,13 +35,13 @@ public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
     @Override
     public BaseAdsListResponse<TwitterCreativePreview> getUnpublishedTweetPreview(String accountId, String text, String asUserId,
                                                                                   List<String> mediaIds, String cardId,
-                                                                                  TwitterPreviewTarget twitterPreviewTarget, String videoId)
+                                                                                  TwitterPreviewTarget twitterPreviewTarget, String videoKey)
             throws TwitterException {
 
         List<HttpParameter> parameterList =
-                validateAndGetParametersForUnpublishedPostPreview(text, asUserId, mediaIds, twitterPreviewTarget, videoId);
+                validateAndGetParametersForUnpublishedPostPreview(text, asUserId, mediaIds, twitterPreviewTarget, videoKey);
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 +
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 +
                 accountId + TwitterAdsConstants.TWEET_PATH_PREVIEW;
 
         Type type = new TypeToken<BaseAdsListResponse<TwitterCreativePreview>>() {
@@ -56,18 +56,15 @@ public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
     }
 
     @Override
-    public BaseAdsListResponse<TwitterCreativePreview> getPublishedTweetPreview(String accountId, String tweetId, String asUserId,
+    public BaseAdsListResponse<TwitterCreativePreview> getPublishedTweetPreview(String accountId, String tweetId,
                                                                                 TwitterPreviewTarget twitterPreviewTarget) throws TwitterException {
         final List<HttpParameter> parameterList = Lists.newArrayList();
-        if (TwitterAdUtil.isNotNullOrEmpty(asUserId)) {
-            parameterList.add(new HttpParameter(TwitterAdsConstants.PARAM_AS_USER_ID, asUserId));
-        }
 
         if (TwitterAdUtil.isNotNullOrEmpty(twitterPreviewTarget.name())) {
             parameterList.add(new HttpParameter(TwitterAdsConstants.PARAM_PREVIEW_TARGET, twitterPreviewTarget.name()));
         }
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 +
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 +
                 accountId + TwitterAdsConstants.TWEET_PATH_PREVIEW + tweetId;
 
         Type type = new TypeToken<BaseAdsListResponse<TwitterCreativePreview>>() {

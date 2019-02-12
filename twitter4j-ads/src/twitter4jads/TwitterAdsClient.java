@@ -1,5 +1,6 @@
 package twitter4jads;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import twitter4jads.auth.Authorization;
@@ -11,9 +12,11 @@ import twitter4jads.internal.models4j.TwitterAPIMonitor;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.internal.models4j.TwitterImpl;
 import twitter4jads.internal.models4j.Version;
-import twitter4jads.models.AudienceUploadDetails;
 import twitter4jads.models.TwitterTonUploadResponse;
 import twitter4jads.models.ads.HttpVerb;
+import twitter4jads.models.media.TwitterLibraryMedia;
+import twitter4jads.models.media.TwitterMediaLibraryStatus;
+import twitter4jads.util.TwitterAdUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -21,6 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static twitter4jads.TwitterAdsConstants.PATH_MEDIA_LIBRARY;
+import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
+import static twitter4jads.TwitterAdsConstants.SLASH;
+import static twitter4jads.TwitterAdsConstants.WAIT_INTERVAL;
+import static twitter4jads.models.media.TwitterMediaLibraryStatus.TRANSCODE_FAILED;
 import static twitter4jads.util.TwitterAdUtil.constructBaseAdsResponse;
 
 /**
@@ -168,7 +176,7 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
     public TwitterTonUploadResponse executeHttpRequestForTon(String baseUrl, HttpParameter[] params, HttpVerb httpVerb,
                                                              Map<String, String> customHeaders) throws TwitterException {
         HttpResponse httpResponse;
-        AudienceUploadDetails response = null;
+        TwitterTonUploadResponse response = null;
         switch (httpVerb) {
             case PUT:
                 httpResponse = putWithCustomHeaders(baseUrl, params, customHeaders, true);
@@ -227,6 +235,39 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
                 break;
         }
         return response;
+    }
+
+    //https://twittercommunity.com/t/details-for-media-library-media-status/117756
+    public TwitterLibraryMedia waitForMediaProcessing(String accountId, String mediaKey, long maxWaitTime) throws TwitterException {
+        Long totalWaitTime = 0L;
+        String url = getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_LIBRARY + SLASH + mediaKey;
+
+        Type type = new TypeToken<BaseAdsResponse<TwitterLibraryMedia>>() {
+        }.getType();
+        while (totalWaitTime < maxWaitTime) {
+            final BaseAdsResponse<TwitterLibraryMedia> response = executeHttpRequest(url, null, type, HttpVerb.GET);
+            final TwitterLibraryMedia media = response.getData();
+            TwitterMediaLibraryStatus status;
+            try {
+                status = TwitterMediaLibraryStatus.valueOf(media.getMediaStatus());
+            } catch (Exception eX) {
+                return null;
+            }
+
+            switch (status) {
+                case TRANSCODE_FAILED:
+                    throw new TwitterException("Media processing error. Status: " + TRANSCODE_FAILED.name());
+                case TRANSCODE_COMPLETED:
+                    return media;
+                case TRANSCODE_PENDING:
+                case TRANSCODE_IN_PROGRESS:
+                    TwitterAdUtil.reallySleep(WAIT_INTERVAL);
+                    totalWaitTime += WAIT_INTERVAL;
+                    break;
+            }
+        }
+
+        return null;
     }
 
     public Configuration getConf() {
@@ -370,7 +411,7 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
         }
     }
 
-    private AudienceUploadDetails getResponseFromHeaders(HttpResponse httpResponse) {
+    private TwitterTonUploadResponse getResponseFromHeaders(HttpResponse httpResponse) {
         Integer minChunkSize = null;
         Integer maxChunkSize = null;
         String location = httpResponse.getResponseHeader("location");
@@ -385,7 +426,7 @@ public class TwitterAdsClient extends TwitterImpl implements OAuthSupport {
             maxChunkSize = Integer.valueOf(maximumChunkSizeFromHeader);
 
         }
-        return new AudienceUploadDetails(location, minChunkSize, maxChunkSize, bytesSuccessfullyUploaded, null);
+        return new TwitterTonUploadResponse(location, minChunkSize, maxChunkSize, bytesSuccessfullyUploaded, null);
     }
 
     private Integer getBytesUploadedFromHeader(HttpResponse httpResponse) {

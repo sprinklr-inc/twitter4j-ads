@@ -4,13 +4,24 @@ import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
-import twitter4jads.*;
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.BaseAdsListResponseIterable;
+import twitter4jads.BaseAdsResponse;
+import twitter4jads.TwitterAdsClient;
+import twitter4jads.TwitterAdsConstants;
 import twitter4jads.api.TwitterAdsStatApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.Granularity;
 import twitter4jads.models.TwitterSegmentationType;
-import twitter4jads.models.ads.*;
+import twitter4jads.models.ads.HttpVerb;
+import twitter4jads.models.ads.JobDetails;
+import twitter4jads.models.ads.Placement;
+import twitter4jads.models.ads.TwitterAdStatistics;
+import twitter4jads.models.ads.TwitterAuctionInsights;
+import twitter4jads.models.ads.TwitterEntityStatistics;
+import twitter4jads.models.ads.TwitterEntityStatisticsMetrics;
+import twitter4jads.models.ads.TwitterEntityType;
 import twitter4jads.util.TwitterAdUtil;
 
 import java.io.BufferedReader;
@@ -23,7 +34,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
-import static twitter4jads.TwitterAdsConstants.*;
+import static twitter4jads.TwitterAdsConstants.GRANULARITY;
+import static twitter4jads.TwitterAdsConstants.PARAM_CAMPAIGN_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_END_TIME;
+import static twitter4jads.TwitterAdsConstants.PARAM_ENTITY_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_ENTITY_TYPE;
+import static twitter4jads.TwitterAdsConstants.PARAM_JOB_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_METRIC_GROUPS;
+import static twitter4jads.TwitterAdsConstants.PARAM_PLACEMENT;
+import static twitter4jads.TwitterAdsConstants.PARAM_SEGMENTATION_TYPE;
+import static twitter4jads.TwitterAdsConstants.PARAM_START_TIME;
+import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
+import static twitter4jads.TwitterAdsConstants.PATH_REACH_STATS;
+import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
+import static twitter4jads.TwitterAdsConstants.PREFIX_STATS_ACCOUNTS_URI;
+import static twitter4jads.TwitterAdsConstants.V4_PREFIX_STATS_JOB_ACCOUNTS_URI;
 
 /**
  * User: abhay
@@ -82,7 +108,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
         final String startTimeAsString = TwitterAdUtil.convertTimeToZuluFormatAndToUTC(startTime);
         final String endTimeAsString = TwitterAdUtil.convertTimeToZuluFormatAndToUTC(endTime);
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + "/auction_insights";
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + "/auction_insights";
 
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(GRANULARITY, granularity.toString()));
@@ -110,7 +136,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
         final String startTimeAsString = TwitterAdUtil.convertTimeToZuluFormatAndToUTC(startTime);
         final String endTimeAsString = TwitterAdUtil.convertTimeToZuluFormatAndToUTC(endTime);
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + V3_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + V4_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId;
 
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(GRANULARITY, granularity.toString()));
@@ -145,7 +171,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_JOB_IDS, TwitterAdUtil.getCsv(jobIds)));
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + V3_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + V4_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId;
         final Type type = new TypeToken<BaseAdsListResponse<JobDetails>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
@@ -189,7 +215,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(jobId, "jobId");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.V3_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId + "/" + jobId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.V4_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId + "/" + jobId;
         final Type type = new TypeToken<BaseAdsResponse<JobDetails>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);

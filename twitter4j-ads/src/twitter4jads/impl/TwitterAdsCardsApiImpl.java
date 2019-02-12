@@ -4,28 +4,93 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
-import twitter4jads.*;
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.BaseAdsListResponseIterable;
+import twitter4jads.BaseAdsResponse;
+import twitter4jads.TwitterAdsClient;
+import twitter4jads.TwitterAdsConstants;
 import twitter4jads.api.TwitterAdsCardsApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.models4j.Media;
 import twitter4jads.internal.models4j.MediaUpload;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.ads.HttpVerb;
-import twitter4jads.models.ads.TwitterEntity;
 import twitter4jads.models.ads.TwitterUUIDResponse;
-import twitter4jads.models.ads.cards.*;
-import twitter4jads.models.video.TwitterVideo;
+import twitter4jads.models.ads.cards.AbstractConversationCard;
+import twitter4jads.models.ads.cards.TwitterImageAppDownloadCard;
+import twitter4jads.models.ads.cards.TwitterImageConversationCard;
+import twitter4jads.models.ads.cards.TwitterImageDMCard;
+import twitter4jads.models.ads.cards.TwitterLeadGenerationStat;
+import twitter4jads.models.ads.cards.TwitterMobileAppCard;
+import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
+import twitter4jads.models.ads.cards.TwitterVideoConversationCard;
+import twitter4jads.models.ads.cards.TwitterVideoDMCard;
+import twitter4jads.models.ads.cards.TwitterVideoWebsiteCard;
+import twitter4jads.models.ads.cards.TwitterWebsiteCard;
+import twitter4jads.models.media.TwitterLibraryMedia;
 import twitter4jads.util.TwitterAdUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import static twitter4jads.TwitterAdsConstants.*;
+import static twitter4jads.TwitterAdsConstants.APP_CTA;
+import static twitter4jads.TwitterAdsConstants.MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH;
+import static twitter4jads.TwitterAdsConstants.MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH;
+import static twitter4jads.TwitterAdsConstants.PARAM_CARD_IDS;
+import static twitter4jads.TwitterAdsConstants.PARAM_COUNT;
+import static twitter4jads.TwitterAdsConstants.PARAM_COUNTRY_CODE;
+import static twitter4jads.TwitterAdsConstants.PARAM_CUSTOM_APP_DESCRIPTION;
+import static twitter4jads.TwitterAdsConstants.PARAM_CUSTOM_ICON_MEDIA_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_END_TIME;
+import static twitter4jads.TwitterAdsConstants.PARAM_FIRST_CTA;
+import static twitter4jads.TwitterAdsConstants.PARAM_FIRST_CTA_TWEET;
+import static twitter4jads.TwitterAdsConstants.PARAM_FIRST_CTA_WELCOME_MESSAGE_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_FOURTH_CTA;
+import static twitter4jads.TwitterAdsConstants.PARAM_FOURTH_CTA_TWEET;
+import static twitter4jads.TwitterAdsConstants.PARAM_FOURTH_CTA_WELCOME_MESSAGE_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_GOOGLEPLAY_APP_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_GOOGLEPLAY_DEEP_LINK;
+import static twitter4jads.TwitterAdsConstants.PARAM_GRANULARITY;
+import static twitter4jads.TwitterAdsConstants.PARAM_IMAGE_MEDIA_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_IPAD_APP_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_IPAD_DEEP_LINK;
+import static twitter4jads.TwitterAdsConstants.PARAM_IPHONE_APP_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_IPHONE_DEEP_LINK;
+import static twitter4jads.TwitterAdsConstants.PARAM_METRICS;
+import static twitter4jads.TwitterAdsConstants.PARAM_NAME;
+import static twitter4jads.TwitterAdsConstants.PARAM_RECIPIENT_USER_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_SECOND_CTA;
+import static twitter4jads.TwitterAdsConstants.PARAM_SECOND_CTA_TWEET;
+import static twitter4jads.TwitterAdsConstants.PARAM_SECOND_CTA_WELCOME_MESSAGE_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_START_TIME;
+import static twitter4jads.TwitterAdsConstants.PARAM_THANK_YOU_TEXT;
+import static twitter4jads.TwitterAdsConstants.PARAM_THANK_YOU_URL;
+import static twitter4jads.TwitterAdsConstants.PARAM_THIRD_CTA;
+import static twitter4jads.TwitterAdsConstants.PARAM_THIRD_CTA_TWEET;
+import static twitter4jads.TwitterAdsConstants.PARAM_THIRD_CTA_WELCOME_MESSAGE_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_TITLE;
+import static twitter4jads.TwitterAdsConstants.PARAM_VIDEO_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_WEBSITE_TITLE;
+import static twitter4jads.TwitterAdsConstants.PARAM_WEBSITE_URL;
+import static twitter4jads.TwitterAdsConstants.PARAM_WIDE_APP_IMAGE_MEDIA_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
+import static twitter4jads.TwitterAdsConstants.PATH_APP_DOWNLOAD_CARDS;
+import static twitter4jads.TwitterAdsConstants.PATH_IMAGE_APP_DOWNLOAD_CARDS;
+import static twitter4jads.TwitterAdsConstants.PATH_IMAGE_CONVERSATION_CARDS;
+import static twitter4jads.TwitterAdsConstants.PATH_IMAGE_DM_CARDS;
+import static twitter4jads.TwitterAdsConstants.PATH_LEAD_GENERATION_CARDS;
+import static twitter4jads.TwitterAdsConstants.PATH_VIDEO_APP_DOWNLOAD_CARDS;
+import static twitter4jads.TwitterAdsConstants.PATH_VIDEO_CONVERSATION_CARDS;
+import static twitter4jads.TwitterAdsConstants.PATH_VIDEO_DM_CARDS;
+import static twitter4jads.TwitterAdsConstants.PATH_VIDEO_WEBSITE_CARDS;
+import static twitter4jads.TwitterAdsConstants.PATH_WEBSITE_CARDS;
+import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
+import static twitter4jads.TwitterAdsConstants.PREFIX_STATS_ACCOUNTS_URI;
+import static twitter4jads.TwitterAdsConstants.UPLOAD_VIDEO_CARD_IMAGE_URL;
 import static twitter4jads.util.TwitterAdUtil.isNotNullOrEmpty;
 
 /**
@@ -59,7 +124,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterImageAppDownloadCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -80,7 +145,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterVideoAppDownloadCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -92,7 +157,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                                                                               Integer count) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_DM_CARDS;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_DM_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterImageDMCard>>() {
         }.getType();
 
@@ -104,7 +169,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterWebsiteCard> deleteWebsiteCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEBSITE_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_WEBSITE_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -115,8 +180,8 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterWebsiteCard> getWebsiteCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(cardId, "CardId");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEBSITE_CARDS + cardId;
-        Type type = new TypeToken<BaseAdsResponse<VideoObjectResponseData>>() {
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_WEBSITE_CARDS + cardId;
+        Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
     }
@@ -135,7 +200,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEBSITE_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_WEBSITE_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterWebsiteCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -155,7 +220,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter(PARAM_COUNT, count.get()));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_APP_DOWNLOAD_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterMobileAppCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -166,7 +231,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterMobileAppCard> getAppDownloadCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(cardId, "CardId");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterMobileAppCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
@@ -177,7 +242,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterVideoAppDownloadCard> deleteVideoAppDownloadCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoAppDownloadCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -188,7 +253,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterMobileAppCard> deleteAppDownloadCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterMobileAppCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -199,7 +264,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterImageAppDownloadCard> deleteImageAppDownloadCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterImageAppDownloadCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -219,6 +284,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         return twitterAdsClient.executeHttpRequest(url, parameters, typeToken, HttpVerb.GET);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public BaseAdsListResponseIterable<TwitterImageConversationCard> getAllImageConversationCards(String accountId, List<String> cardIds, boolean withDeleted, Integer count) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
@@ -232,7 +298,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (TwitterAdUtil.isNotNull(count)) {
             params.add(new HttpParameter(PARAM_COUNT, count));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_CONVERSATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_CONVERSATION_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterImageConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -252,7 +318,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         if (TwitterAdUtil.isNotNull(count)) {
             params.add(new HttpParameter(PARAM_COUNT, count));
         }
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_CONVERSATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_CONVERSATION_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterVideoConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -274,7 +340,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
             params.add(new HttpParameter(PARAM_COUNT, count));
         }
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_WEBSITE_CARDS;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_WEBSITE_CARDS;
         Type type = new TypeToken<BaseAdsListResponse<TwitterVideoWebsiteCard>>() {
         }.getType();
 
@@ -284,7 +350,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
     @SuppressWarnings("Duplicates")
     @Override
-    public BaseAdsListResponseIterable<TwitterVideoDmCard> getAllVideoDMCards(String accountId, List<String> cardIds, boolean withDeleted,
+    public BaseAdsListResponseIterable<TwitterVideoDMCard> getAllVideoDMCards(String accountId, List<String> cardIds, boolean withDeleted,
                                                                               Integer count) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
 
@@ -298,8 +364,8 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
             params.add(new HttpParameter(PARAM_COUNT, count));
         }
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_DM_CARDS;
-        Type type = new TypeToken<BaseAdsListResponse<TwitterVideoDmCard>>() {
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_DM_CARDS;
+        Type type = new TypeToken<BaseAdsListResponse<TwitterVideoDMCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpListRequest(url, params, type);
@@ -311,7 +377,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
         List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle, websiteUrl, imageMediaId);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEBSITE_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_WEBSITE_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
         }.getType();
@@ -321,7 +387,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     @Override
     public BaseAdsResponse<TwitterWebsiteCard> createWebsiteCard(String accountId, String name, String websiteTitle, String websiteUrl, String imageMediaId) throws TwitterException {
         final List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle, websiteUrl, imageMediaId);
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_WEBSITE_CARDS;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_WEBSITE_CARDS;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
         }.getType();
@@ -331,12 +397,12 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
     @SuppressWarnings("Duplicates")
     @Override
-    public BaseAdsResponse<TwitterMobileAppCard> createAppDownloadCard(String accountId, String name, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String customAppDescription, String callToAction) throws TwitterException {
+    public BaseAdsResponse<TwitterMobileAppCard> createAppDownloadCard(String accountId, String name, String countryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String customAppDescription, String callToAction) throws TwitterException {
         List<HttpParameter> params =
-                validateAndCreateParamsForCreateAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
+                validateAndCreateParamsForCreateAppDownloadCard(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, customAppDescription, imageMediaId,
                         callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_APP_DOWNLOAD_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterMobileAppCard>>() {
         }.getType();
@@ -344,14 +410,14 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterMobileAppCard> updateAppDownloadCard(String accountId, String name, String cardId, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String customAppDescription, String callToAction) throws TwitterException {
+    public BaseAdsResponse<TwitterMobileAppCard> updateAppDownloadCard(String accountId, String name, String cardId, String countryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String customAppDescription, String callToAction) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
         List<HttpParameter> params =
-                validateAndCreateParamsForUpdateAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
+                validateAndCreateParamsForUpdateAppDownloadCard(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, customAppDescription, imageMediaId,
                         callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_APP_DOWNLOAD_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterMobileAppCard>>() {
         }.getType();
@@ -359,11 +425,11 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterImageAppDownloadCard> createImageAppDownloadCard(String accountId, String name, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String callToAction) throws TwitterException {
+    public BaseAdsResponse<TwitterImageAppDownloadCard> createImageAppDownloadCard(String accountId, String name, String countryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String callToAction) throws TwitterException {
         List<HttpParameter> params =
-                validateAndCreateParamsForCreateImageAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
+                validateAndCreateParamsForCreateImageAppDownloadCard(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, imageMediaId, callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageAppDownloadCard>>() {
         }.getType();
@@ -371,13 +437,13 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterImageAppDownloadCard> updateImageAppDownloadCard(String accountId, String name, String cardId, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String callToAction) throws TwitterException {
+    public BaseAdsResponse<TwitterImageAppDownloadCard> updateImageAppDownloadCard(String accountId, String name, String cardId, String countryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String callToAction) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
         List<HttpParameter> params =
-                validateAndCreateParamsForUpdateImageAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
+                validateAndCreateParamsForUpdateImageAppDownloadCard(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, imageMediaId, callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_APP_DOWNLOAD_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageAppDownloadCard>>() {
         }.getType();
@@ -385,12 +451,12 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterVideoAppDownloadCard> createVideoAppDownloadCard(String accountId, String name, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String callToAction, TwitterVideo video) throws TwitterException, IOException, InterruptedException {
+    public BaseAdsResponse<TwitterVideoAppDownloadCard> createVideoAppDownloadCard(String accountId, String name, String countryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String callToAction, TwitterLibraryMedia video) throws TwitterException, IOException, InterruptedException {
         List<HttpParameter> params =
-                validateAndCreateParamsForCreateVideoAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
-                        iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, imageMediaId, video.getId(),
+                validateAndCreateParamsForCreateVideoAppDownloadCard(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId,
+                        iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, imageMediaId, video.getMediaKey(),
                         callToAction);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoAppDownloadCard>>() {
         }.getType();
@@ -399,12 +465,12 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                 twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
 
         final TwitterVideoAppDownloadCard videoAppDownloadCard = twitterVideoAppDownloadResponse.getData();
-        if (video.getId() != null) {
-            videoAppDownloadCard.setChannelVideoId(video.getId());
+        if (video.getMediaKey() != null) {
+            videoAppDownloadCard.setChannelVideoId(video.getMediaKey());
         }
 
-        if (video.getPreviewUrl() != null) {
-            videoAppDownloadCard.setChannelVideoUrl(video.getPreviewUrl());
+        if (video.getMediaUrl() != null) {
+            videoAppDownloadCard.setChannelVideoUrl(video.getMediaUrl());
         }
 
         if (video.getDuration() != null) {
@@ -416,19 +482,19 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterVideoAppDownloadCard> updateVideoAppDownloadCard(String accountId, String name, String cardId, String appCountryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String callToActionValue, TwitterVideo video) throws TwitterException, IOException, InterruptedException {
+    public BaseAdsResponse<TwitterVideoAppDownloadCard> updateVideoAppDownloadCard(String accountId, String name, String cardId, String countryCode, String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink, String imageMediaId, String callToActionValue, TwitterLibraryMedia video) throws TwitterException, IOException, InterruptedException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
         String channelVideoId = null;
         if (video != null) {
-            channelVideoId = video.getId();
+            channelVideoId = video.getMediaKey();
         }
 
         List<HttpParameter> params =
-                validateAndCreateParamsForUpdateVideoAppDownloadCard(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId,
+                validateAndCreateParamsForUpdateVideoAppDownloadCard(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId,
                         iphoneDeepLink, ipadDeepLink, googlePlayDeepLink, imageMediaId, channelVideoId,
                         callToActionValue);
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_APP_DOWNLOAD_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoAppDownloadCard>>() {
         }.getType();
@@ -438,11 +504,11 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
         final TwitterVideoAppDownloadCard videoAppDownloadCard = twitterVideoAppDownloadResponse.getData();
         if (video != null) {
-            videoAppDownloadCard.setChannelVideoId(video.getId());
+            videoAppDownloadCard.setChannelVideoId(video.getMediaKey());
         }
 
         if (video != null) {
-            videoAppDownloadCard.setChannelVideoUrl(video.getPreviewUrl());
+            videoAppDownloadCard.setChannelVideoUrl(video.getMediaUrl());
         }
 
         if (video != null) {
@@ -467,7 +533,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
         params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, imageMediaId));
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_CONVERSATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_CONVERSATION_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageConversationCard>>() {
         }.getType();
@@ -490,7 +556,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
         params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, imageMediaId));
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageConversationCard>>() {
         }.getType();
@@ -502,7 +568,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterImageConversationCard> deleteImageConversationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterImageConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -513,18 +579,18 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                                                                                      String firstTweet, String secondHashtag, String secondTweet,
                                                                                      String thirdHashtag, String thirdTweet, String fourthHashtag,
                                                                                      String fourthTweet, String thanksText, String thanksUrl,
-                                                                                     String imageMediaId, TwitterVideo twitterVideo)
+                                                                                     String imageMediaId, TwitterLibraryMedia twitterVideo)
             throws TwitterException {
-        TwitterAdUtil.ensureNotNull(twitterVideo.getId(), "Video Id");
+        TwitterAdUtil.ensureNotNull(twitterVideo.getMediaKey(), "Video Key");
         final List<HttpParameter> params =
                 validateAndCreateParamsForCreateVideoConversationCard(accountId, name, title, firstHashtag, firstTweet, secondHashtag, secondTweet,
                         thirdHashtag, thirdTweet, fourthHashtag, fourthTweet, thanksText, thanksUrl);
         if (isNotNullOrEmpty(imageMediaId)) {
             params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, imageMediaId));
         }
-        params.add(new HttpParameter(PARAM_VIDEO_ID, twitterVideo.getId()));
+        params.add(new HttpParameter(PARAM_VIDEO_ID, twitterVideo.getMediaKey()));
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_CONVERSATION_CARDS;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_CONVERSATION_CARDS;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoConversationCard>>() {
         }.getType();
@@ -537,7 +603,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                                                                                      String secondTweet, String thirdHashtag, String thirdTweet,
                                                                                      String fourthHashtag, String fourthTweet, String thanksText,
                                                                                      String thanksUrl, String imageMediaId,
-                                                                                     TwitterVideo twitterVideo) throws TwitterException {
+                                                                                     TwitterLibraryMedia twitterVideo) throws TwitterException {
         final BaseAdsResponse<TwitterVideoConversationCard> response = getVideoConversationCard(accountId, cardId);
         final TwitterVideoConversationCard existingCard = response.getData();
 
@@ -552,10 +618,10 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         }
 
         if (twitterVideo != null) {
-            params.add(new HttpParameter(PARAM_VIDEO_ID, twitterVideo.getId()));
+            params.add(new HttpParameter(PARAM_VIDEO_ID, twitterVideo.getMediaKey()));
         }
 
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoConversationCard>>() {
         }.getType();
@@ -568,7 +634,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterVideoConversationCard> deleteVideoConversationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
@@ -576,41 +642,12 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
     @Override
     public BaseAdsResponse<TwitterImageDMCard> createImageDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, Long recipientAccountId, String imageUrl, String imageMediaId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        TwitterAdUtil.ensureNotNull(name, "Title");
-        TwitterAdUtil.ensureNotNull(firstCta, "First Cta");
-        TwitterAdUtil.ensureNotNull(firstWelcomeMessageId, "First Welcome Message ID");
-        TwitterAdUtil.ensureNotNull(recipientAccountId, "Promotable Account ID");
-
-        verifyCtaLength(firstCta, "First Cta");
-
-        final List<HttpParameter> params = new ArrayList<>();
-        params.add(new HttpParameter(PARAM_NAME, name));
-        params.add(new HttpParameter(PARAM_RECIPIENT_USER_ID, recipientAccountId));
-        params.add(new HttpParameter(PARAM_FIRST_CTA, firstCta));
-        params.add(new HttpParameter(PARAM_FIRST_CTA_WELCOME_MESSAGE_ID, firstWelcomeMessageId));
-
-        if (TwitterAdUtil.isNotNull(secondCta) && TwitterAdUtil.isNotNull(secondWelcomeMessageId)) {
-            verifyCtaLength(secondCta, "Second Cta");
-            params.add(new HttpParameter(PARAM_SECOND_CTA, secondCta));
-            params.add(new HttpParameter(PARAM_SECOND_CTA_WELCOME_MESSAGE_ID, secondWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(thirdCta) && TwitterAdUtil.isNotNull(thirdWelcomeMessageId)) {
-            verifyCtaLength(thirdCta, "Third Cta");
-            params.add(new HttpParameter(PARAM_THIRD_CTA, thirdCta));
-            params.add(new HttpParameter(PARAM_THIRD_CTA_WELCOME_MESSAGE_ID, thirdWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(fourthCta) && TwitterAdUtil.isNotNull(fourthWelcomeMessageId)) {
-            verifyCtaLength(fourthCta, "Fourth Cta");
-            params.add(new HttpParameter(PARAM_FOURTH_CTA, fourthCta));
-            params.add(new HttpParameter(PARAM_FOURTH_CTA_WELCOME_MESSAGE_ID, fourthWelcomeMessageId));
-        }
-
+        final List<HttpParameter> params =
+                validateAndCreateParamsForCreateImageDMCard(accountId, name, firstCta, firstWelcomeMessageId, secondCta, secondWelcomeMessageId, thirdCta,
+                        thirdWelcomeMessageId, fourthCta, fourthWelcomeMessageId, recipientAccountId, imageUrl);
         params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, imageMediaId));
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_DM_CARDS;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_DM_CARDS;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageDMCard>>() {
         }.getType();
@@ -619,237 +656,119 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterVideoDmCard> createVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, Long recipientAccountId, String imageUrl, String videoUrl, String imageMediaId, String videoMediaId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(videoUrl, "Video Url");
-        TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        TwitterAdUtil.ensureNotNull(name, "Title");
-        TwitterAdUtil.ensureNotNull(firstCta, "First Cta");
-        TwitterAdUtil.ensureNotNull(firstWelcomeMessageId, "First Welcome Message ID");
-        TwitterAdUtil.ensureNotNull(recipientAccountId, "Promotable Account ID");
-
-        verifyCtaLength(firstCta, "First Cta");
-
-        final List<HttpParameter> params = new ArrayList<>();
-        params.add(new HttpParameter(PARAM_NAME, name));
-        params.add(new HttpParameter(PARAM_RECIPIENT_USER_ID, recipientAccountId));
-        params.add(new HttpParameter(PARAM_FIRST_CTA, firstCta));
-        params.add(new HttpParameter(PARAM_FIRST_CTA_WELCOME_MESSAGE_ID, firstWelcomeMessageId));
-
-        if (TwitterAdUtil.isNotNull(secondCta) && TwitterAdUtil.isNotNull(secondWelcomeMessageId)) {
-            verifyCtaLength(secondCta, "Second Cta");
-            params.add(new HttpParameter(PARAM_SECOND_CTA, secondCta));
-            params.add(new HttpParameter(PARAM_SECOND_CTA_WELCOME_MESSAGE_ID, secondWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(thirdCta) && TwitterAdUtil.isNotNull(thirdWelcomeMessageId)) {
-            verifyCtaLength(thirdCta, "Third Cta");
-            params.add(new HttpParameter(PARAM_THIRD_CTA, thirdCta));
-            params.add(new HttpParameter(PARAM_THIRD_CTA_WELCOME_MESSAGE_ID, thirdWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(fourthCta) && TwitterAdUtil.isNotNull(fourthWelcomeMessageId)) {
-            verifyCtaLength(fourthCta, "Fourth Cta");
-            params.add(new HttpParameter(PARAM_FOURTH_CTA, fourthCta));
-            params.add(new HttpParameter(PARAM_FOURTH_CTA_WELCOME_MESSAGE_ID, fourthWelcomeMessageId));
-        }
-
+    public BaseAdsResponse<TwitterVideoDMCard> createVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, Long recipientAccountId, String imageUrl, String videoUrl, String imageMediaId, String videoMediaKey) throws TwitterException {
+        final List<HttpParameter> params =
+                validateAndCreateParamsForCreateVideoDMCard(accountId, name, firstCta, firstWelcomeMessageId, secondCta, secondWelcomeMessageId, thirdCta,
+                        thirdWelcomeMessageId, fourthCta, fourthWelcomeMessageId, recipientAccountId, videoUrl);
         if (StringUtils.isNotBlank(imageMediaId)) {
             params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, imageMediaId));
         }
-        params.add(new HttpParameter(PARAM_VIDEO_ID, videoMediaId));
+        params.add(new HttpParameter(PARAM_VIDEO_ID, videoMediaKey));
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_DM_CARDS;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_DM_CARDS;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
-        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDmCard>>() {
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDMCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
-    }
 
-    @Override
-    public BaseAdsResponse<TwitterEntity> associateDMVideoToAccount(String accountId, String videoMediaId, String imageMediaId) throws TwitterException {
-        final List<HttpParameter> params = new ArrayList<>();
-        if (StringUtils.isNotBlank(imageMediaId)) {
-            params.add(new HttpParameter(PARAM_POSTER_IMAGE_ID, imageMediaId));
-        }
-
-        TwitterAdUtil.ensureNotNull(videoMediaId, "Video Media Id");
-        params.add(new HttpParameter(PARAM_VIDEO_MEDIA_ID, videoMediaId));
-
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PREFIX_VIDEOS;
-        final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
-        Type type = new TypeToken<BaseAdsResponse<TwitterEntity>>() {
-        }.getType();
-
-        return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
     }
 
     @Override
     public BaseAdsResponse<TwitterImageDMCard> updateImageDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, String imageUrl, String imageMediaId, String channelId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        TwitterAdUtil.ensureNotNull(channelId, "Card Channel Id");
-
-        final List<HttpParameter> params = new ArrayList<>();
-        if (StringUtils.isNotBlank(name)) {
-            params.add(new HttpParameter(PARAM_NAME, name));
-        }
-
-        if (TwitterAdUtil.isNotNull(firstCta) && TwitterAdUtil.isNotNull(firstWelcomeMessageId)) {
-            verifyCtaLength(firstCta, "First Cta");
-            params.add(new HttpParameter(PARAM_FIRST_CTA, firstCta));
-            params.add(new HttpParameter(PARAM_FIRST_CTA_WELCOME_MESSAGE_ID, firstWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(secondCta) && TwitterAdUtil.isNotNull(secondWelcomeMessageId)) {
-            verifyCtaLength(secondCta, "Second Cta");
-            params.add(new HttpParameter(PARAM_SECOND_CTA, secondCta));
-            params.add(new HttpParameter(PARAM_SECOND_CTA_WELCOME_MESSAGE_ID, secondWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(thirdCta) && TwitterAdUtil.isNotNull(thirdWelcomeMessageId)) {
-            verifyCtaLength(thirdCta, "Third Cta");
-            params.add(new HttpParameter(PARAM_THIRD_CTA, thirdCta));
-            params.add(new HttpParameter(PARAM_THIRD_CTA_WELCOME_MESSAGE_ID, thirdWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(fourthCta) && TwitterAdUtil.isNotNull(fourthWelcomeMessageId)) {
-            verifyCtaLength(fourthCta, "Fourth Cta");
-            params.add(new HttpParameter(PARAM_FOURTH_CTA, fourthCta));
-            params.add(new HttpParameter(PARAM_FOURTH_CTA_WELCOME_MESSAGE_ID, fourthWelcomeMessageId));
-        }
+        final List<HttpParameter> params =
+                validateAndCreateParamsForUpdateDMCard(accountId, name, firstCta, firstWelcomeMessageId, secondCta, secondWelcomeMessageId, thirdCta,
+                        thirdWelcomeMessageId, fourthCta, fourthWelcomeMessageId, channelId);
         if (StringUtils.isNotBlank(imageMediaId)) {
             params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, imageMediaId));
         }
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_DM_CARDS + channelId;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_DM_CARDS + channelId;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterImageDMCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.PUT);
+
     }
 
     @Override
-    public BaseAdsResponse<TwitterVideoDmCard> updateVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, String imageUrl, String videoUrl, String imageMediaId, String videoMediaId, String channelId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        TwitterAdUtil.ensureNotNull(channelId, "Card Channel Id");
-
-        final List<HttpParameter> params = new ArrayList<>();
-        if (StringUtils.isNotBlank(name)) {
-            params.add(new HttpParameter(PARAM_NAME, name));
-        }
-
-        if (TwitterAdUtil.isNotNull(firstCta) && TwitterAdUtil.isNotNull(firstWelcomeMessageId)) {
-            verifyCtaLength(firstCta, "First Cta");
-            params.add(new HttpParameter(PARAM_FIRST_CTA, firstCta));
-            params.add(new HttpParameter(PARAM_FIRST_CTA_WELCOME_MESSAGE_ID, firstWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(secondCta) && TwitterAdUtil.isNotNull(secondWelcomeMessageId)) {
-            verifyCtaLength(secondCta, "Second Cta");
-            params.add(new HttpParameter(PARAM_SECOND_CTA, secondCta));
-            params.add(new HttpParameter(PARAM_SECOND_CTA_WELCOME_MESSAGE_ID, secondWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(thirdCta) && TwitterAdUtil.isNotNull(thirdWelcomeMessageId)) {
-            verifyCtaLength(thirdCta, "Third Cta");
-            params.add(new HttpParameter(PARAM_THIRD_CTA, thirdCta));
-            params.add(new HttpParameter(PARAM_THIRD_CTA_WELCOME_MESSAGE_ID, thirdWelcomeMessageId));
-        }
-
-        if (TwitterAdUtil.isNotNull(fourthCta) && TwitterAdUtil.isNotNull(fourthWelcomeMessageId)) {
-            verifyCtaLength(fourthCta, "Fourth Cta");
-            params.add(new HttpParameter(PARAM_FOURTH_CTA, fourthCta));
-            params.add(new HttpParameter(PARAM_FOURTH_CTA_WELCOME_MESSAGE_ID, fourthWelcomeMessageId));
-        }
+    public BaseAdsResponse<TwitterVideoDMCard> updateVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId, String secondCta, Long secondWelcomeMessageId, String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId, String imageUrl, String videoUrl, String imageMediaId, String videoMediaKey, String channelId) throws TwitterException {
+        final List<HttpParameter> params =
+                validateAndCreateParamsForUpdateDMCard(accountId, name, firstCta, firstWelcomeMessageId, secondCta, secondWelcomeMessageId, thirdCta,
+                        thirdWelcomeMessageId, fourthCta, fourthWelcomeMessageId, channelId);
         if (StringUtils.isNotBlank(imageMediaId)) {
             params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, imageMediaId));
         }
-        if (StringUtils.isNotBlank(videoMediaId)) {
-            params.add(new HttpParameter(PARAM_VIDEO_ID, videoMediaId));
+        if (StringUtils.isNotBlank(videoMediaKey)) {
+            params.add(new HttpParameter(PARAM_VIDEO_ID, videoMediaKey));
         }
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_DM_CARDS + channelId;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_DM_CARDS + channelId;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
-        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDmCard>>() {
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDMCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.PUT);
+
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public BaseAdsResponse<TwitterImageDMCard> deleteImageDMCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_DM_CARDS + cardId;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_DM_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterImageDMCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
-    public BaseAdsResponse<TwitterVideoDmCard> deleteVideoDMCard(String accountId, String cardId) throws TwitterException {
+    public BaseAdsResponse<TwitterVideoDMCard> deleteVideoDMCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_DM_CARDS + cardId;
-        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDmCard>>() {
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_DM_CARDS + cardId;
+        Type type = new TypeToken<BaseAdsResponse<TwitterVideoDMCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
     }
 
     @Override
-    public BaseAdsResponse<TwitterVideoWebsiteCard> createVideoWebsiteCard(String accountId, String name, String title, String videoId, String websiteUrl) throws TwitterException {
+    public BaseAdsResponse<TwitterVideoWebsiteCard> createVideoWebsiteCard(String accountId, String name, String title, String videoKey, String websiteUrl) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(name, "Name");
         TwitterAdUtil.ensureNotNull(title, "Title");
-        TwitterAdUtil.ensureNotNull(videoId, "Video Id");
+        TwitterAdUtil.ensureNotNull(videoKey, "Video Key");
         TwitterAdUtil.ensureNotNull(websiteUrl, "Website url");
 
         verifyLength(name, "Name", MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH);
         verifyLength(title, "Title", MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH);
 
-        final List<HttpParameter> params = new ArrayList<>();
-        params.add(new HttpParameter(PARAM_NAME, name));
-        params.add(new HttpParameter(PARAM_TITLE, title));
-        params.add(new HttpParameter(PARAM_VIDEO_ID, videoId));
-        params.add(new HttpParameter(PARAM_WEBSITE_URL, websiteUrl));
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_WEBSITE_CARDS;
+        final List<HttpParameter> params = validateAndCreateParamsForCreateVideoWebsiteCard(accountId, name, title, videoKey, websiteUrl);
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_WEBSITE_CARDS;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoWebsiteCard>>() {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
+
     }
 
     @Override
-    public BaseAdsResponse<TwitterVideoWebsiteCard> updateVideoWebsiteCard(String accountId, String cardId, String name, String title, String videoId, String websiteUrl) throws TwitterException {
+    public BaseAdsResponse<TwitterVideoWebsiteCard> updateVideoWebsiteCard(String accountId, String cardId, String name, String title, String videoKey, String websiteUrl) throws TwitterException {
 
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
-        final List<HttpParameter> params = new ArrayList<>();
-        if (isNotNullOrEmpty(name)) {
-            verifyLength(name, "Name", MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH);
-            params.add(new HttpParameter(PARAM_NAME, name));
-        }
+        final List<HttpParameter> params =
+                validateAndCreateParamsForUpdateVideoWebsiteCard(name, title, videoKey, websiteUrl);
 
-        if (isNotNullOrEmpty(title)) {
-            verifyLength(title, "Title", MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH);
-            params.add(new HttpParameter(PARAM_TITLE, title));
-        }
-
-        if (isNotNullOrEmpty(videoId)) {
-            params.add(new HttpParameter(PARAM_VIDEO_ID, videoId));
-        }
-
-        if (isNotNullOrEmpty(websiteUrl)) {
-            params.add(new HttpParameter(PARAM_WEBSITE_URL, websiteUrl));
-        }
-
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_WEBSITE_CARDS + cardId;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_WEBSITE_CARDS + cardId;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoWebsiteCard>>() {
         }.getType();
@@ -857,12 +776,13 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         return twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.PUT);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public BaseAdsResponse<TwitterVideoWebsiteCard> deleteVideoWebsiteCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_WEBSITE_CARDS + cardId;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_WEBSITE_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoWebsiteCard>>() {
         }.getType();
 
@@ -882,19 +802,6 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
 // --------------------------------------------------------------------- PRIVATE METHODS  ---------------------------------------------
 
-    private String uploadImageForCards(String channelImage, String nonTwitterImageUrl) {
-        String image = null;
-        if (TwitterAdUtil.isNotNullOrEmpty(nonTwitterImageUrl)) {
-            image = nonTwitterImageUrl;
-        } else if (TwitterAdUtil.isNotNullOrEmpty(channelImage)) {
-            image = channelImage;
-        }
-        if (image == null) {
-            return null;
-        }
-        return getMediaId(image);
-    }
-
     private String getMediaId(String image) {
         Media media;
         try {
@@ -913,7 +820,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
     private BaseAdsResponse<TwitterVideoConversationCard> getVideoConversationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_VIDEO_CONVERSATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterVideoConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
@@ -998,13 +905,13 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @SuppressWarnings("Duplicates")
-    private List<HttpParameter> validateAndCreateParamsForCreateAppDownloadCard(String accountId, String name, String appCountryCode,
+    private List<HttpParameter> validateAndCreateParamsForCreateAppDownloadCard(String accountId, String name, String countryCode,
                                                                                 String iphoneAppId, String ipadAppId, String googlePlayAppId,
                                                                                 String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink,
                                                                                 String customAppDescription, String mediaId, String callToAction)
             throws TwitterException {
         List<HttpParameter> params =
-                getCardHttpParameters(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
+                getCardHttpParameters(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
                         googlePlayDeepLink);
 
         if (isNotNullOrEmpty(mediaId)) {
@@ -1033,16 +940,16 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                 existingCard);
     }
 
-    private List<HttpParameter> getCardHttpParameters(String accountId, String name, String appCountryCode, String iphoneAppId, String ipadAppId,
+    private List<HttpParameter> getCardHttpParameters(String accountId, String name, String countryCode, String iphoneAppId, String ipadAppId,
                                                       String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink)
             throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        TwitterAdUtil.ensureNotNull(appCountryCode, "App Country Code");
+        TwitterAdUtil.ensureNotNull(countryCode, "App Country Code");
         TwitterAdUtil.ensureNotNull(name, "Name");
 
         final List<HttpParameter> params = Lists.newArrayList();
         params.add(new HttpParameter(PARAM_NAME, name));
-        params.add(new HttpParameter(PARAM_APP_COUNTRY_CODE, appCountryCode));
+        params.add(new HttpParameter(PARAM_COUNTRY_CODE, countryCode));
 
         // This is done in order to satisfy the condition: atleast one of the app ids is provided
         if (!(TwitterAdUtil.isNotNullOrEmpty(googlePlayAppId) || TwitterAdUtil.isNotNullOrEmpty(ipadAppId) ||
@@ -1075,11 +982,6 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         return params;
     }
 
-    private String getMediaUrlSizeInBytes(String mediaUrl) throws IOException {
-        URLConnection urlConnection = new URL(mediaUrl).openConnection();
-        return urlConnection.getHeaderField("Content-Length");
-    }
-
     private List<HttpParameter> validateAndCreateParamsForLeadGenerationCardStat(String accountId, String cardId, String startTime, Optional<String> endTime,
                                                                                  Optional<String> granularity, Optional<String> metric, Optional<Boolean> withDeleted) {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
@@ -1107,19 +1009,19 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
     private BaseAdsResponse<TwitterImageConversationCard> getImageConversationCard(String accountId, String cardId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
+        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_IMAGE_CONVERSATION_CARDS + cardId;
         Type type = new TypeToken<BaseAdsResponse<TwitterImageConversationCard>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
     }
 
-    private List<HttpParameter> validateAndCreateParamsForUpdateAppDownloadCard(String accountId, String name, String appCountryCode,
+    private List<HttpParameter> validateAndCreateParamsForUpdateAppDownloadCard(String accountId, String name, String countryCode,
                                                                                 String iphoneAppId, String ipadAppId, String googlePlayAppId,
                                                                                 String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink,
                                                                                 String customAppDescription, String mediaId, String callToAction)
             throws TwitterException {
         List<HttpParameter> params =
-                getCardHttpParametersForUpdate(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
+                getCardHttpParametersForUpdate(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
                         googlePlayDeepLink);
 
         if (isNotNullOrEmpty(mediaId)) {
@@ -1146,16 +1048,16 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
                 thirdHashtag, thirdTweet, fourthHashtag, fourthTweet, thanksText, thanksUrl);
     }
 
-    private List<HttpParameter> getCardHttpParametersForUpdate(String accountId, String name, String appCountryCode, String iphoneAppId,
+    private List<HttpParameter> getCardHttpParametersForUpdate(String accountId, String name, String countryCode, String iphoneAppId,
                                                                String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink,
                                                                String googlePlayDeepLink) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        TwitterAdUtil.ensureNotNull(appCountryCode, "App Country Code");
+        TwitterAdUtil.ensureNotNull(countryCode, "App Country Code");
         TwitterAdUtil.ensureNotNull(name, "Name");
 
         final List<HttpParameter> params = Lists.newArrayList();
         params.add(new HttpParameter(PARAM_NAME, name));
-        params.add(new HttpParameter(PARAM_APP_COUNTRY_CODE, appCountryCode));
+        params.add(new HttpParameter(PARAM_COUNTRY_CODE, countryCode));
 
         // This is done in order to satisfy the condition: atleast one of the app ids is provided
         if (!(TwitterAdUtil.isNotNullOrEmpty(googlePlayAppId) || TwitterAdUtil.isNotNullOrEmpty(ipadAppId) ||
@@ -1181,13 +1083,13 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         return params;
     }
 
-    private List<HttpParameter> validateAndCreateParamsForCreateImageAppDownloadCard(String accountId, String name, String appCountryCode,
+    private List<HttpParameter> validateAndCreateParamsForCreateImageAppDownloadCard(String accountId, String name, String countryCode,
                                                                                      String iphoneAppId, String ipadAppId, String googlePlayAppId,
                                                                                      String iphoneDeepLink, String ipadDeepLink,
                                                                                      String googlePlayDeepLink, String mediaId, String callToAction)
             throws TwitterException {
         List<HttpParameter> params =
-                getCardHttpParameters(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
+                getCardHttpParameters(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
                         googlePlayDeepLink);
 
         if (isNotNullOrEmpty(mediaId)) {
@@ -1201,13 +1103,13 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         return params;
     }
 
-    private List<HttpParameter> validateAndCreateParamsForUpdateImageAppDownloadCard(String accountId, String name, String appCountryCode,
+    private List<HttpParameter> validateAndCreateParamsForUpdateImageAppDownloadCard(String accountId, String name, String countryCode,
                                                                                      String iphoneAppId, String ipadAppId, String googlePlayAppId,
                                                                                      String iphoneDeepLink, String ipadDeepLink,
                                                                                      String googlePlayDeepLink, String mediaId, String callToAction)
             throws TwitterException {
         List<HttpParameter> params =
-                getCardHttpParametersForUpdate(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
+                getCardHttpParametersForUpdate(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
                         googlePlayDeepLink);
 
         if (isNotNullOrEmpty(mediaId)) {
@@ -1306,7 +1208,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @SuppressWarnings("Duplicates")
-    private List<HttpParameter> validateAndCreateParamsForCreateVideoAppDownloadCard(String accountId, String name, String appCountryCode,
+    private List<HttpParameter> validateAndCreateParamsForCreateVideoAppDownloadCard(String accountId, String name, String countryCode,
                                                                                      String iphoneAppId, String ipadAppId, String googlePlayAppId,
                                                                                      String iphoneDeepLink, String ipadDeepLink,
                                                                                      String googlePlayDeepLink, String posterMediaId,
@@ -1314,7 +1216,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
             throws TwitterException {
 
         List<HttpParameter> params =
-                getCardHttpParameters(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
+                getCardHttpParameters(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink, ipadDeepLink,
                         googlePlayDeepLink);
 
         if (isNotNullOrEmpty(videoMediaId)) {
@@ -1333,7 +1235,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
 
-    private List<HttpParameter> validateAndCreateParamsForUpdateVideoAppDownloadCard(String accountId, String name, String appCountryCode,
+    private List<HttpParameter> validateAndCreateParamsForUpdateVideoAppDownloadCard(String accountId, String name, String countryCode,
                                                                                      String iphoneAppId, String ipadAppId, String googlePlayAppId,
                                                                                      String iphoneDeepLink, String ipadDeepLink,
                                                                                      String googlePlayDeepLink, String imageMediaId,
@@ -1341,7 +1243,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
             throws TwitterException {
 
         List<HttpParameter> params =
-                getVideoCardHttpParametersForUpdate(accountId, name, appCountryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink,
+                getVideoCardHttpParametersForUpdate(accountId, name, countryCode, iphoneAppId, ipadAppId, googlePlayAppId, iphoneDeepLink,
                         ipadDeepLink, googlePlayDeepLink);
 
         if (isNotNullOrEmpty(imageMediaId)) {
@@ -1359,16 +1261,16 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         return params;
     }
 
-    private List<HttpParameter> getVideoCardHttpParametersForUpdate(String accountId, String name, String appCountryCode, String iphoneAppId,
+    private List<HttpParameter> getVideoCardHttpParametersForUpdate(String accountId, String name, String countryCode, String iphoneAppId,
                                                                     String ipadAppId, String googlePlayAppId, String iphoneDeepLink,
                                                                     String ipadDeepLink, String googlePlayDeepLink) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        TwitterAdUtil.ensureNotNull(appCountryCode, "App Country Code");
+        TwitterAdUtil.ensureNotNull(countryCode, "App Country Code");
         TwitterAdUtil.ensureNotNull(name, "Name");
 
         final List<HttpParameter> params = Lists.newArrayList();
         params.add(new HttpParameter(PARAM_NAME, name));
-        params.add(new HttpParameter(PARAM_APP_COUNTRY_CODE, appCountryCode));
+        params.add(new HttpParameter(PARAM_COUNTRY_CODE, countryCode));
 
         // This is done in order to satisfy the condition: atleast one of the app ids is provided
         if (!(TwitterAdUtil.isNotNullOrEmpty(googlePlayAppId) || TwitterAdUtil.isNotNullOrEmpty(ipadAppId) ||
@@ -1435,7 +1337,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     private List<HttpParameter> validateAndCreateParamsForUpdateVideoWebsiteCard(String name, String title, String videoId, String websiteUrl)
-        throws TwitterException {
+            throws TwitterException {
         final List<HttpParameter> params = new ArrayList<>();
         if (isNotNullOrEmpty(name)) {
             verifyLength(name, "Name", MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH);

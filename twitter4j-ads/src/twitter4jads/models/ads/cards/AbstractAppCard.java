@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class AbstractAppCard extends AbstractTwitterCard {
+
     @SerializedName("iphone_app_id")
     private String iphoneAppId;
 
@@ -26,8 +27,8 @@ public class AbstractAppCard extends AbstractTwitterCard {
     @SerializedName("googleplay_deep_link")
     private String googleplayDeepLink;
 
-    @SerializedName("app_country_code")
-    private String appCountryCode;
+    @SerializedName("country_code")
+    private String countryCode;
 
     @SerializedName("app_cta")
     private String appCta;
@@ -80,12 +81,12 @@ public class AbstractAppCard extends AbstractTwitterCard {
         this.googleplayDeepLink = googleplayDeepLink;
     }
 
-    public String getAppCountryCode() {
-        return appCountryCode;
+    public String getCountryCode() {
+        return countryCode;
     }
 
-    public void setAppCountryCode(String appCountryCode) {
-        this.appCountryCode = appCountryCode;
+    public void setCountryCode(String appCountryCode) {
+        this.countryCode = appCountryCode;
     }
 
     public String getAppCta() {

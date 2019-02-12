@@ -19,7 +19,12 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static twitter4jads.TwitterAdsConstants.*;
+import static twitter4jads.TwitterAdsConstants.PARAM_CALL_TO_ACTION;
+import static twitter4jads.TwitterAdsConstants.PARAM_CALL_TO_ACTION_URL;
+import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
+import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
+import static twitter4jads.TwitterAdsConstants.PRE_ROLL_CALL_TO_ACTION;
 
 /**
  * User: abhishekanand
@@ -46,7 +51,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
         params.add(new HttpParameter(PARAM_CALL_TO_ACTION, twitterCallToActionType.name()));
         params.add(new HttpParameter(PARAM_CALL_TO_ACTION_URL, callToActionUrl));
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PRE_ROLL_CALL_TO_ACTION;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PRE_ROLL_CALL_TO_ACTION;
         final HttpResponse httpResponse = twitterAdsClient.postRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             final Type type = new TypeToken<BaseAdsResponse<TwitterMediaCallToAction>>() {
@@ -71,7 +76,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
             params.add(new HttpParameter(PARAM_CALL_TO_ACTION_URL, callToActionUrl));
         }
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + preRollCTAId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + preRollCTAId;
         final HttpResponse httpResponse = twitterAdsClient.putRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             final Type type = new TypeToken<BaseAdsResponse<TwitterMediaCallToAction>>() {
@@ -94,7 +99,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
             params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         }
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PRE_ROLL_CALL_TO_ACTION;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PRE_ROLL_CALL_TO_ACTION;
         Type type = new TypeToken<BaseAdsListResponseIterable<TwitterMediaCallToAction>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
@@ -112,7 +117,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
         }
 
         final String baseUrl =
-            twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + callToActionId;
+                twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + callToActionId;
         final HttpResponse httpResponse = twitterAdsClient.putRequest(baseUrl, params.toArray(new HttpParameter[params.size()]));
         try {
             final Type type = new TypeToken<BaseAdsResponse<TwitterMediaCallToAction>>() {
@@ -129,7 +134,7 @@ public class TwitterCallToActionApiImpl implements TwitterCallToActionApi {
         TwitterAdUtil.ensureNotNull(callToActionId, "Pre Roll Call To Action Id");
 
         final String baseUrl =
-            twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + callToActionId;
+                twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PRE_ROLL_CALL_TO_ACTION + "/" + callToActionId;
         final Type type = new TypeToken<BaseAdsResponse<TwitterMediaCallToAction>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);

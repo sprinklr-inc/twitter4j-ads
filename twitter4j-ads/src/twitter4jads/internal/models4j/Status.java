@@ -24,6 +24,7 @@ import java.util.Date;
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 public interface Status extends Comparable<Status>, TwitterResponse, EntitySupport, java.io.Serializable, JSONResponse {
+
     /**
      * Return the created_at
      *
@@ -224,4 +225,13 @@ public interface Status extends Comparable<Status>, TwitterResponse, EntitySuppo
     void setHierarchicalMessage(Boolean hierarchicalMessage);
 
     Boolean getHierarchicalMessage();
+
+    String getHierarchicalMessageId();
+
+    void setHierarchicalMessageId(String statusId);
+
+    /**
+     * @return card uri of the tweet
+     */
+    String getCardUri();
 }
