@@ -2,10 +2,10 @@ package twitter4jads.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.reflect.TypeToken;
+import com.google.common.reflect.TypeToken;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import twitter4jads.*;
+import twitter4jads.TwitterAdsClient;
 import twitter4jads.api.TwitterAdsMediaUploadApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.http.HttpResponse;
@@ -13,10 +13,7 @@ import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.internal.models4j.TwitterInvalidParameterException;
 import twitter4jads.internal.models4j.TwitterRuntimeException;
 import twitter4jads.models.ads.HttpVerb;
-import twitter4jads.models.ads.cards.TwitterVideoErrors;
-import twitter4jads.models.media.TwitterLibraryMedia;
 import twitter4jads.models.media.TwitterMediaType;
-import twitter4jads.models.video.TwitterVideo;
 import twitter4jads.models.video.UploadMediaObjectResponse;
 import twitter4jads.util.TwitterAdUtil;
 
@@ -28,10 +25,34 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static twitter4jads.TwitterAdsConstants.*;
+import static twitter4jads.TwitterAdsConstants.FIFTY_MIB;
+import static twitter4jads.TwitterAdsConstants.FIVE_HUNDRED_MIB;
+import static twitter4jads.TwitterAdsConstants.MAX_IMAGE_SIZE_FOR_TWITTER_IN_BYTES;
+import static twitter4jads.TwitterAdsConstants.MAX_VIDEO_SIZE_IN_BYTES;
+import static twitter4jads.TwitterAdsConstants.MAX_WAIT_INTERVAL_FIFTY_MIB;
+import static twitter4jads.TwitterAdsConstants.MAX_WAIT_INTERVAL_FIVE_HUNDRED_MIB;
+import static twitter4jads.TwitterAdsConstants.MAX_WAIT_INTERVAL_ONE_HUNDRED_FIFTY_MIB;
+import static twitter4jads.TwitterAdsConstants.ONE_HUNDRED_FIFTY_MIB;
+import static twitter4jads.TwitterAdsConstants.PARAM_ATTRIBUTABLE_USER_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_COMMAND;
+import static twitter4jads.TwitterAdsConstants.PARAM_MEDIA_CATEGORY;
+import static twitter4jads.TwitterAdsConstants.PARAM_MEDIA_DATA;
+import static twitter4jads.TwitterAdsConstants.PARAM_MEDIA_ID;
+import static twitter4jads.TwitterAdsConstants.PARAM_MEDIA_TYPE;
+import static twitter4jads.TwitterAdsConstants.PARAM_SEGMENT_INDEX;
+import static twitter4jads.TwitterAdsConstants.PARAM_SHARED;
+import static twitter4jads.TwitterAdsConstants.PARAM_TOTAL_BYTES;
+import static twitter4jads.TwitterAdsConstants.SUCCESSFULL_CALL_BEGIN_CODE;
+import static twitter4jads.TwitterAdsConstants.SUCCESSFULL_CALL_END_CODE;
+import static twitter4jads.TwitterAdsConstants.TWO_MIB;
+import static twitter4jads.TwitterAdsConstants.UPLOAD_JSON;
+import static twitter4jads.TwitterAdsConstants.UPLOAD_MEDIA_URL;
 import static twitter4jads.internal.models4j.TwitterImpl.PARAM_ADDITIONAL_OWNERS;
 
 /**
@@ -82,114 +103,6 @@ public class TwitterAdsMediaUploadApiImpl implements TwitterAdsMediaUploadApi {
         }
 
         return waitForVideoProcessingAndReturnId(mediaIdString, responseFromFinalize, videoSize);
-    }
-
-    @Override
-    public TwitterVideo createVideoForAccount(String accountId, String mediaId, String title, String description, String posterImageId)
-            throws TwitterException {
-        final BaseAdsResponse<TwitterVideo> videoBaseAdsResponse = createVideo(accountId, mediaId, title, description, posterImageId);
-        if (videoBaseAdsResponse.getData() == null) {
-            throw new TwitterException("Could not upload video to Ad Account, please retry");
-        }
-
-        final TwitterVideo video = videoBaseAdsResponse.getData();
-        return waitForVideoProcessing(accountId, video.getId(), TimeUnit.MINUTES.toMillis(10));
-    }
-
-    @Override
-    public BaseAdsResponse<TwitterVideo> getVideoByIdForAccount(String accountId, String videoMediaId, Boolean withDeleted) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        TwitterAdUtil.ensureNotNull(videoMediaId, "Video Media Id");
-
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + VIDEOS + "/" + videoMediaId;
-        final List<HttpParameter> params = Lists.newArrayList();
-        params.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
-        params.add(new HttpParameter(PARAM_ID, videoMediaId));
-
-        if (withDeleted != null) {
-            params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
-        }
-
-        final Type type = new TypeToken<BaseAdsResponse<TwitterVideo>>() {
-        }.getType();
-        return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.GET);
-    }
-
-    @Override
-    public BaseAdsResponse<TwitterVideo> updateVideoDetails(String accountId, String videoMediaId, String title, String description,
-                                                            String posterImageId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(videoMediaId, "Video Media Id");
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + VIDEOS + "/" + videoMediaId;
-        final List<HttpParameter> params = Lists.newArrayList();
-        params.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
-
-        if (TwitterAdUtil.isNotNullOrEmpty(title)) {
-            params.add(new HttpParameter(PARAM_TITLE, title));
-        }
-        if (TwitterAdUtil.isNotNullOrEmpty(description)) {
-            params.add(new HttpParameter(PARAM_DESCRIPTION, description));
-        }
-        if (TwitterAdUtil.isNotNullOrEmpty(posterImageId)) {
-            params.add(new HttpParameter(PARAM_POSTER_IMAGE_ID, posterImageId));
-        }
-
-        final Type type = new TypeToken<BaseAdsResponse<TwitterVideo>>() {
-        }.getType();
-        return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.PUT);
-    }
-
-    @Override
-    public BaseAdsResponse<TwitterLibraryMedia> updateName(String accountId, String mediaId, String title, String mediaType) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(mediaId, "Video Media Id");
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        TwitterAdUtil.ensureNotNull(mediaType, "Media Type");
-        TwitterAdUtil.ensureNotNull(title, "Media Name");
-
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PATH_MEDIA_LIBRARY;
-        final List<HttpParameter> params = Lists.newArrayList();
-        params.add(new HttpParameter(PARAM_NAME, title));
-        params.add(new HttpParameter(PARAM_MEDIA_ID, mediaId));
-        params.add(new HttpParameter(PARAM_MEDIA_CATEGORY, mediaType));
-
-        final Type type = new TypeToken<BaseAdsResponse<TwitterLibraryMedia>>() {
-        }.getType();
-        return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.POST);
-    }
-
-    @Override
-    public BaseAdsResponse<TwitterVideo> deleteVideo(String accountId, String videoMediaId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(videoMediaId, "Video Media Id");
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + VIDEOS + "/" + videoMediaId;
-        final Type type = new TypeToken<BaseAdsResponse<TwitterVideo>>() {
-        }.getType();
-        return twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.DELETE);
-    }
-
-    @Override
-    public BaseAdsListResponseIterable<TwitterVideo> getVideosForAccount(String accountId, List<String> videoIds, Boolean withDeleted)
-            throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + VIDEOS;
-        final List<HttpParameter> params = Lists.newArrayList();
-        params.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
-
-        if (TwitterAdUtil.isNotEmpty(videoIds)) {
-            params.add(new HttpParameter(PARAM_VIDEO_IDS, TwitterAdUtil.getCsv(videoIds)));
-        }
-        if (withDeleted != null) {
-            params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
-        }
-
-        final Type type = new TypeToken<BaseAdsListResponse<TwitterVideo>>() {
-        }.getType();
-        return twitterAdsClient.executeHttpListRequest(url, params, type);
-    }
-
-    @Override
-    public TwitterVideo waitForMediaProcessingAndGetVideo(String accountId, String channelVideoId) throws TwitterException {
-        return waitForVideoProcessing(accountId, channelVideoId, TimeUnit.MINUTES.toMillis(4));
     }
 
     // ------------------------------------------------------------------- PRIVATE METHODS ----------------------------------------------------------
@@ -379,53 +292,6 @@ public class TwitterAdsMediaUploadApiImpl implements TwitterAdsMediaUploadApi {
         return params.toArray(new HttpParameter[params.size()]);
     }
 
-    private String createVideoObject(String mediaId, String accountId) throws TwitterException {
-        String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + PREFIX_VIDEOS;
-        List<HttpParameter> params = createVideoObjectParams(mediaId);
-        HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
-        Type type = new TypeToken<BaseAdsResponse<TwitterVideo>>() {
-        }.getType();
-        BaseAdsResponse<TwitterVideo> response =
-                twitterAdsClient.executeHttpRequest(url, parameters, type, HttpVerb.POST);
-        return response.getData().getId();
-    }
-
-    private List<HttpParameter> createVideoObjectParams(String mediaId) {
-        final List<HttpParameter> params = Lists.newArrayList();
-        params.add(new HttpParameter(PARAM_VIDEO_MEDIA_ID, mediaId));
-        params.add(new HttpParameter(PARAM_COMMAND, "FINALIZE"));
-
-        return params;
-    }
-
-    private TwitterVideo waitForVideoProcessing(String accountId, String videoId, long maxWaitTime) throws TwitterException {
-        Long totalWaitTime = 0L;
-        String url =
-                twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_3 + accountId + PREFIX_VIDEOS + SLASH + videoId;
-
-        Type type = new TypeToken<BaseAdsResponse<TwitterVideo>>() {
-        }.getType();
-        while (totalWaitTime < maxWaitTime) {
-            BaseAdsResponse<TwitterVideo> response = twitterAdsClient.executeHttpRequest(url, null, type, HttpVerb.GET);
-            TwitterVideo video = response.getData();
-            boolean readyToTweet = video.isReadyToTweet();
-
-            TwitterVideoErrors status = null;
-            if (video.getReasonsNotServable() != null && video.getReasonsNotServable().size() > 0) {
-                status = video.getReasonsNotServable().get(0);
-            }
-            if (readyToTweet) {
-                return video;
-            } else if (TwitterVideoErrors.PROCESSING.equals(status)) {
-                TwitterAdUtil.reallySleep(WAIT_INTERVAL);
-                totalWaitTime += WAIT_INTERVAL;
-            } else {
-                throw new TwitterException("Video processing error. Error code: " + (status != null ? status.getLabel() : StringUtils.EMPTY));
-            }
-        }
-        return null;
-    }
-
     private String waitForVideoProcessingAndReturnId(String mediaIdString, UploadMediaObjectResponse statusResponse, Long videoSize)
             throws TwitterException {
         if (statusResponse == null) {
@@ -503,27 +369,5 @@ public class TwitterAdsMediaUploadApiImpl implements TwitterAdsMediaUploadApi {
         }.getType();
 
         return twitterAdsClient.executeRequest(url, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.GET);
-    }
-
-    private BaseAdsResponse<TwitterVideo> createVideo(String accountId, String mediaId, String title, String description, String posterImageId)
-            throws TwitterException {
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_3 + accountId + VIDEOS;
-        final List<HttpParameter> params = Lists.newArrayList();
-        params.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
-        params.add(new HttpParameter(PARAM_VIDEO_MEDIA_ID, mediaId));
-        if (TwitterAdUtil.isNotNullOrEmpty(title)) {
-            params.add(new HttpParameter(PARAM_TITLE, title));
-        }
-        if (TwitterAdUtil.isNotNullOrEmpty(description)) {
-            params.add(new HttpParameter(PARAM_DESCRIPTION, description));
-        }
-
-        if (TwitterAdUtil.isNotNullOrEmpty(posterImageId)) {
-            params.add(new HttpParameter(PARAM_POSTER_IMAGE_ID, posterImageId));
-        }
-
-        final Type type = new TypeToken<BaseAdsResponse<TwitterVideo>>() {
-        }.getType();
-        return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.POST);
     }
 }

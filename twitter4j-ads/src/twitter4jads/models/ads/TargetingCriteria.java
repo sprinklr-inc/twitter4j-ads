@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 import twitter4jads.models.LocationType;
+import twitter4jads.models.ads.audience.TailoredAudienceType;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -33,6 +34,9 @@ public class TargetingCriteria extends TwitterEntity {
 
     @SerializedName("name")
     private String name;
+
+    @SerializedName("operator_type")
+    private String operatorType;
 
     @SerializedName("targeting_value")
     public JsonElement targetingValue;
@@ -148,6 +152,14 @@ public class TargetingCriteria extends TwitterEntity {
         this.name = name;
     }
 
+    public String getOperatorType() {
+        return operatorType;
+    }
+
+    public void setOperatorType(String operatorType) {
+        this.operatorType = operatorType;
+    }
+
     public String getTargetingValue() {
         if (targetingValue == null || !targetingValue.isJsonPrimitive()) {
             return null;
@@ -255,7 +267,7 @@ public class TargetingCriteria extends TwitterEntity {
 
         final TargetingCriteria that = (TargetingCriteria) o;
         return targetingValue != null ? targetingValue.equals(that.targetingValue)
-                                      : that.targetingValue == null && targetingType == that.targetingType;
+                : that.targetingValue == null && targetingType == that.targetingType;
     }
 
     @Override
@@ -275,6 +287,7 @@ public class TargetingCriteria extends TwitterEntity {
                 ", updatedAt=" + updatedAt +
                 ", deleted='" + deleted + '\'' +
                 ", name='" + name + '\'' +
+                ", operatorType='" + operatorType + '\'' +
                 ", targetingValue=" + targetingValue +
                 ", targetingType=" + targetingType +
                 ", locationType=" + locationType +

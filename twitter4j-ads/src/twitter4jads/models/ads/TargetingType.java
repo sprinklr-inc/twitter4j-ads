@@ -50,7 +50,11 @@ public enum TargetingType {
     APP_STORE_CATEGORY_EXPANDED,
     ENGAGEMENT_TYPE,
     CAMPAIGN_ENGAGEMENT,
-    EXCLUDE_APP_LIST(true),
+    //read response from Twitter for exclude_app_list is CUSTOM_APP_LIST with operator_type NE
+    CUSTOM_APP_LIST,
+    //batch request to Twitter for exclude_app_list is expected as APP_LIST with operator_type NE
+    APP_LIST,
+    EXCLUDE_APP_LIST(true, APP_LIST),
     USER_ENGAGEMENT,
     EVENT,
     CONTENT_PUBLISHER_USER,

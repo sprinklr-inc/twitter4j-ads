@@ -10,6 +10,12 @@ import java.util.Date;
  */
 public class TwitterLibraryMedia {
 
+    @SerializedName("tweeted")
+    private Boolean tweeted;
+
+    @SerializedName("duration")
+    private Long duration;
+
     @SerializedName("name")
     private String name;
 
@@ -24,6 +30,9 @@ public class TwitterLibraryMedia {
 
     @SerializedName("media_category")
     private String mediaCategory;
+
+    @SerializedName("media_status")
+    private String mediaStatus;
 
     @SerializedName("poster_image_url")
     private String posterImageUrl;
@@ -51,6 +60,22 @@ public class TwitterLibraryMedia {
 
     @SerializedName("deleted")
     private boolean deleted;
+
+    public Boolean getTweeted() {
+        return tweeted;
+    }
+
+    public void setTweeted(Boolean tweeted) {
+        this.tweeted = tweeted;
+    }
+
+    public Long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
 
     public String getAspectRatio() {
         return aspectRatio;
@@ -90,6 +115,14 @@ public class TwitterLibraryMedia {
 
     public void setMediaCategory(String mediaCategory) {
         this.mediaCategory = mediaCategory;
+    }
+
+    public String getMediaStatus() {
+        return mediaStatus;
+    }
+
+    public void setMediaStatus(String mediaStatus) {
+        this.mediaStatus = mediaStatus;
     }
 
     public String getMediaKey() {

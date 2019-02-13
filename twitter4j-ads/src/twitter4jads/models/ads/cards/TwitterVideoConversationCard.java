@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class TwitterVideoConversationCard extends AbstractConversationCard {
 
-    @SerializedName("video")
+    @SerializedName("video_url")
     private String videoUrl;
 
     @SerializedName("content_duration_seconds")
@@ -17,6 +17,9 @@ public class TwitterVideoConversationCard extends AbstractConversationCard {
 
     @SerializedName("video_poster_url")
     private String thumbnailUrl;
+
+    @SerializedName("video_content_id")
+    private String videoId;
 
     public String getVideoUrl() {
         return videoUrl;
@@ -40,5 +43,13 @@ public class TwitterVideoConversationCard extends AbstractConversationCard {
 
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
     }
 }

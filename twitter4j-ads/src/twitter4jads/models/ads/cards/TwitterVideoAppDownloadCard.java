@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Date: 27/08/15
  */
 public class TwitterVideoAppDownloadCard extends AbstractAppCard {
-    @SerializedName("video_id")
+    @SerializedName("video_content_id")
     private String channelVideoId;
 
     @SerializedName("video_url")

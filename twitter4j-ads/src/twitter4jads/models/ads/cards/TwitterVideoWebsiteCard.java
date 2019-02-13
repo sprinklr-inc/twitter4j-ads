@@ -12,7 +12,7 @@ public class TwitterVideoWebsiteCard extends AbstractTwitterCard {
     @SerializedName("title")
     private String title;
 
-    @SerializedName("video_id")
+    @SerializedName("video_content_id")
     private String videoId;
 
     @SerializedName("website_url")

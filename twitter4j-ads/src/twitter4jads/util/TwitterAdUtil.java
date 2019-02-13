@@ -1,20 +1,27 @@
 package twitter4jads.util;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import twitter4jads.models.ads.TrackingTag;
 import twitter4jads.BaseAdsListBatchPostResponse;
 import twitter4jads.BaseAdsListResponse;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.http.HttpResponse;
 import twitter4jads.internal.models4j.RateLimitStatus;
+import twitter4jads.models.ads.TrackingTag;
 import twitter4jads.models.ads.TwitterAdObjective;
+import twitter4jads.models.ads.audience.AudienceApiResponse;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.Sets.newHashSet;
@@ -174,6 +181,16 @@ public final class TwitterAdUtil {
         RateLimitStatus rateLimitStatus = createFromResponseHeader(httpResponse);
         baseResponse.setRateLimitStatus(rateLimitStatus);
         return baseResponse;
+    }
+
+    public static AudienceApiResponse constructAudienceApiResponse(HttpResponse httpResponse, String response) {
+        Gson gson = new Gson();
+        Type audienceApiResponseType = new TypeToken<AudienceApiResponse>() {
+        }.getType();
+        AudienceApiResponse audienceApiResponse = gson.fromJson(response, audienceApiResponseType);
+        RateLimitStatus rateLimitStatus = createFromResponseHeader(httpResponse);
+        audienceApiResponse.setRateLimitStatus(rateLimitStatus);
+        return audienceApiResponse;
     }
 
     public static void reallySleep(long millis) {

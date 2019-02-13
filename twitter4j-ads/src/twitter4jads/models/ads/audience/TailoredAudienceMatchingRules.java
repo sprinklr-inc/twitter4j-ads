@@ -1,6 +1,7 @@
-package twitter4jads.models.ads;
+package twitter4jads.models.ads.audience;
 
 import com.google.gson.annotations.SerializedName;
+import twitter4jads.models.ads.TwitterEntity;
 
 /**
  * Copyright (c) 2016-2017 Sprinklr, Inc. All rights reserved.

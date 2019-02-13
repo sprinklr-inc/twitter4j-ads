@@ -4,9 +4,17 @@ import com.google.common.base.Optional;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.ads.TwitterEntity;
-import twitter4jads.models.ads.cards.*;
-import twitter4jads.models.video.TwitterVideo;
+import twitter4jads.models.ads.cards.TwitterImageAppDownloadCard;
+import twitter4jads.models.ads.cards.TwitterImageConversationCard;
+import twitter4jads.models.ads.cards.TwitterImageDMCard;
+import twitter4jads.models.ads.cards.TwitterLeadGenerationStat;
+import twitter4jads.models.ads.cards.TwitterMobileAppCard;
+import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
+import twitter4jads.models.ads.cards.TwitterVideoConversationCard;
+import twitter4jads.models.ads.cards.TwitterVideoDMCard;
+import twitter4jads.models.ads.cards.TwitterVideoWebsiteCard;
+import twitter4jads.models.ads.cards.TwitterWebsiteCard;
+import twitter4jads.models.media.TwitterLibraryMedia;
 
 import java.io.IOException;
 import java.util.List;
@@ -63,7 +71,7 @@ public interface TwitterAdsCardsApi {
                                                                                  boolean withDeleted, Integer count)
         throws TwitterException;
 
-    BaseAdsListResponseIterable<TwitterVideoDmCard> getAllVideoDMCards(String accountId, List<String> cardIds, boolean withDeleted,
+    BaseAdsListResponseIterable<TwitterVideoDMCard> getAllVideoDMCards(String accountId, List<String> cardIds, boolean withDeleted,
                                                                        Integer count)
         throws TwitterException;
 
@@ -189,7 +197,7 @@ public interface TwitterAdsCardsApi {
     /**
      * @param accountId            The identifier for the leveraged account. (required)
      * @param name                 The name identifier for card. Maximum length: 80 characters. (required)
-     * @param appCountryCode       2 letter ISO code for the country where the App is sold. (required)
+     * @param countryCode       2 letter ISO code for the country where the App is sold. (required)
      * @param iphoneAppId          This is usually numeric and available in your app store URL. For example,
      *                             333903271 is the id for twitter. You can retrieve the id from Apple App Store URL - https://itunes.apple.com/us/app/twitter/id<IPHONE_APP_ID>
      * @param ipadAppId            This is usually numeric and available in your app store URL. For example,
@@ -201,7 +209,7 @@ public interface TwitterAdsCardsApi {
      * @param customAppDescription This is a custom description of the app. If supplied, it will be used instead of the description from the app store.
      * @return details of the created card if successful
      */
-    BaseAdsResponse<TwitterMobileAppCard> createAppDownloadCard(String accountId, String name, String appCountryCode, String iphoneAppId,
+    BaseAdsResponse<TwitterMobileAppCard> createAppDownloadCard(String accountId, String name, String countryCode, String iphoneAppId,
                                                                 String ipadAppId, String googlePlayAppId, String iphoneDeepLink, String ipadDeepLink,
                                                                 String googlePlayDeepLink, String imageMediaId,
                                                                 String customAppDescription, String callToAction) throws TwitterException;
@@ -210,7 +218,7 @@ public interface TwitterAdsCardsApi {
      * @param accountId            The identifier for the leveraged account. (required)
      * @param name                 The name identifier for card. Maximum length: 80 characters. (required)
      * @param cardId               The identifier of the card to be updated
-     * @param appCountryCode       2 letter ISO code for the country where the App is sold. (required)
+     * @param countryCode       2 letter ISO code for the country where the App is sold. (required)
      * @param iphoneAppId          This is usually numeric and available in your app store URL. For example,
      *                             333903271 is the id for twitter. You can retrieve the id from Apple App Store URL - https://itunes.apple.com/us/app/twitter/id<IPHONE_APP_ID>
      * @param ipadAppId            This is usually numeric and available in your app store URL. For example,
@@ -222,34 +230,34 @@ public interface TwitterAdsCardsApi {
      * @param customAppDescription This is a custom description of the app. If supplied, it will be used instead of the description from the app store.
      * @return details of the updated card if successful
      */
-    BaseAdsResponse<TwitterMobileAppCard> updateAppDownloadCard(String accountId, String name, String cardId, String appCountryCode,
+    BaseAdsResponse<TwitterMobileAppCard> updateAppDownloadCard(String accountId, String name, String cardId, String countryCode,
                                                                 String iphoneAppId, String ipadAppId, String googlePlayAppId, String iphoneDeepLink,
                                                                 String ipadDeepLink, String googlePlayDeepLink, String imageMediaId,
                                                                 String customAppDescription, String callToAction)
         throws TwitterException;
 
 
-    BaseAdsResponse<TwitterImageAppDownloadCard> createImageAppDownloadCard(String accountId, String name, String appCountryCode, String iphoneAppId,
+    BaseAdsResponse<TwitterImageAppDownloadCard> createImageAppDownloadCard(String accountId, String name, String countryCode, String iphoneAppId,
                                                                             String ipadAppId, String googlePlayAppId, String iphoneDeepLink,
                                                                             String ipadDeepLink, String googlePlayDeepLink, String imageMediaId,
                                                                             String callToAction) throws TwitterException;
 
-    BaseAdsResponse<TwitterImageAppDownloadCard> updateImageAppDownloadCard(String accountId, String name, String cardId, String appCountryCode,
+    BaseAdsResponse<TwitterImageAppDownloadCard> updateImageAppDownloadCard(String accountId, String name, String cardId, String countryCode,
                                                                             String iphoneAppId, String ipadAppId, String googlePlayAppId,
                                                                             String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink,
                                                                             String imageMediaId, String callToAction)
         throws TwitterException;
 
-    BaseAdsResponse<TwitterVideoAppDownloadCard> createVideoAppDownloadCard(String accountId, String name, String appCountryCode, String iphoneAppId,
+    BaseAdsResponse<TwitterVideoAppDownloadCard> createVideoAppDownloadCard(String accountId, String name, String countryCode, String iphoneAppId,
                                                                             String ipadAppId, String googlePlayAppId, String iphoneDeepLink,
                                                                             String ipadDeepLink, String googlePlayDeepLink, String imageMediaId,
-                                                                            String callToAction, TwitterVideo twitterVideo)
+                                                                            String callToAction, TwitterLibraryMedia twitterVideo)
         throws TwitterException, IOException, InterruptedException;
 
-    BaseAdsResponse<TwitterVideoAppDownloadCard> updateVideoAppDownloadCard(String accountId, String name, String cardId, String appCountryCode,
+    BaseAdsResponse<TwitterVideoAppDownloadCard> updateVideoAppDownloadCard(String accountId, String name, String cardId, String countryCode,
                                                                             String iphoneAppId, String ipadAppId, String googlePlayAppId,
                                                                             String iphoneDeepLink, String ipadDeepLink, String googlePlayDeepLink,
-                                                                            String imageMediaId, String callToActionValue, TwitterVideo video)
+                                                                            String imageMediaId, String callToActionValue, TwitterLibraryMedia video)
         throws TwitterException, IOException, InterruptedException;
 
 
@@ -272,13 +280,14 @@ public interface TwitterAdsCardsApi {
                                                                               String firstTweet, String secondHashtag, String secondTweet,
                                                                               String thirdHashtag, String thirdTweet, String fourthHashtag,
                                                                               String fourthTweet, String thanksText, String thanksUrl,
-                                                                              String imageMediaId, TwitterVideo twitterVideo) throws TwitterException;
+                                                                              String imageMediaId, TwitterLibraryMedia twitterVideo)
+            throws TwitterException;
 
     BaseAdsResponse<TwitterVideoConversationCard> updateVideoConversationCard(String accountId, String cardId, String name, String title,
                                                                               String firstHashtag, String firstTweet, String secondHashtag,
                                                                               String secondTweet, String thirdHashtag, String thirdTweet,
                                                                               String fourthHashtag, String fourthTweet, String thanksText,
-                                                                              String thanksUrl, String imageMediaId, TwitterVideo twitterVideo)
+                                                                              String thanksUrl, String imageMediaId, TwitterLibraryMedia twitterVideo)
         throws TwitterException;
 
     BaseAdsResponse<TwitterVideoConversationCard> deleteVideoConversationCard(String accountId, String cardId) throws TwitterException;
@@ -291,34 +300,32 @@ public interface TwitterAdsCardsApi {
                                                           Long recipientAccountId,
                                                           String imageUrl, String imageMediaId) throws TwitterException;
 
-    BaseAdsResponse<TwitterVideoDmCard> createVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
+    BaseAdsResponse<TwitterVideoDMCard> createVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
                                                           String secondCta, Long secondWelcomeMessageId, String thirdCta,
                                                           Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
                                                           Long recipientAccountId, String imageUrl, String videoUrl,
-                                                          String imageMediaId, String videoMediaId) throws TwitterException;
-
-    BaseAdsResponse<TwitterEntity> associateDMVideoToAccount(String accountId, String videoMediaId, String imageMediaId) throws TwitterException;
+                                                          String imageMediaId, String videoMediaKey) throws TwitterException;
 
     BaseAdsResponse<TwitterImageDMCard> updateImageDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
                                                           String secondCta, Long secondWelcomeMessageId,
                                                           String thirdCta, Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
                                                           String imageUrl, String imageMediaId, String channelId) throws TwitterException;
 
-    BaseAdsResponse<TwitterVideoDmCard> updateVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
+    BaseAdsResponse<TwitterVideoDMCard> updateVideoDMCard(String accountId, String name, String firstCta, Long firstWelcomeMessageId,
                                                           String secondCta, Long secondWelcomeMessageId, String thirdCta,
                                                           Long thirdWelcomeMessageId, String fourthCta, Long fourthWelcomeMessageId,
-                                                          String imageUrl, String videoUrl, String imageMediaId, String videoMediaId,
+                                                          String imageUrl, String videoUrl, String imageMediaId, String videoMediaKey,
                                                           String channelId) throws TwitterException;
 
     BaseAdsResponse<TwitterImageDMCard> deleteImageDMCard(String accountId, String cardId) throws TwitterException;
 
-    BaseAdsResponse<TwitterVideoDmCard> deleteVideoDMCard(String accountId, String cardId) throws TwitterException;
+    BaseAdsResponse<TwitterVideoDMCard> deleteVideoDMCard(String accountId, String cardId) throws TwitterException;
 
 
-    BaseAdsResponse<TwitterVideoWebsiteCard> createVideoWebsiteCard(String accountId, String name, String title, String videoId, String websiteUrl)
+    BaseAdsResponse<TwitterVideoWebsiteCard> createVideoWebsiteCard(String accountId, String name, String title, String videoKey, String websiteUrl)
             throws TwitterException;
 
-    BaseAdsResponse<TwitterVideoWebsiteCard> updateVideoWebsiteCard(String accountId, String cardId, String name, String title, String videoId,
+    BaseAdsResponse<TwitterVideoWebsiteCard> updateVideoWebsiteCard(String accountId, String cardId, String name, String title, String videoKey,
                                                                     String websiteUrl) throws TwitterException;
 
     BaseAdsResponse<TwitterVideoWebsiteCard> deleteVideoWebsiteCard(String accountId, String cardId) throws TwitterException;

@@ -1,4 +1,4 @@
-package twitter4jads.models.ads;
+package twitter4jads.models.ads.audience;
 
 /**
  * User: poly
