@@ -39,7 +39,7 @@ public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
             throws TwitterException {
 
         List<HttpParameter> parameterList =
-                validateAndGetParametersForUnpublishedPostPreview(text, asUserId, mediaIds, cardId, twitterPreviewTarget, videoKey);
+                validateAndGetParametersForUnpublishedPostPreview(text, asUserId, mediaIds, twitterPreviewTarget, videoKey);
 
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 +
                 accountId + TwitterAdsConstants.TWEET_PATH_PREVIEW;
@@ -80,7 +80,7 @@ public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
 
     //-------------------------------------------------------------- PRIVATE METHODS-------------------------------------------------------------//
 
-    private List<HttpParameter> validateAndGetParametersForUnpublishedPostPreview(String text, String asUserId, List<String> mediaIds, String cardId,
+    private List<HttpParameter> validateAndGetParametersForUnpublishedPostPreview(String text, String asUserId, List<String> mediaIds,
                                                                                   TwitterPreviewTarget twitterPreviewTarget, String videoId)
         throws TwitterException {
         final boolean isPreviewTargetPublisherNetwork = twitterPreviewTarget == PUBLISHER_NETWORK;
@@ -101,9 +101,6 @@ public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
         }
         if (TwitterAdUtil.isNotNullOrEmpty(mediaIdsCsv)) {
             parameterList.add(new HttpParameter(TwitterAdsConstants.PARAM_MEDIA_IDS, mediaIdsCsv));
-        }
-        if (TwitterAdUtil.isNotNullOrEmpty(cardId)) {
-            parameterList.add(new HttpParameter(TwitterAdsConstants.PARAM_CARD_ID, cardId));
         }
         if (TwitterAdUtil.isNotNullOrEmpty(videoId)) {
             parameterList.add(new HttpParameter(TwitterAdsConstants.PARAM_VIDEO_ID, videoId));
