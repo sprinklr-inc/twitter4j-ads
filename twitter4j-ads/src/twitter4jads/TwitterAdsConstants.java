@@ -15,7 +15,7 @@ public interface TwitterAdsConstants {
     int TAILORED_AUDIENCE_UPDATE_BATCH_SIZE = 2500;
 
     String TWEET_PREVIEW_PATH = "/tweet/preview/";
-    String UPLOAD_MEDIA_URL = "1.1/media/";
+    String UPLOAD_MEDIA_URL = "media/";
     String UPLOAD_JSON = "upload.json";
     String PREFIX_BATCH_ACCOUNTS_V4 = "4/batch/accounts/";
     String V4_PREFIX_STATS_JOB_ACCOUNTS_URI = "4/stats/jobs/accounts/";
