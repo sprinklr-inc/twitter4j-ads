@@ -1,6 +1,10 @@
 package twitter4jads.api;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.google.common.base.Optional;
+
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
@@ -15,9 +19,6 @@ import twitter4jads.models.ads.cards.TwitterVideoDMCard;
 import twitter4jads.models.ads.cards.TwitterVideoWebsiteCard;
 import twitter4jads.models.ads.cards.TwitterWebsiteCard;
 import twitter4jads.models.media.TwitterLibraryMedia;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * User: abhay
@@ -191,7 +192,8 @@ public interface TwitterAdsCardsApi {
      * @return details of the created card if successful
      * @throws TwitterException
      */
-    BaseAdsResponse<TwitterWebsiteCard> createWebsiteCard(String accountId, String name, String websiteTitle, String websiteUrl, String imageMediaId)
+    BaseAdsResponse<TwitterWebsiteCard> createWebsiteCard(String accountId, String name, String websiteTitle,
+            String websiteUrl, String imageMediaId, String userId)
         throws TwitterException;
 
     /**

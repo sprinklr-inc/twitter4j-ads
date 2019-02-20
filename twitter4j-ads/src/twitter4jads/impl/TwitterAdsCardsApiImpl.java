@@ -1,45 +1,9 @@
 package twitter4jads.impl;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.google.gson.reflect.TypeToken;
-import org.apache.commons.lang3.StringUtils;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
-import twitter4jads.TwitterAdsConstants;
-import twitter4jads.api.TwitterAdsCardsApi;
-import twitter4jads.internal.http.HttpParameter;
-import twitter4jads.internal.models4j.Media;
-import twitter4jads.internal.models4j.MediaUpload;
-import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.ads.HttpVerb;
-import twitter4jads.models.ads.TwitterUUIDResponse;
-import twitter4jads.models.ads.cards.AbstractConversationCard;
-import twitter4jads.models.ads.cards.TwitterImageAppDownloadCard;
-import twitter4jads.models.ads.cards.TwitterImageConversationCard;
-import twitter4jads.models.ads.cards.TwitterImageDMCard;
-import twitter4jads.models.ads.cards.TwitterLeadGenerationStat;
-import twitter4jads.models.ads.cards.TwitterMobileAppCard;
-import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
-import twitter4jads.models.ads.cards.TwitterVideoConversationCard;
-import twitter4jads.models.ads.cards.TwitterVideoDMCard;
-import twitter4jads.models.ads.cards.TwitterVideoWebsiteCard;
-import twitter4jads.models.ads.cards.TwitterWebsiteCard;
-import twitter4jads.models.media.TwitterLibraryMedia;
-import twitter4jads.util.TwitterAdUtil;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import static twitter4jads.TwitterAdsConstants.APP_CTA;
 import static twitter4jads.TwitterAdsConstants.MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH;
 import static twitter4jads.TwitterAdsConstants.MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH;
+import static twitter4jads.TwitterAdsConstants.PARAM_AS_USER_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_CARD_IDS;
 import static twitter4jads.TwitterAdsConstants.PARAM_COUNT;
 import static twitter4jads.TwitterAdsConstants.PARAM_COUNTRY_CODE;
@@ -92,6 +56,45 @@ import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
 import static twitter4jads.TwitterAdsConstants.PREFIX_STATS_ACCOUNTS_URI;
 import static twitter4jads.TwitterAdsConstants.UPLOAD_VIDEO_CARD_IMAGE_URL;
 import static twitter4jads.util.TwitterAdUtil.isNotNullOrEmpty;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.google.gson.reflect.TypeToken;
+
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.BaseAdsListResponseIterable;
+import twitter4jads.BaseAdsResponse;
+import twitter4jads.TwitterAdsClient;
+import twitter4jads.TwitterAdsConstants;
+import twitter4jads.api.TwitterAdsCardsApi;
+import twitter4jads.internal.http.HttpParameter;
+import twitter4jads.internal.models4j.Media;
+import twitter4jads.internal.models4j.MediaUpload;
+import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ads.HttpVerb;
+import twitter4jads.models.ads.TwitterUUIDResponse;
+import twitter4jads.models.ads.cards.AbstractConversationCard;
+import twitter4jads.models.ads.cards.TwitterImageAppDownloadCard;
+import twitter4jads.models.ads.cards.TwitterImageConversationCard;
+import twitter4jads.models.ads.cards.TwitterImageDMCard;
+import twitter4jads.models.ads.cards.TwitterLeadGenerationStat;
+import twitter4jads.models.ads.cards.TwitterMobileAppCard;
+import twitter4jads.models.ads.cards.TwitterVideoAppDownloadCard;
+import twitter4jads.models.ads.cards.TwitterVideoConversationCard;
+import twitter4jads.models.ads.cards.TwitterVideoDMCard;
+import twitter4jads.models.ads.cards.TwitterVideoWebsiteCard;
+import twitter4jads.models.ads.cards.TwitterWebsiteCard;
+import twitter4jads.models.media.TwitterLibraryMedia;
+import twitter4jads.util.TwitterAdUtil;
 
 /**
  * User: abhay
@@ -376,7 +379,8 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     public BaseAdsResponse<TwitterWebsiteCard> updateWebsiteCard(String accountId, String name, String cardId, String websiteTitle, String websiteUrl, String imageMediaId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
-        List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle, websiteUrl, imageMediaId);
+        List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle,
+                websiteUrl, imageMediaId, null);
         String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_WEBSITE_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
@@ -385,8 +389,10 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterWebsiteCard> createWebsiteCard(String accountId, String name, String websiteTitle, String websiteUrl, String imageMediaId) throws TwitterException {
-        final List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle, websiteUrl, imageMediaId);
+    public BaseAdsResponse<TwitterWebsiteCard> createWebsiteCard(String accountId, String name, String websiteTitle,
+            String websiteUrl, String imageMediaId, String asUserId) throws TwitterException {
+        final List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle,
+                websiteUrl, imageMediaId, asUserId);
         final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_WEBSITE_CARDS;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
@@ -827,7 +833,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     private List<HttpParameter> validateAndCreateParamsForCreateWebsiteCard(String accountId, String name, String websiteTitle, String websiteUrl,
-                                                                            String mediaId) throws TwitterException {
+            String mediaId, String asUserId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(name, "Name");
         TwitterAdUtil.ensureNotNull(websiteTitle, "WebsiteTitle");
@@ -840,6 +846,10 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
         if (isNotNullOrEmpty(mediaId)) {
             params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, mediaId));
+        }
+
+        if (isNotNullOrEmpty(asUserId)) {
+            params.add(new HttpParameter(PARAM_AS_USER_ID, asUserId));
         }
 
         return params;
