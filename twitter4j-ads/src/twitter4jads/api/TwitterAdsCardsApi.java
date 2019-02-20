@@ -193,7 +193,7 @@ public interface TwitterAdsCardsApi {
      * @throws TwitterException
      */
     BaseAdsResponse<TwitterWebsiteCard> createWebsiteCard(String accountId, String name, String websiteTitle,
-            String websiteUrl, String imageMediaId, String userId)
+            String websiteUrl, String imageMediaId)
         throws TwitterException;
 
     /**

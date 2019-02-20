@@ -3,7 +3,6 @@ package twitter4jads.impl;
 import static twitter4jads.TwitterAdsConstants.APP_CTA;
 import static twitter4jads.TwitterAdsConstants.MAX_VIDEO_WEBSITE_CARD_NAME_LENGTH;
 import static twitter4jads.TwitterAdsConstants.MAX_VIDEO_WEBSITE_CARD_TITLE_LENGTH;
-import static twitter4jads.TwitterAdsConstants.PARAM_AS_USER_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_CARD_IDS;
 import static twitter4jads.TwitterAdsConstants.PARAM_COUNT;
 import static twitter4jads.TwitterAdsConstants.PARAM_COUNTRY_CODE;
@@ -380,7 +379,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
         TwitterAdUtil.ensureNotNull(cardId, "Card Id");
 
         List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle,
-                websiteUrl, imageMediaId, null);
+                websiteUrl, imageMediaId);
         String url = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4 + accountId + PATH_WEBSITE_CARDS + cardId;
         HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
@@ -390,9 +389,9 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
     @Override
     public BaseAdsResponse<TwitterWebsiteCard> createWebsiteCard(String accountId, String name, String websiteTitle,
-            String websiteUrl, String imageMediaId, String asUserId) throws TwitterException {
+            String websiteUrl, String imageMediaId) throws TwitterException {
         final List<HttpParameter> params = validateAndCreateParamsForCreateWebsiteCard(accountId, name, websiteTitle,
-                websiteUrl, imageMediaId, asUserId);
+                websiteUrl, imageMediaId);
         final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_WEBSITE_CARDS;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterWebsiteCard>>() {
@@ -833,7 +832,7 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
     }
 
     private List<HttpParameter> validateAndCreateParamsForCreateWebsiteCard(String accountId, String name, String websiteTitle, String websiteUrl,
-            String mediaId, String asUserId) throws TwitterException {
+            String mediaId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(name, "Name");
         TwitterAdUtil.ensureNotNull(websiteTitle, "WebsiteTitle");
@@ -846,10 +845,6 @@ public class TwitterAdsCardsApiImpl implements TwitterAdsCardsApi {
 
         if (isNotNullOrEmpty(mediaId)) {
             params.add(new HttpParameter(PARAM_IMAGE_MEDIA_ID, mediaId));
-        }
-
-        if (isNotNullOrEmpty(asUserId)) {
-            params.add(new HttpParameter(PARAM_AS_USER_ID, asUserId));
         }
 
         return params;
