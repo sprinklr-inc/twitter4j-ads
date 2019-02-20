@@ -1,52 +1,5 @@
 package twitter4jads.impl;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import org.apache.commons.lang3.StringUtils;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
-import twitter4jads.TwitterAdsConstants;
-import twitter4jads.api.TwitterAdsTargetingApi;
-import twitter4jads.internal.http.HttpParameter;
-import twitter4jads.internal.http.HttpResponse;
-import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.LocationType;
-import twitter4jads.models.ads.AppStoreSearchType;
-import twitter4jads.models.ads.BidType;
-import twitter4jads.models.ads.Conversations;
-import twitter4jads.models.ads.Devices;
-import twitter4jads.models.ads.HttpVerb;
-import twitter4jads.models.ads.IabCategory;
-import twitter4jads.models.ads.NewTwitterReachEstimate;
-import twitter4jads.models.ads.PlatformVersions;
-import twitter4jads.models.ads.ProductType;
-import twitter4jads.models.ads.SuggestionType;
-import twitter4jads.models.ads.TargetingCriteria;
-import twitter4jads.models.ads.TargetingLocation;
-import twitter4jads.models.ads.TargetingSuggestion;
-import twitter4jads.models.ads.TargetingType;
-import twitter4jads.models.ads.TwitterAppStore;
-import twitter4jads.models.ads.TwitterApplicationDetails;
-import twitter4jads.models.ads.TwitterBehavior;
-import twitter4jads.models.ads.TwitterBehaviorTaxonomy;
-import twitter4jads.models.ads.audience.TailoredAudienceType;
-import twitter4jads.models.ads.tags.TwitterApplicationList;
-import twitter4jads.models.ads.targeting.TargetingParamRequest;
-import twitter4jads.models.ads.targeting.TargetingParamResponse;
-import twitter4jads.util.TwitterAdUtil;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static twitter4jads.TwitterAdsConstants.BID_AMOUNT_LOCAL_MICRO;
 import static twitter4jads.TwitterAdsConstants.BID_TYPE;
 import static twitter4jads.TwitterAdsConstants.CAMPAIGN_DAILY_BUDGET_AMOUNT_LOCAL_MICRO;
@@ -108,7 +61,6 @@ import static twitter4jads.TwitterAdsConstants.PARAM_UNORDERED_KEYWORDS;
 import static twitter4jads.TwitterAdsConstants.PARAM_USER_ENGAGEMENT;
 import static twitter4jads.TwitterAdsConstants.PARAM_WIFI_ONLY;
 import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
-import static twitter4jads.TwitterAdsConstants.PATH_ACCOUNTS;
 import static twitter4jads.TwitterAdsConstants.PATH_APP_LIST;
 import static twitter4jads.TwitterAdsConstants.PATH_BEHAVIORS;
 import static twitter4jads.TwitterAdsConstants.PATH_BEHAVIORS_TAXONOMY;
@@ -133,6 +85,55 @@ import static twitter4jads.TwitterAdsConstants.PATH_TV_SHOWS;
 import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
 import static twitter4jads.TwitterAdsConstants.PREFIX_BATCH_ACCOUNTS_V4;
 import static twitter4jads.util.TwitterAdUtil.constructBaseAdsListResponse;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.BaseAdsListResponseIterable;
+import twitter4jads.BaseAdsResponse;
+import twitter4jads.TwitterAdsClient;
+import twitter4jads.TwitterAdsConstants;
+import twitter4jads.api.TwitterAdsTargetingApi;
+import twitter4jads.internal.http.HttpParameter;
+import twitter4jads.internal.http.HttpResponse;
+import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.LocationType;
+import twitter4jads.models.ads.AppStoreSearchType;
+import twitter4jads.models.ads.BidType;
+import twitter4jads.models.ads.Conversations;
+import twitter4jads.models.ads.Devices;
+import twitter4jads.models.ads.HttpVerb;
+import twitter4jads.models.ads.IabCategory;
+import twitter4jads.models.ads.NewTwitterReachEstimate;
+import twitter4jads.models.ads.PlatformVersions;
+import twitter4jads.models.ads.ProductType;
+import twitter4jads.models.ads.SuggestionType;
+import twitter4jads.models.ads.TargetingCriteria;
+import twitter4jads.models.ads.TargetingLocation;
+import twitter4jads.models.ads.TargetingSuggestion;
+import twitter4jads.models.ads.TargetingType;
+import twitter4jads.models.ads.TwitterAppStore;
+import twitter4jads.models.ads.TwitterApplicationDetails;
+import twitter4jads.models.ads.TwitterBehavior;
+import twitter4jads.models.ads.TwitterBehaviorTaxonomy;
+import twitter4jads.models.ads.audience.TailoredAudienceType;
+import twitter4jads.models.ads.tags.TwitterApplicationList;
+import twitter4jads.models.ads.targeting.TargetingParamRequest;
+import twitter4jads.models.ads.targeting.TargetingParamResponse;
+import twitter4jads.util.TwitterAdUtil;
 
 /**
  * User: abhay
@@ -364,7 +365,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     public TargetingParamResponse createTargetingBatchRequest(String accountId, List<TargetingParamRequest> targetingParamRequests) throws TwitterException {
         validateTargetingBatch(targetingParamRequests);
 
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_BATCH_ACCOUNTS_V4 + PATH_ACCOUNTS + accountId + PATH_TARGETING_CRITERIA;
+        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_BATCH_ACCOUNTS_V4 + accountId
+                + PATH_TARGETING_CRITERIA;
         HttpResponse httpResponse = twitterAdsClient.postBatchRequest(baseUrl, GSON.toJson(targetingParamRequests));
         Type typeToken = new TypeToken<TargetingParamResponse>() {
         }.getType();
