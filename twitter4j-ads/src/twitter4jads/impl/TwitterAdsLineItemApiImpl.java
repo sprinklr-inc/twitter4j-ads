@@ -4,6 +4,7 @@ import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_MEDIA_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_ADVERTISER_DOMAIN;
 import static twitter4jads.TwitterAdsConstants.PARAM_APP_STORE_IDENTIFIER;
+import static twitter4jads.TwitterAdsConstants.PARAM_AUTOMATICALLY_SELECT_BID;
 import static twitter4jads.TwitterAdsConstants.PARAM_BID_AMOUNT_LOCAL_MICRO;
 import static twitter4jads.TwitterAdsConstants.PARAM_BID_TYPE;
 import static twitter4jads.TwitterAdsConstants.PARAM_BID_UNIT;
@@ -484,7 +485,10 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         if (campaignId != null && campaignId.isPresent()) {
             params.add(new HttpParameter(PARAM_CAMPAIGN_ID, campaignId.get()));
         }
-        if (TwitterAdUtil.isNotNull(bidAmountLocalMicro) && bidAmountLocalMicro.isPresent()) {
+
+        if (automaticallySelectBid) {
+            params.add(new HttpParameter(PARAM_AUTOMATICALLY_SELECT_BID, automaticallySelectBid));
+        } else if (TwitterAdUtil.isNotNull(bidAmountLocalMicro) && bidAmountLocalMicro.isPresent()) {
             params.add(new HttpParameter(PARAM_BID_AMOUNT_LOCAL_MICRO, bidAmountLocalMicro.get()));
             if (bidType != null) {
                 params.add(new HttpParameter(PARAM_BID_TYPE, bidType.name()));
