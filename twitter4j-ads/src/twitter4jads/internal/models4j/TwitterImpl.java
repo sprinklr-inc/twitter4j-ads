@@ -17,16 +17,6 @@
 
 package twitter4jads.internal.models4j;
 
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import twitter4jads.auth.Authorization;
-import twitter4jads.conf.Configuration;
-import twitter4jads.internal.http.HttpParameter;
-import twitter4jads.internal.http.HttpResponse;
-import twitter4jads.internal.json.TwitterUploadMediaResponseImpl;
-import twitter4jads.internal.util.z_T4JInternalStringUtil;
-import twitter4jads.util.TwitterAdUtil;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +28,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import twitter4jads.auth.Authorization;
+import twitter4jads.conf.Configuration;
+import twitter4jads.internal.http.HttpParameter;
+import twitter4jads.internal.http.HttpResponse;
+import twitter4jads.internal.json.TwitterUploadMediaResponseImpl;
+import twitter4jads.internal.util.z_T4JInternalStringUtil;
+import twitter4jads.util.TwitterAdUtil;
 
 /**
  * A java representation of the <a href="https://dev.twitter.com/docs/api">Twitter REST API</a><br>
@@ -81,19 +82,19 @@ public class TwitterImpl extends TwitterBaseImpl implements Twitter {
         HttpParameter[] implicitParams = implicitParamsMap.get(conf);
         String implicitParamsStr = implicitParamsStrMap.get(conf);
         if (implicitParams == null) {
-            String includeEntities = conf.isIncludeEntitiesEnabled() ? "1" : "0";
-            String includeRTs = conf.isIncludeRTsEnabled() ? "1" : "0";
-            boolean contributorsEnabled = conf.getContributingTo() != -1L;
-            implicitParamsStr = "include_entities=" + includeEntities + "&include_rts=" + includeRTs +
-                                (contributorsEnabled ? "&contributingto=" + conf.getContributingTo() : "");
-            implicitParamsStrMap.put(conf, implicitParamsStr);
+//            String includeEntities = conf.isIncludeEntitiesEnabled() ? "1" : "0";
+//            String includeRTs = conf.isIncludeRTsEnabled() ? "1" : "0";
+//            boolean contributorsEnabled = conf.getContributingTo() != -1L;
+//            implicitParamsStr = "include_entities=" + includeEntities + "&include_rts=" + includeRTs +
+//                                (contributorsEnabled ? "&contributingto=" + conf.getContributingTo() : "");
+//            implicitParamsStrMap.put(conf, implicitParamsStr);
 
             List<HttpParameter> params = new ArrayList<HttpParameter>();
-            params.add(new HttpParameter("include_entities", includeEntities));
-            params.add(new HttpParameter("include_rts", includeRTs));
-            if (contributorsEnabled) {
-                params.add(new HttpParameter("contributingto", conf.getContributingTo()));
-            }
+//            params.add(new HttpParameter("include_entities", includeEntities));
+//            params.add(new HttpParameter("include_rts", includeRTs));
+//            if (contributorsEnabled) {
+//                params.add(new HttpParameter("contributingto", conf.getContributingTo()));
+//            }
             implicitParams = params.toArray(new HttpParameter[params.size()]);
             implicitParamsMap.put(conf, implicitParams);
         }
