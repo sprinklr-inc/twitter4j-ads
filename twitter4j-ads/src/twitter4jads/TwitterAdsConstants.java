@@ -76,6 +76,8 @@ public interface TwitterAdsConstants {
     String PARAM_TARGET_CPA_LOCAL_MICRO = "target_cpa_local_micro";
     String PARAM_BID_TYPE = "bid_type";
     String PARAM_BID_UNIT = "bid_unit";
+
+    String PARAM_AUTOMATICALLY_SELECT_BID = "automatically_select_bid";
     String PARAM_OPTIMIZATION = "optimization";
     String PARAM_CHARGE_BY = "charge_by";
     String PARAM_PRODUCT_TYPE = "product_type";
