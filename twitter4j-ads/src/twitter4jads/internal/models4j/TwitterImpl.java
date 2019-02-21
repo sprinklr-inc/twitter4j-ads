@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -64,42 +62,15 @@ public class TwitterImpl extends TwitterBaseImpl implements Twitter {
     public static final String FINALIZE = "FINALIZE";
     public static final String STATUS = "STATUS";
 
-    private final String IMPLICIT_PARAMS_STR;
-    private final HttpParameter[] IMPLICIT_PARAMS;
     private final HttpParameter INCLUDE_MY_RETWEET;
     private final HttpParameter TWEET_MODE;
     long WAIT_INTERVAL_TRANSCODING = TimeUnit.SECONDS.toMillis(5);
-
-    private static final Map<Configuration, HttpParameter[]> implicitParamsMap = new ConcurrentHashMap<>();
-    private static final Map<Configuration, String> implicitParamsStrMap = new ConcurrentHashMap<>();
 
     /*package*/
     public TwitterImpl(Configuration conf, Authorization auth) {
         super(conf, auth);
         INCLUDE_MY_RETWEET = new HttpParameter("include_my_retweet", conf.isIncludeMyRetweetEnabled());
         TWEET_MODE = new HttpParameter("tweet_mode", conf.getTweetMode());
-
-        HttpParameter[] implicitParams = implicitParamsMap.get(conf);
-        String implicitParamsStr = implicitParamsStrMap.get(conf);
-        if (implicitParams == null) {
-//            String includeEntities = conf.isIncludeEntitiesEnabled() ? "1" : "0";
-//            String includeRTs = conf.isIncludeRTsEnabled() ? "1" : "0";
-//            boolean contributorsEnabled = conf.getContributingTo() != -1L;
-//            implicitParamsStr = "include_entities=" + includeEntities + "&include_rts=" + includeRTs +
-//                                (contributorsEnabled ? "&contributingto=" + conf.getContributingTo() : "");
-//            implicitParamsStrMap.put(conf, implicitParamsStr);
-
-            List<HttpParameter> params = new ArrayList<HttpParameter>();
-//            params.add(new HttpParameter("include_entities", includeEntities));
-//            params.add(new HttpParameter("include_rts", includeRTs));
-//            if (contributorsEnabled) {
-//                params.add(new HttpParameter("contributingto", conf.getContributingTo()));
-//            }
-            implicitParams = params.toArray(new HttpParameter[params.size()]);
-            implicitParamsMap.put(conf, implicitParams);
-        }
-        IMPLICIT_PARAMS = implicitParams;
-        IMPLICIT_PARAMS_STR = implicitParamsStr;
     }
 
     /**
@@ -574,16 +545,6 @@ public class TwitterImpl extends TwitterBaseImpl implements Twitter {
     }
 
     private String getMediaUploadUrl() {return conf.getMediaUploadBaseUrl() + "media/upload.json";}
-
-    @Override
-    String getImplicitParamsStr() {
-        return IMPLICIT_PARAMS_STR;
-    }
-
-    @Override
-    HttpParameter[] getImplicitParams() {
-        return IMPLICIT_PARAMS;
-    }
 
     @Override
     public String toString() {

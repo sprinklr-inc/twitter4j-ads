@@ -16,19 +16,18 @@
 
 package twitter4jads.internal.models4j;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import twitter4jads.auth.*;
-import twitter4jads.conf.Configuration;
-import twitter4jads.internal.http.*;
-import twitter4jads.internal.json.z_T4JInternalFactory;
-import twitter4jads.internal.json.z_T4JInternalJSONImplFactory;
-import twitter4jads.models.ads.HttpVerb;
+import static twitter4jads.internal.http.HttpResponseCode.ENHANCE_YOUR_CLAIM;
+import static twitter4jads.internal.http.HttpResponseCode.SERVICE_UNAVAILABLE;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -36,8 +35,31 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static twitter4jads.internal.http.HttpResponseCode.ENHANCE_YOUR_CLAIM;
-import static twitter4jads.internal.http.HttpResponseCode.SERVICE_UNAVAILABLE;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import twitter4jads.auth.AccessToken;
+import twitter4jads.auth.Authorization;
+import twitter4jads.auth.AuthorizationFactory;
+import twitter4jads.auth.BasicAuthorization;
+import twitter4jads.auth.NullAuthorization;
+import twitter4jads.auth.OAuthAuthorization;
+import twitter4jads.auth.OAuthSupport;
+import twitter4jads.auth.RequestToken;
+import twitter4jads.conf.Configuration;
+import twitter4jads.internal.http.HttpClientWrapper;
+import twitter4jads.internal.http.HttpParameter;
+import twitter4jads.internal.http.HttpResponse;
+import twitter4jads.internal.http.HttpResponseEvent;
+import twitter4jads.internal.http.HttpResponseListener;
+import twitter4jads.internal.http.XAuthAuthorization;
+import twitter4jads.internal.json.z_T4JInternalFactory;
+import twitter4jads.internal.json.z_T4JInternalJSONImplFactory;
+import twitter4jads.models.ads.HttpVerb;
 
 /**
  * Base class of Twitter / AsyncTwitter / TwitterStream supports OAuth.
@@ -602,11 +624,6 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
 
     protected HttpResponse executeRequest(String url, HttpVerb httpVerb) throws TwitterException {
         ensureAuthorizationEnabled();
-        if (url.contains("?")) {
-            url = url + "&" + getImplicitParamsStr();
-        } else {
-            url = url + "?" + getImplicitParamsStr();
-        }
         if (!conf.isMBeanEnabled()) {
             switch (httpVerb) {
                 case GET:
@@ -643,21 +660,16 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
 
     protected HttpResponse executeRequest(String url, HttpParameter[] params, HttpVerb httpVerb) throws TwitterException {
         ensureAuthorizationEnabled();
-        if (url.contains("?")) {
-            url = url + "&" + getImplicitParamsStr();
-        } else {
-            url = url + "?" + getImplicitParamsStr();
-        }
         if (!conf.isMBeanEnabled()) {
             switch (httpVerb) {
                 case GET:
-                    return http.get(url, mergeImplicitParams(params), auth);
+                return http.get(url, params, auth);
                 case POST:
-                    return http.post(url, mergeImplicitParams(params), auth);
+                return http.post(url, params, auth);
                 case PUT:
-                    return http.put(url, mergeImplicitParams(params), auth);
+                return http.put(url, params, auth);
                 case DELETE:
-                    return http.delete(url, mergeImplicitParams(params), auth);
+                return http.delete(url, params, auth);
             }
         }
         // intercept HTTP call for monitoring purposes
@@ -666,13 +678,13 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
         try {
             switch (httpVerb) {
                 case GET:
-                    return http.get(url, mergeImplicitParams(params), auth);
+                return http.get(url, params, auth);
                 case POST:
-                    return http.post(url, mergeImplicitParams(params), auth);
+                return http.post(url, params, auth);
                 case PUT:
-                    return http.put(url, mergeImplicitParams(params), auth);
+                return http.put(url, params, auth);
                 case DELETE:
-                    return http.delete(url, mergeImplicitParams(params), auth);
+                return http.delete(url, params, auth);
             }
         } finally {
             long elapsedTime = System.currentTimeMillis() - start;
@@ -683,11 +695,6 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
 
     protected HttpResponse get(String url) throws TwitterException {
         ensureAuthorizationEnabled();
-        if (url.contains("?")) {
-            url = url + "&" + getImplicitParamsStr();
-        } else {
-            url = url + "?" + getImplicitParamsStr();
-        }
         if (!conf.isMBeanEnabled()) {
             return http.get(url, auth);
         } else {
@@ -725,13 +732,13 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
     protected HttpResponse get(String url, HttpParameter[] params) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.get(url, mergeImplicitParams(params), auth);
+            return http.get(url, params, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.get(url, mergeImplicitParams(params), auth);
+                response = http.get(url, params, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -743,13 +750,13 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
     protected HttpResponse post(String url) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.post(url, getImplicitParams(), auth);
+            return http.post(url, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.post(url, getImplicitParams(), auth);
+                response = http.post(url, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -761,13 +768,13 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
     protected HttpResponse post(String url, HttpParameter[] params) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.post(url, mergeImplicitParams(params), auth);
+            return http.post(url, params, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.post(url, mergeImplicitParams(params), auth);
+                response = http.post(url, params, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -835,13 +842,13 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
     protected HttpResponse put(String url) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.put(url, getImplicitParams(), auth);
+            return http.put(url, null, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.put(url, getImplicitParams(), auth);
+                response = http.put(url, null, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -853,13 +860,13 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
     public HttpResponse postBatchRequest(String url, String requestBody) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.postBatchRequest(url, getImplicitParams(), auth, requestBody);
+            return http.postBatchRequest(url, null, auth, requestBody);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.put(url, getImplicitParams(), auth);
+                response = http.put(url, null, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -871,13 +878,13 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
     protected HttpResponse put(String url, HttpParameter[] params) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.put(url, mergeImplicitParams(params), auth);
+            return http.put(url, params, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.put(url, mergeImplicitParams(params), auth);
+                response = http.put(url, params, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -889,13 +896,13 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
     protected HttpResponse delete(String url) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.delete(url, getImplicitParams(), auth);
+            return http.delete(url, null, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.delete(url, getImplicitParams(), auth);
+                response = http.delete(url, null, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -907,13 +914,13 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
     protected HttpResponse delete(String url, HttpParameter[] params) throws TwitterException {
         ensureAuthorizationEnabled();
         if (!conf.isMBeanEnabled()) {
-            return http.delete(url, mergeImplicitParams(params), auth);
+            return http.delete(url, params, auth);
         } else {
             // intercept HTTP call for monitoring purposes
             HttpResponse response = null;
             long start = System.currentTimeMillis();
             try {
-                response = http.delete(url, mergeImplicitParams(params), auth);
+                response = http.delete(url, params, auth);
             } finally {
                 long elapsedTime = System.currentTimeMillis() - start;
                 TwitterAPIMonitor.getInstance().methodCalled(url, elapsedTime, isOk(response));
@@ -956,18 +963,9 @@ abstract class TwitterBaseImpl implements TwitterBase, Serializable, OAuthSuppor
         }
     }
 
-    protected HttpParameter[] mergeImplicitParams(HttpParameter[] params) {
-        return mergeParameters(params, getImplicitParams());
-    }
-
     private boolean isOk(HttpResponse response) {
         return response != null && response.getStatusCode() < 300;
     }
-
-    abstract String getImplicitParamsStr();
-
-    abstract HttpParameter[] getImplicitParams();
-
 
     private byte[] getAllBytesToUpload(TonUpload tonUpload) throws TwitterException {
         try {
