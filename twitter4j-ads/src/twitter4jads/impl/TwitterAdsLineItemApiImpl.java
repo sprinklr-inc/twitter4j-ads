@@ -1,49 +1,10 @@
 package twitter4jads.impl;
 
-import com.google.common.base.Optional;
-import com.google.gson.reflect.TypeToken;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
-import twitter4jads.TwitterAdsConstants;
-import twitter4jads.api.TwitterAdsLineItemApi;
-import twitter4jads.internal.http.HttpParameter;
-import twitter4jads.internal.http.HttpResponse;
-import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.ads.BidType;
-import twitter4jads.models.ads.EntityStatus;
-import twitter4jads.models.ads.HttpVerb;
-import twitter4jads.models.ads.LineItem;
-import twitter4jads.models.ads.LineItemAppResponse;
-import twitter4jads.models.ads.Placement;
-import twitter4jads.models.ads.ProductType;
-import twitter4jads.models.ads.PromotedAccount;
-import twitter4jads.models.ads.Sentiments;
-import twitter4jads.models.ads.TrackingTag;
-import twitter4jads.models.ads.TwitterAdObjective;
-import twitter4jads.models.ads.TwitterOSType;
-import twitter4jads.models.ads.sort.LineItemsSortByField;
-import twitter4jads.models.ads.sort.PromotedAccountsSortByField;
-import twitter4jads.models.media.TwitterMediaCallToAction;
-import twitter4jads.models.video.AssociateMediaCreativeResponse;
-import twitter4jads.models.video.TwitterCallToActionType;
-import twitter4jads.util.TwitterAdUtil;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
 import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_MEDIA_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_ADVERTISER_DOMAIN;
 import static twitter4jads.TwitterAdsConstants.PARAM_APP_STORE_IDENTIFIER;
+import static twitter4jads.TwitterAdsConstants.PARAM_AUTOMATICALLY_SELECT_BID;
 import static twitter4jads.TwitterAdsConstants.PARAM_BID_AMOUNT_LOCAL_MICRO;
 import static twitter4jads.TwitterAdsConstants.PARAM_BID_TYPE;
 import static twitter4jads.TwitterAdsConstants.PARAM_BID_UNIT;
@@ -86,6 +47,48 @@ import static twitter4jads.TwitterAdsConstants.PATH_MEDIA_CREATIVES;
 import static twitter4jads.TwitterAdsConstants.PATH_PROMOTED_ACCOUNTS;
 import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
 import static twitter4jads.TwitterAdsConstants.PRE_ROLL_CALL_TO_ACTION;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.Optional;
+import com.google.gson.reflect.TypeToken;
+
+import twitter4jads.BaseAdsListResponse;
+import twitter4jads.BaseAdsListResponseIterable;
+import twitter4jads.BaseAdsResponse;
+import twitter4jads.TwitterAdsClient;
+import twitter4jads.TwitterAdsConstants;
+import twitter4jads.api.TwitterAdsLineItemApi;
+import twitter4jads.internal.http.HttpParameter;
+import twitter4jads.internal.http.HttpResponse;
+import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.models.ads.BidType;
+import twitter4jads.models.ads.EntityStatus;
+import twitter4jads.models.ads.HttpVerb;
+import twitter4jads.models.ads.LineItem;
+import twitter4jads.models.ads.LineItemAppResponse;
+import twitter4jads.models.ads.Placement;
+import twitter4jads.models.ads.ProductType;
+import twitter4jads.models.ads.PromotedAccount;
+import twitter4jads.models.ads.Sentiments;
+import twitter4jads.models.ads.TrackingTag;
+import twitter4jads.models.ads.TwitterAdObjective;
+import twitter4jads.models.ads.TwitterOSType;
+import twitter4jads.models.ads.sort.LineItemsSortByField;
+import twitter4jads.models.ads.sort.PromotedAccountsSortByField;
+import twitter4jads.models.media.TwitterMediaCallToAction;
+import twitter4jads.models.video.AssociateMediaCreativeResponse;
+import twitter4jads.models.video.TwitterCallToActionType;
+import twitter4jads.util.TwitterAdUtil;
 
 /**
  * User: abhay
@@ -482,7 +485,10 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         if (campaignId != null && campaignId.isPresent()) {
             params.add(new HttpParameter(PARAM_CAMPAIGN_ID, campaignId.get()));
         }
-        if (TwitterAdUtil.isNotNull(bidAmountLocalMicro) && bidAmountLocalMicro.isPresent()) {
+
+        if (automaticallySelectBid) {
+            params.add(new HttpParameter(PARAM_AUTOMATICALLY_SELECT_BID, automaticallySelectBid));
+        } else if (TwitterAdUtil.isNotNull(bidAmountLocalMicro) && bidAmountLocalMicro.isPresent()) {
             params.add(new HttpParameter(PARAM_BID_AMOUNT_LOCAL_MICRO, bidAmountLocalMicro.get()));
             if (bidType != null) {
                 params.add(new HttpParameter(PARAM_BID_TYPE, bidType.name()));
@@ -537,16 +543,15 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             }
         }
 
-        if (startTime == null || !startTime.isPresent()) {
+        if (startTime != null && startTime.isPresent()) {
             params.add(new HttpParameter(PARAM_START_TIME, String.valueOf(startTime)));
         }
-        if (endTime == null || !endTime.isPresent()) {
+        if (endTime != null && endTime.isPresent()) {
             params.add(new HttpParameter(PARAM_END_TIME, String.valueOf(endTime)));
         }
         if (TwitterAdUtil.isNotNull(budget)) {
             params.add(new HttpParameter(PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO, budget));
         }
-
 
         if (productType != null && productType.isPresent()) {
             params.add(new HttpParameter(PARAM_PRODUCT_TYPE, productType.get().name()));
@@ -589,10 +594,10 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
         if (TwitterAdUtil.isNotNull(targetCPA)) {
             params.add(new HttpParameter(PARAM_TARGET_CPA_LOCAL_MICRO, targetCPA));
         }
-        if (startTime == null || !startTime.isEmpty()) {
+        if (startTime != null && !startTime.isEmpty()) {
             params.add(new HttpParameter(PARAM_START_TIME, String.valueOf(startTime)));
         }
-        if (endTime == null || !endTime.isEmpty()) {
+        if (endTime != null && !endTime.isEmpty()) {
             params.add(new HttpParameter(PARAM_END_TIME, String.valueOf(endTime)));
         }
 
