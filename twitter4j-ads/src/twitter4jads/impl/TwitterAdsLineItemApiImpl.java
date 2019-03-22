@@ -1,94 +1,27 @@
 package twitter4jads.impl;
 
-import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_MEDIA_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_ADVERTISER_DOMAIN;
-import static twitter4jads.TwitterAdsConstants.PARAM_APP_STORE_IDENTIFIER;
-import static twitter4jads.TwitterAdsConstants.PARAM_AUTOMATICALLY_SELECT_BID;
-import static twitter4jads.TwitterAdsConstants.PARAM_BID_AMOUNT_LOCAL_MICRO;
-import static twitter4jads.TwitterAdsConstants.PARAM_BID_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_BID_UNIT;
-import static twitter4jads.TwitterAdsConstants.PARAM_CALL_TO_ACTION;
-import static twitter4jads.TwitterAdsConstants.PARAM_CALL_TO_ACTION_URL;
-import static twitter4jads.TwitterAdsConstants.PARAM_CAMPAIGN_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_CAMPAIGN_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_CATEGORIES;
-import static twitter4jads.TwitterAdsConstants.PARAM_CHARGE_BY;
-import static twitter4jads.TwitterAdsConstants.PARAM_COUNT;
-import static twitter4jads.TwitterAdsConstants.PARAM_CURSOR;
-import static twitter4jads.TwitterAdsConstants.PARAM_END_TIME;
-import static twitter4jads.TwitterAdsConstants.PARAM_ENTITY_STATUS;
-import static twitter4jads.TwitterAdsConstants.PARAM_FUNDING_INSTRUMENT_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_INCLUDE_SENTIMENT;
-import static twitter4jads.TwitterAdsConstants.PARAM_LANDING_URL;
-import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_APP_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_MATCH_RELEVANT_POPULAR_QUERIES;
-import static twitter4jads.TwitterAdsConstants.PARAM_NAME;
-import static twitter4jads.TwitterAdsConstants.PARAM_OBJECTIVE;
-import static twitter4jads.TwitterAdsConstants.PARAM_OPTIMIZATION;
-import static twitter4jads.TwitterAdsConstants.PARAM_OS_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_PLACEMENTS;
-import static twitter4jads.TwitterAdsConstants.PARAM_PRIMARY_WEB_EVENT_TAG;
-import static twitter4jads.TwitterAdsConstants.PARAM_PRODUCT_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_PROMOTED_ACCOUNTS_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_SORT_BY;
-import static twitter4jads.TwitterAdsConstants.PARAM_START_TIME;
-import static twitter4jads.TwitterAdsConstants.PARAM_TARGET_CPA_LOCAL_MICRO;
-import static twitter4jads.TwitterAdsConstants.PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO;
-import static twitter4jads.TwitterAdsConstants.PARAM_TRACKING_TAGS;
-import static twitter4jads.TwitterAdsConstants.PARAM_USER_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
-import static twitter4jads.TwitterAdsConstants.PATH_LINE_ITEMS;
-import static twitter4jads.TwitterAdsConstants.PATH_LINE_ITEM_APPS;
-import static twitter4jads.TwitterAdsConstants.PATH_MEDIA_CREATIVES;
-import static twitter4jads.TwitterAdsConstants.PATH_PROMOTED_ACCOUNTS;
-import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
-import static twitter4jads.TwitterAdsConstants.PRE_ROLL_CALL_TO_ACTION;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.Optional;
 import com.google.gson.reflect.TypeToken;
-
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
-import twitter4jads.TwitterAdsConstants;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import twitter4jads.*;
 import twitter4jads.api.TwitterAdsLineItemApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.http.HttpResponse;
 import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.ads.BidType;
-import twitter4jads.models.ads.EntityStatus;
-import twitter4jads.models.ads.HttpVerb;
-import twitter4jads.models.ads.LineItem;
-import twitter4jads.models.ads.LineItemAppResponse;
-import twitter4jads.models.ads.Placement;
-import twitter4jads.models.ads.ProductType;
-import twitter4jads.models.ads.PromotedAccount;
-import twitter4jads.models.ads.Sentiments;
-import twitter4jads.models.ads.TrackingTag;
-import twitter4jads.models.ads.TwitterAdObjective;
-import twitter4jads.models.ads.TwitterOSType;
+import twitter4jads.models.ads.*;
 import twitter4jads.models.ads.sort.LineItemsSortByField;
 import twitter4jads.models.ads.sort.PromotedAccountsSortByField;
 import twitter4jads.models.media.TwitterMediaCallToAction;
 import twitter4jads.models.video.AssociateMediaCreativeResponse;
 import twitter4jads.models.video.TwitterCallToActionType;
 import twitter4jads.util.TwitterAdUtil;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.*;
+
+import static twitter4jads.TwitterAdsConstants.*;
 
 /**
  * User: abhay
@@ -486,9 +419,7 @@ public class TwitterAdsLineItemApiImpl implements TwitterAdsLineItemApi {
             params.add(new HttpParameter(PARAM_CAMPAIGN_ID, campaignId.get()));
         }
 
-        if (automaticallySelectBid) {
-            params.add(new HttpParameter(PARAM_AUTOMATICALLY_SELECT_BID, automaticallySelectBid));
-        } else if (TwitterAdUtil.isNotNull(bidAmountLocalMicro) && bidAmountLocalMicro.isPresent()) {
+        if (TwitterAdUtil.isNotNull(bidAmountLocalMicro) && bidAmountLocalMicro.isPresent()) {
             params.add(new HttpParameter(PARAM_BID_AMOUNT_LOCAL_MICRO, bidAmountLocalMicro.get()));
             if (bidType != null) {
                 params.add(new HttpParameter(PARAM_BID_TYPE, bidType.name()));
