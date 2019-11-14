@@ -1,10 +1,15 @@
 package twitter4jads.api;
 
-import com.google.common.base.Optional;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.ads.*;
+import twitter4jads.models.ads.BidType;
+import twitter4jads.models.ads.EntityStatus;
+import twitter4jads.models.ads.LineItem;
+import twitter4jads.models.ads.LineItemAppResponse;
+import twitter4jads.models.ads.PromotedAccount;
+import twitter4jads.models.ads.Sentiments;
+import twitter4jads.models.ads.TwitterOSType;
 import twitter4jads.models.ads.sort.LineItemsSortByField;
 import twitter4jads.models.ads.sort.PromotedAccountsSortByField;
 import twitter4jads.models.media.TwitterMediaCallToAction;
@@ -13,6 +18,7 @@ import twitter4jads.models.video.TwitterCallToActionType;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * User: abhay
@@ -39,8 +45,8 @@ public interface TwitterAdsLineItemApi {
                                                           String cursor, Optional<LineItemsSortByField> sortByField) throws TwitterException;
 
     /**
-     * @param accountId The identifier for the leveraged account.
-     * @param lineItemId A reference to the line item you are operating with in the request.
+     * @param accountId   The identifier for the leveraged account.
+     * @param lineItemId  A reference to the line item you are operating with in the request.
      * @param withDeleted Include deleted results in your request. Defaults to false.
      * @return Retrieve a specific line item associated with a campaign belonging to the current account.
      * @throws TwitterException
@@ -55,7 +61,7 @@ public interface TwitterAdsLineItemApi {
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/line_items">https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/line_items</a>
      */
-    BaseAdsResponse<LineItem> createLineItem(LineItem lineItem) throws TwitterException;
+    BaseAdsResponse<LineItem> createLineItem(String accountId, LineItem lineItem) throws TwitterException;
 
     /**
      * @param accountId              The identifier for the leveraged account.
@@ -90,9 +96,9 @@ public interface TwitterAdsLineItemApi {
     BaseAdsResponse<LineItem> deleteLineItem(String accountId, String lineItemId) throws TwitterException;
 
     /**
-     * @param accountId The identifier for the leveraged account.
+     * @param accountId  The identifier for the leveraged account.
      * @param lineItemId Scope the response to just the desired line item
-     * @param userId Id of the user of the account to be promoted
+     * @param userId     Id of the user of the account to be promoted
      * @return created promoted account
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/promoted_accounts">https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/promoted_accounts</a>
@@ -100,9 +106,25 @@ public interface TwitterAdsLineItemApi {
     BaseAdsResponse<PromotedAccount> createPromotedAccounts(String accountId, String lineItemId, String userId) throws TwitterException;
 
     /**
-     * @param accountId The identifier for the leveraged account.
+     * @param accountId          The identifier for the leveraged account.
      * @param promotedAccountIds (optional) Scope the response to the Collection of promoted account IDs. These identifiers refer to a associated Promoted Account with a line item.
-     * @param lineItemId         (optional) A reference to the line item you are operating with in the request. Omitting the lineItemId will return all
+     * @param lineItemId         (optional) A reference to the line item you are operating with in the request. Omitting the lineItemIds will return all
+     *                           promoted tweets across all campaigns.
+     * @param withDeleted        Include deleted results in your request. Defaults to false.
+     * @param sortByField        Sorts by supported attribute in ascending or descending order.
+     * @return references to the Promoted Accounts associated with one or more line items
+     * @throws TwitterException
+     * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_accounts">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_accounts</a>
+     */
+    @Deprecated
+    BaseAdsListResponseIterable<PromotedAccount> getPromotedAccounts(String accountId, Optional<Collection<String>> promotedAccountIds,
+                                                                     String lineItemId, boolean withDeleted,
+                                                                     PromotedAccountsSortByField sortByField) throws TwitterException;
+
+    /**
+     * @param accountId          The identifier for the leveraged account.
+     * @param promotedAccountIds (optional) Scope the response to the Collection of promoted account IDs. These identifiers refer to a associated Promoted Account with a line item.
+     * @param lineItemIds        (optional) A reference to line items you are operating with in the request. Omitting the lineItemIds will return all
      *                           promoted tweets across all campaigns.
      * @param withDeleted        Include deleted results in your request. Defaults to false.
      * @param sortByField        Sorts by supported attribute in ascending or descending order.
@@ -111,7 +133,7 @@ public interface TwitterAdsLineItemApi {
      * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_accounts">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/promoted_accounts</a>
      */
     BaseAdsListResponseIterable<PromotedAccount> getPromotedAccounts(String accountId, Optional<Collection<String>> promotedAccountIds,
-                                                                     Optional<String> lineItemId, boolean withDeleted,
+                                                                     Optional<Collection<String>> lineItemIds, boolean withDeleted,
                                                                      PromotedAccountsSortByField sortByField) throws TwitterException;
 
     /**
@@ -139,21 +161,23 @@ public interface TwitterAdsLineItemApi {
     BaseAdsResponse<AssociateMediaCreativeResponse> associateMediaCreativeWithAccount(String accountId, String lineItemId, String accountMediaId,
                                                                                       String landingUrl) throws TwitterException;
 
-    BaseAdsListResponseIterable<PromotedAccount> getPromotedAccounts(String accountId, Collection<String> promotedAccountIds, String lineItemId,
-                                                                     boolean withDeleted) throws TwitterException;
-
     BaseAdsResponse<TwitterMediaCallToAction> updateCallToAction(String accountId, String channelId, String callToActionUrl,
                                                                  TwitterCallToActionType twitterCallToActionType) throws TwitterException;
 
     BaseAdsResponse<TwitterMediaCallToAction> deleteCallToAction(String accountId, String channelId) throws TwitterException;
 
     BaseAdsResponse<LineItemAppResponse> publishApp(String accountId, String lineItemId, String appStoreIdentifier, TwitterOSType twitterOSType)
-        throws TwitterException;
+            throws TwitterException;
 
 
     BaseAdsResponse<LineItemAppResponse> getForLineItemAppId(String accountId, String lineItemAppId) throws TwitterException;
 
+    @Deprecated
     BaseAdsListResponseIterable<LineItemAppResponse> getForLineItemAppIds(String accountId, String lineItemId, List<String> lineItemAppIds,
+                                                                          Integer count, String cursor, boolean withDeleted) throws TwitterException;
+
+    BaseAdsListResponseIterable<LineItemAppResponse> getForLineItemAppIds(String accountId, Collection<String> lineItemIds,
+                                                                          List<String> lineItemAppIds,
                                                                           Integer count, String cursor, boolean withDeleted) throws TwitterException;
 
     BaseAdsResponse<LineItemAppResponse> deleteLineItemApp(String accountId, String lineItemAppId) throws TwitterException;

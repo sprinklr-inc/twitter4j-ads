@@ -1,6 +1,7 @@
 package twitter4jads.models.ads;
 
 import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -24,9 +25,6 @@ public class Campaign extends TwitterEntity implements Serializable {
 
     @SerializedName("updated_at")
     private Date updateTimeInUTC;
-
-    @SerializedName("account_id")
-    private String accountId;
 
     @SerializedName("deleted")
     private Boolean deleted;
@@ -94,14 +92,6 @@ public class Campaign extends TwitterEntity implements Serializable {
 
     public void setUpdateTime(Date updateTimeInUTC) {
         this.updateTimeInUTC = updateTimeInUTC;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
     }
 
     public Boolean getDeleted() {

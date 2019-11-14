@@ -1,6 +1,5 @@
 package twitter4jads.api;
 
-import com.google.common.base.Optional;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
@@ -25,7 +24,9 @@ import twitter4jads.models.ads.tags.TwitterApplicationList;
 import twitter4jads.models.ads.targeting.TargetingParamRequest;
 import twitter4jads.models.ads.targeting.TargetingParamResponse;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * User: abhay
@@ -42,8 +43,22 @@ public interface TwitterAdsTargetingApi {
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/targeting_criteria">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/targeting_criteria</a>
      */
+    @Deprecated
     BaseAdsListResponseIterable<TargetingCriteria> getTargetingCriterias(String accountId, String lineItemId, boolean withDeleted)
             throws TwitterException;
+
+    /**
+     * @param accountId   The identifier for the leveraged account.
+     * @param accountId   The identifier for the leveraged account.
+     * @param lineItemIds Scope targeting criteria to specific line items by providing its identifier. Max size: 200
+     * @param withDeleted Include deleted results in your request. Defaults to false.
+     * @param count       Specifies the number of records to try and retrieve per distinct request. Default: 200, Min: 1, Max: 1000
+     * @param cursor      Specifies a cursor to get the next page of results.
+     * @param sortBy      Sorts by supported attribute in ascending or descending order.
+     * @return Retrieve details for some or all TargetingCriterias associated with the current account.
+     */
+    BaseAdsListResponseIterable<TargetingCriteria> getTargetingCriterias(String accountId, Collection<String> lineItemIds, boolean withDeleted,
+                                                                         Integer count, String cursor, String sortBy) throws TwitterException;
 
     /**
      * @param accountId   The identifier for the leveraged account.

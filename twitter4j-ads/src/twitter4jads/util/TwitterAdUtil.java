@@ -76,7 +76,7 @@ public final class TwitterAdUtil {
 
     public static <T> String getCsv(Collection<T> collection) {
         String result = "";
-        if (collection.size() != 0) {
+        if (collection != null && collection.size() != 0) {
             result = getLocalCsv(collection);
         }
         return result;
@@ -123,6 +123,10 @@ public final class TwitterAdUtil {
 
     public static <T> boolean isNotEmpty(Collection<T> collection) {
         return collection != null && collection.size() != 0;
+    }
+
+    public static <T> boolean isEmpty(Collection<T> collection) {
+        return collection == null || collection.size() == 0;
     }
 
     public static <T> Boolean ensureMaxSize(Collection<T> collection, int size) {

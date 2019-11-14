@@ -20,9 +20,6 @@ public class TargetingCriteria extends TwitterEntity {
     @SerializedName("created_at")
     private Date createdAt;
 
-    @SerializedName("account_id")
-    private String accountId;
-
     @SerializedName("line_item_id")
     private String lineItemId;
 
@@ -134,14 +131,6 @@ public class TargetingCriteria extends TwitterEntity {
 
     public void setGenre(String genre) {
         this.genre = genre;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
     }
 
     public String getName() {
@@ -280,7 +269,6 @@ public class TargetingCriteria extends TwitterEntity {
     @Override
     public String toString() {
         return "TargetingCriteria{" +
-                "accountId='" + accountId + '\'' +
                 ", id='" + getId() + '\'' +
                 ", createdAt=" + createdAt +
                 ", lineItemId='" + lineItemId + '\'' +
