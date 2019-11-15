@@ -1,14 +1,15 @@
 package twitter4jads.api;
 
-import com.google.common.base.Optional;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.EntityStatus;
+import twitter4jads.models.ads.TwitterPoliticalDisclaimer;
 import twitter4jads.models.ads.sort.CampaignSortByField;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * User: abhay
@@ -50,7 +51,7 @@ public interface TwitterAdsCampaignApi {
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/campaigns">https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/campaigns</a>
      */
-    BaseAdsResponse<Campaign> createCampaign(Campaign campaign) throws TwitterException;
+    BaseAdsResponse<Campaign> createCampaign(String accountId, Campaign campaign) throws TwitterException;
 
     /**
      * @param accountId                   The identifier for the leveraged account.
@@ -82,4 +83,31 @@ public interface TwitterAdsCampaignApi {
      */
     BaseAdsResponse<Campaign> deleteCampaign(String accountId, String campaignId) throws TwitterException;
 
+    /**
+     * @param accountId                  The identifier for the leveraged account.
+     * @param twitterPoliticalDisclaimer Political disclaimer to publish.
+     * @return publish political disclaimer for political ad accounts
+     */
+    BaseAdsResponse<TwitterPoliticalDisclaimer> publishDisclaimer(String accountId, TwitterPoliticalDisclaimer twitterPoliticalDisclaimer)
+            throws TwitterException;
+
+    /**
+     * @param accountId   The identifier for the leveraged account.
+     * @param campaignIds Campaign ids for which to fetch the disclaimers.
+     * @return get political disclaimer by campaigns Ids . Upto 200 may be provided
+     */
+    BaseAdsListResponseIterable<TwitterPoliticalDisclaimer> getDisclaimersByCampaignIds(String accountId, Collection<String> campaignIds)
+            throws TwitterException;
+
+    /**
+     * @param accountUserId    The identifier for the leveraged account.
+     * @param disclaimerId     The id of disclaimer to update
+     * @param paidForBy
+     * @param paidForByWebsite
+     * @param authorizedBy
+     * @return update political disclaimer by disclaimer id.
+     */
+    BaseAdsResponse<TwitterPoliticalDisclaimer> updateDisclaimer(String accountUserId, String disclaimerId, String paidForBy, String paidForByWebsite,
+                                                                 String authorizedBy)
+            throws TwitterException;
 }

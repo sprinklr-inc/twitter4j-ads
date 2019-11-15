@@ -1,6 +1,5 @@
 package twitter4jads.api;
 
-import com.google.common.base.Optional;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
@@ -8,6 +7,7 @@ import twitter4jads.models.ads.FundingInstrument;
 import twitter4jads.models.ads.sort.FundingInstrumentSortByField;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * User: abhay

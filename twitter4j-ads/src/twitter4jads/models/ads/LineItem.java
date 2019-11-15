@@ -13,9 +13,6 @@ import java.util.List;
  */
 public class LineItem extends TwitterEntity {
 
-    @SerializedName("account_id")
-    private String accountId;
-
     @SerializedName("name")
     private String name;
 
@@ -123,15 +120,6 @@ public class LineItem extends TwitterEntity {
 
     public void setOptimization(String optimization) {
         this.optimization = optimization;
-    }
-
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
     }
 
     public Long getBidAmtInMicro() {
@@ -369,37 +357,36 @@ public class LineItem extends TwitterEntity {
     @Override
     public String toString() {
         return "LineItem{" +
-               "accountId='" + accountId + '\'' +
-               ", name='" + name + '\'' +
-               ", bidAmtInMicro=" + bidAmtInMicro +
-               ", campaignId='" + campaignId + '\'' +
-               ", createdAt=" + createdAt +
-               ", currency='" + currency + '\'' +
-               ", goalSettings='" + goalSettings + '\'' +
-               ", matchRelevantPopularQueries=" + matchRelevantPopularQueries +
-               ", objective='" + objective + '\'' +
-               ", deleted=" + deleted +
-               ", placements=" + placements +
-               ", productType=" + productType +
-               ", sentiment=" + sentiment +
-               ", status=" + status +
-               ", webEventTag='" + webEventTag + '\'' +
-               ", suggestedHighCpeBidInMicro=" + suggestedHighCpeBidInMicro +
-               ", suggestedLowCpeBidInMicro=" + suggestedLowCpeBidInMicro +
-               ", targetCpaLocalMicro=" + targetCpaLocalMicro +
-               ", updatedAt=" + updatedAt +
-               ", automaticallySelectBid=" + automaticallySelectBid +
-               ", bidType=" + bidType +
-               ", chargeBy='" + chargeBy + '\'' +
-               ", bidUnit='" + bidUnit + '\'' +
-               ", advertiserDomain='" + advertiserDomain + '\'' +
-               ", advertiserUserId='" + advertiserUserId + '\'' +
-               ", categories=" + Arrays.toString(categories) +
-               ", startTime=" + startTimeInUTC +
-               ", endTime=" + endTimeInUTC +
-               ", optimization='" + optimization + '\'' +
-               ", creativeSource='" + creativeSource + '\'' +
-               ", budget='" + budget + '\'' +
-               '}';
+                "name='" + name + '\'' +
+                ", bidAmtInMicro=" + bidAmtInMicro +
+                ", campaignId='" + campaignId + '\'' +
+                ", createdAt=" + createdAt +
+                ", currency='" + currency + '\'' +
+                ", goalSettings='" + goalSettings + '\'' +
+                ", matchRelevantPopularQueries=" + matchRelevantPopularQueries +
+                ", objective='" + objective + '\'' +
+                ", deleted=" + deleted +
+                ", placements=" + placements +
+                ", productType=" + productType +
+                ", sentiment=" + sentiment +
+                ", status=" + status +
+                ", webEventTag='" + webEventTag + '\'' +
+                ", suggestedHighCpeBidInMicro=" + suggestedHighCpeBidInMicro +
+                ", suggestedLowCpeBidInMicro=" + suggestedLowCpeBidInMicro +
+                ", targetCpaLocalMicro=" + targetCpaLocalMicro +
+                ", updatedAt=" + updatedAt +
+                ", automaticallySelectBid=" + automaticallySelectBid +
+                ", bidType=" + bidType +
+                ", chargeBy='" + chargeBy + '\'' +
+                ", bidUnit='" + bidUnit + '\'' +
+                ", advertiserDomain='" + advertiserDomain + '\'' +
+                ", advertiserUserId='" + advertiserUserId + '\'' +
+                ", categories=" + Arrays.toString(categories) +
+                ", startTime=" + startTimeInUTC +
+                ", endTime=" + endTimeInUTC +
+                ", optimization='" + optimization + '\'' +
+                ", creativeSource='" + creativeSource + '\'' +
+                ", budget='" + budget + '\'' +
+                '}';
     }
 }

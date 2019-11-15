@@ -16,7 +16,6 @@ import twitter4jads.models.media.TwitterAccountMediaCreative;
 import twitter4jads.models.media.TwitterLibraryMedia;
 import twitter4jads.models.media.TwitterMediaLibraryCategory;
 import twitter4jads.models.media.TwitterMediaLibraryType;
-import twitter4jads.models.video.TwitterCreativeType;
 import twitter4jads.util.TwitterAdUtil;
 
 import java.lang.reflect.Type;
@@ -27,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_MEDIA_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_COUNT;
-import static twitter4jads.TwitterAdsConstants.PARAM_CREATIVE_TYPE;
 import static twitter4jads.TwitterAdsConstants.PARAM_CURSOR;
 import static twitter4jads.TwitterAdsConstants.PARAM_DESCRIPTION;
 import static twitter4jads.TwitterAdsConstants.PARAM_FILE_NAME;
@@ -40,12 +38,11 @@ import static twitter4jads.TwitterAdsConstants.PARAM_NAME;
 import static twitter4jads.TwitterAdsConstants.PARAM_POSTER_IMAGE_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_SORT_BY;
 import static twitter4jads.TwitterAdsConstants.PARAM_TITLE;
-import static twitter4jads.TwitterAdsConstants.PARAM_VIDEO_ID;
 import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
 import static twitter4jads.TwitterAdsConstants.PATH_ACCOUNT_MEDIA;
 import static twitter4jads.TwitterAdsConstants.PATH_MEDIA_CREATIVES;
 import static twitter4jads.TwitterAdsConstants.PATH_MEDIA_LIBRARY;
-import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
+import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI;
 import static twitter4jads.TwitterAdsConstants.SLASH;
 
 /**
@@ -66,7 +63,7 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
     public BaseAdsListResponseIterable<TwitterAccountMedia> getAccountMediaForAccount(String accountId, String sortBy) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_ACCOUNT_MEDIA;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_ACCOUNT_MEDIA;
         final List<HttpParameter> parameters = Lists.newArrayList();
         parameters.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
         if (StringUtils.isNotBlank(sortBy)) {
@@ -83,7 +80,7 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(accountMediaId, "Account Media Id");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_ACCOUNT_MEDIA + "/" + accountMediaId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_ACCOUNT_MEDIA + "/" + accountMediaId;
         final Type type = new TypeToken<BaseAdsResponse<TwitterAccountMedia>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.GET);
@@ -94,7 +91,7 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
             throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_CREATIVES;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_MEDIA_CREATIVES;
         final List<HttpParameter> parameters = Lists.newArrayList();
         parameters.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
         if (fetchDeleted != null) {
@@ -111,7 +108,7 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(mediaKey, "Media Key");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_LIBRARY + "/" + mediaKey;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_MEDIA_LIBRARY + "/" + mediaKey;
         final Type type = new TypeToken<BaseAdsResponse<TwitterLibraryMedia>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.GET);
@@ -123,7 +120,7 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
             throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_LIBRARY;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_MEDIA_LIBRARY;
         final List<HttpParameter> parameters = Lists.newArrayList();
         parameters.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
         if (StringUtils.isNotBlank(cursor)) {
@@ -147,36 +144,10 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(mediaId, "Media Id");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_CREATIVES + "/" + mediaId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_MEDIA_CREATIVES + "/" + mediaId;
         final Type type = new TypeToken<BaseAdsResponse<TwitterAccountMediaCreative>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);
-    }
-
-    @Override
-    public BaseAdsResponse<TwitterAccountMedia> createAccountMedia(String accountId, String mediaId, String videoKey,
-                                                                   TwitterCreativeType twitterCreativeType) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        TwitterAdUtil.ensureNotNull(twitterCreativeType, "Twitter Creative Type");
-        if (StringUtils.isBlank(mediaId) && StringUtils.isBlank(videoKey)) {
-            throw new TwitterException("Media or Video Uuid, either of the two fields are required to create an account media");
-        }
-
-        final List<HttpParameter> params = new ArrayList<>();
-        if (StringUtils.isNotBlank(mediaId)) {
-            params.add(new HttpParameter(PARAM_MEDIA_ID, mediaId));
-        }
-
-        if (StringUtils.isNotBlank(videoKey)) {
-            params.add(new HttpParameter(PARAM_VIDEO_ID, videoKey));
-        }
-
-        params.add(new HttpParameter(PARAM_CREATIVE_TYPE, twitterCreativeType.name()));
-
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_ACCOUNT_MEDIA;
-        final Type type = new TypeToken<BaseAdsResponse<TwitterAccountMedia>>() {
-        }.getType();
-        return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.POST);
     }
 
     @Override
@@ -194,7 +165,7 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
             params.add(new HttpParameter(PARAM_LANDING_URL, landingUrl));
         }
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_CREATIVES;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_MEDIA_CREATIVES;
         final Type type = new TypeToken<BaseAdsResponse<TwitterAccountMediaCreative>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.POST);
@@ -238,7 +209,7 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
             params.add(new HttpParameter(PARAM_FILE_NAME, fileName));
         }
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_LIBRARY + "/" + mediaKey;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_MEDIA_LIBRARY + "/" + mediaKey;
         final Type type = new TypeToken<BaseAdsResponse<TwitterLibraryMedia>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.PUT);
@@ -256,7 +227,7 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(mediaKey, "Media Key");
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_LIBRARY + SLASH + mediaKey;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_MEDIA_LIBRARY + SLASH + mediaKey;
         Type type = new TypeToken<BaseAdsResponse<TwitterLibraryMedia>>() {
         }.getType();
 
@@ -297,7 +268,7 @@ public class TwitterAdsMediaApiImpl implements TwitterAdsMediaApi {
             params.add(new HttpParameter(PARAM_TITLE, title));
         }
 
-        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + PATH_MEDIA_LIBRARY;
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_MEDIA_LIBRARY;
         final HttpParameter[] parameters = params.toArray(new HttpParameter[params.size()]);
         Type type = new TypeToken<BaseAdsResponse<TwitterLibraryMedia>>() {
         }.getType();

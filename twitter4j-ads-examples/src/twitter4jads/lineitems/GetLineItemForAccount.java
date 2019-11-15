@@ -1,7 +1,6 @@
 package twitter4jads.lineitems;
 
 import com.google.api.client.util.Lists;
-import com.google.common.base.Optional;
 import twitter4jads.BaseAdsListResponse;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsTest;
@@ -12,6 +11,7 @@ import twitter4jads.models.ads.LineItem;
 import twitter4jads.models.ads.sort.LineItemsSortByField;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * User: shivraj

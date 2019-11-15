@@ -1,6 +1,5 @@
 package twitter4jads.impl;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
 import twitter4jads.BaseAdsListResponse;
@@ -17,6 +16,7 @@ import twitter4jads.util.TwitterAdUtil;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static twitter4jads.TwitterAdsConstants.PARAM_CURRENCY;
 import static twitter4jads.TwitterAdsConstants.PATH_BIDDING_RULES;

@@ -1,6 +1,5 @@
 package twitter4jads.impl;
 
-import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
@@ -8,7 +7,6 @@ import twitter4jads.BaseAdsListResponse;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.TwitterAdsClient;
-import twitter4jads.TwitterAdsConstants;
 import twitter4jads.api.TwitterAdsStatApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.models4j.TwitterException;
@@ -32,6 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
 import static twitter4jads.TwitterAdsConstants.GRANULARITY;
@@ -47,9 +46,9 @@ import static twitter4jads.TwitterAdsConstants.PARAM_SEGMENTATION_TYPE;
 import static twitter4jads.TwitterAdsConstants.PARAM_START_TIME;
 import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
 import static twitter4jads.TwitterAdsConstants.PATH_REACH_STATS;
-import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI_4;
+import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI;
 import static twitter4jads.TwitterAdsConstants.PREFIX_STATS_ACCOUNTS_URI;
-import static twitter4jads.TwitterAdsConstants.V4_PREFIX_STATS_JOB_ACCOUNTS_URI;
+import static twitter4jads.TwitterAdsConstants.PREFIX_STATS_JOB_ACCOUNTS_URI;
 
 /**
  * User: abhay
@@ -108,7 +107,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
         final String startTimeAsString = TwitterAdUtil.convertTimeToZuluFormatAndToUTC(startTime);
         final String endTimeAsString = TwitterAdUtil.convertTimeToZuluFormatAndToUTC(endTime);
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI_4 + accountId + "/auction_insights";
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + "/auction_insights";
 
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(GRANULARITY, granularity.toString()));
@@ -136,7 +135,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
         final String startTimeAsString = TwitterAdUtil.convertTimeToZuluFormatAndToUTC(startTime);
         final String endTimeAsString = TwitterAdUtil.convertTimeToZuluFormatAndToUTC(endTime);
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + V4_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_STATS_JOB_ACCOUNTS_URI + accountId;
 
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(GRANULARITY, granularity.toString()));
@@ -171,7 +170,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_JOB_IDS, TwitterAdUtil.getCsv(jobIds)));
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + V4_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_STATS_JOB_ACCOUNTS_URI + accountId;
         final Type type = new TypeToken<BaseAdsListResponse<JobDetails>>() {
         }.getType();
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
@@ -215,7 +214,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(jobId, "jobId");
 
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + TwitterAdsConstants.V4_PREFIX_STATS_JOB_ACCOUNTS_URI + accountId + "/" + jobId;
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_STATS_JOB_ACCOUNTS_URI + accountId + "/" + jobId;
         final Type type = new TypeToken<BaseAdsResponse<JobDetails>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);

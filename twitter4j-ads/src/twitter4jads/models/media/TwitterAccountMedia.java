@@ -23,9 +23,6 @@ public class TwitterAccountMedia {
     @SerializedName("video_id")
     private String videoId;
 
-    @SerializedName("account_id")
-    private String accountId;
-
     @SerializedName("created_at")
     private String createdAt;
 
@@ -71,14 +68,6 @@ public class TwitterAccountMedia {
 
     public void setVideoId(String videoId) {
         this.videoId = videoId;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
     }
 
     public String getCreatedAt() {

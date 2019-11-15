@@ -1,10 +1,11 @@
 package twitter4jads.api;
 
-import com.google.common.base.Optional;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.ads.BiddingRules;
 import twitter4jads.models.ads.TwitterBidInfo;
+
+import java.util.Optional;
 
 /**
  * User: prashant

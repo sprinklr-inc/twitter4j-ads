@@ -11,9 +11,6 @@ import java.util.Date;
  */
 public class PromotableUser extends TwitterEntity {
 
-    @SerializedName("account_id")
-    private String accountId;
-
     @SerializedName("user_id")
     private String userId;
 
@@ -28,14 +25,6 @@ public class PromotableUser extends TwitterEntity {
 
     @SerializedName("deleted")
     private Boolean deleted;
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
 
     public String getUserId() {
         return userId;

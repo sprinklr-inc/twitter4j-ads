@@ -16,14 +16,8 @@ public abstract class AbstractTwitterCard extends TwitterEntity {
     @SerializedName("name")
     private String name;
 
-    @SerializedName("account_id")
-    private String accountId;
-
     @SerializedName("card_type")
     private TwitterCardType twitterCardType;
-
-    @SerializedName("preview_url")
-    private String previewUrl;
 
     @SerializedName("card_uri")
     private String cardUri;
@@ -45,14 +39,6 @@ public abstract class AbstractTwitterCard extends TwitterEntity {
         this.name = name;
     }
 
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
-
     public TwitterCardType getTwitterCardType() {
         return twitterCardType;
     }
@@ -60,14 +46,6 @@ public abstract class AbstractTwitterCard extends TwitterEntity {
     @SuppressWarnings("unused")
     public void setTwitterCardType(TwitterCardType twitterCardType) {
         this.twitterCardType = twitterCardType;
-    }
-
-    public String getPreviewUrl() {
-        return previewUrl;
-    }
-
-    public void setPreviewUrl(String previewUrl) {
-        this.previewUrl = previewUrl;
     }
 
     public String getCardUri() {

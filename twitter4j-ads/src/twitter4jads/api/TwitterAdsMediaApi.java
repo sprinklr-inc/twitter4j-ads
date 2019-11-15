@@ -8,7 +8,6 @@ import twitter4jads.models.media.TwitterAccountMediaCreative;
 import twitter4jads.models.media.TwitterLibraryMedia;
 import twitter4jads.models.media.TwitterMediaLibraryCategory;
 import twitter4jads.models.media.TwitterMediaLibraryType;
-import twitter4jads.models.video.TwitterCreativeType;
 
 /**
  * User: abhishekanand
@@ -34,17 +33,6 @@ public interface TwitterAdsMediaApi {
             throws TwitterException;
 
     BaseAdsResponse<TwitterAccountMediaCreative> deleteMediaCreative(String accountId, String mediaId) throws TwitterException;
-
-    /**
-     * @param accountId           The identifier for the leveraged account.
-     * @param mediaId             The media ID to be used.
-     * @param videoKey            The video Key to be used.
-     * @param twitterCreativeType Creative type of media.
-     * @return response of transforming media in account to promoted video
-     * @see <a href="https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/account_media">https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/account_media</a>
-     */
-    BaseAdsResponse<TwitterAccountMedia> createAccountMedia(String accountId, String mediaId, String videoKey,
-                                                            TwitterCreativeType twitterCreativeType) throws TwitterException;
 
     BaseAdsResponse<TwitterAccountMediaCreative> createAccountMediaCreative(String accountId, String lineItemId, String accountMediaId,
                                                                             String landingUrl) throws TwitterException;

@@ -1,15 +1,20 @@
 package twitter4jads.api;
 
-import com.google.common.base.Optional;
 import twitter4jads.BaseAdsListResponse;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.Granularity;
 import twitter4jads.models.TwitterSegmentationType;
-import twitter4jads.models.ads.*;
+import twitter4jads.models.ads.JobDetails;
+import twitter4jads.models.ads.Placement;
+import twitter4jads.models.ads.TwitterAdStatistics;
+import twitter4jads.models.ads.TwitterAuctionInsights;
+import twitter4jads.models.ads.TwitterEntityStatistics;
+import twitter4jads.models.ads.TwitterEntityType;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * User: abhay

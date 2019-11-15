@@ -1,15 +1,16 @@
 package twitter4jads.api;
 
-import com.google.common.base.Optional;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.ads.AdAccount;
+import twitter4jads.models.ads.AdAccountNativePermissions;
 import twitter4jads.models.ads.PromotableUser;
-import twitter4jads.models.ads.TwitterAccountPermissions;
+import twitter4jads.models.ads.TwitterPoliticalAgreement;
 import twitter4jads.models.ads.sort.AccountsSortByField;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * User: abhay
@@ -35,7 +36,7 @@ public interface TwitterAdsAccountApi {
     BaseAdsResponse<AdAccount> getAdAccountById(String accountId, boolean withDeleted) throws TwitterException;
 
     /**
-     * @param accountId   The identifier for the leveraged account.
+     * @param accountId The identifier for the leveraged account.
      * @return account features associated with the given account.
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/features">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/features</a>
@@ -51,4 +52,11 @@ public interface TwitterAdsAccountApi {
      */
     BaseAdsListResponseIterable<PromotableUser> getPromotableUsers(String accountId, boolean withDeleted) throws TwitterException;
 
+    BaseAdsResponse<AdAccountNativePermissions> getAdAccountNativePermissions(String accountId) throws TwitterException;
+
+    /**
+     * @param accountId The identifier for the leveraged account.
+     * @return Political agreement for the ad account if applicable.
+     */
+    BaseAdsListResponseIterable<TwitterPoliticalAgreement> getPoliticalAgreementForAccount(String accountId) throws TwitterException;
 }
