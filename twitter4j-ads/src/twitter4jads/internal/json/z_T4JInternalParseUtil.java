@@ -16,8 +16,8 @@
 
 package twitter4jads.internal.json;
 
-import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.internal.http.HttpResponse;
+import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.internal.models4j.TwitterResponse;
 import twitter4jads.internal.org.json.JSONException;
 import twitter4jads.internal.org.json.JSONObject;
@@ -26,7 +26,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -195,20 +199,20 @@ public final class z_T4JInternalParseUtil {
         } else {
             // https://dev.twitter.com/pages/application-permission-model-faq#how-do-we-know-what-the-access-level-of-a-user-token-is
             switch (xAccessLevel.length()) {
-                // “read” (Read-only)
+                // \u0093read\u0094 (Read-only)
                 case 4:
                     accessLevel = TwitterResponse.READ;
                     break;
                 case 10:
-                    // “read-write” (Read & Write)
+                    // \u0093read-write\u0094 (Read & Write)
                     accessLevel = TwitterResponse.READ_WRITE;
                     break;
                 case 25:
-                    // “read-write-directmessages” (Read, Write, & Direct Message)
+                    // \u0093read-write-directmessages\u0094 (Read, Write, & Direct Message)
                     accessLevel = TwitterResponse.READ_WRITE_DIRECTMESSAGES;
                     break;
                 case 26:
-                    // “read-write-privatemessages” (Read, Write, & Direct Message)
+                    // \u0093read-write-privatemessages\u0094 (Read, Write, & Direct Message)
                     accessLevel = TwitterResponse.READ_WRITE_DIRECTMESSAGES;
                     break;
                 default:

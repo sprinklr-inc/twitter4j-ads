@@ -17,13 +17,13 @@ public interface TwitterAdsPreviewApi {
     /**
      * Sends a GET request to Twitter with the specified parameters and receives the corresponding JSON response for an unpublished tweet.
      *
-     * @param accountId -   The identifier for the leveraged account. Appears within the resource’s path and is generally a required parameter for all
+     * @param accountId -   The identifier for the leveraged account. Appears within the resource\u0092s path and is generally a required parameter for all
      * Advertising API requests excluding GET accounts. The specified account must be associated with the authenticating user.
      * @param status -  The text of your status update, typically up to 140 characters. URL encode as necessary. t.co link wrapping may affect
      * character counts.
      * @param asUserId -    The user ID of the advertiser on behalf of whom you are posting the Tweet. The advertiser must grant your handle (or
      * handles) access to their ads account via the Twitter UI at ads.twitter.com. This permission allows you to call the API
-     * using the OAuth tokens of your own handle rather than the advertiser’s.
+     * using the OAuth tokens of your own handle rather than the advertiser\u0092s.
      * @param mediaIds -    A list of up to four media ids to associate with the Tweet.
      * @param cardId - The ID of the revenue card embedded in the Tweet.
      * @param twitterPreviewTarget -    The target to render the Tweet preview for. You can preview a Tweet both for how it will look like on Twitter
@@ -39,7 +39,7 @@ public interface TwitterAdsPreviewApi {
     /**
      * Sends a GET request to Twitter with the specified parameters and receives the corresponding JSON response for a published tweet.
      *
-     * @param accountId -   The identifier for the leveraged account. Appears within the resource’s path and is generally a required parameter for all
+     * @param accountId -   The identifier for the leveraged account. Appears within the resource\u0092s path and is generally a required parameter for all
      * Advertising API requests excluding GET accounts. The specified account must be associated with the authenticating user.
      * @param tweetId - The unique identifier referring to a Tweet
      * @param twitterPreviewTarget -    The target to render the Tweet preview for. You can preview a Tweet both for how it will look like on Twitter
