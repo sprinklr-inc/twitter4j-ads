@@ -35,7 +35,7 @@ public interface TwitterScheduledTweetApi {
 
     /**
      * @param accountId The identifier for the leveraged account.
-     * @param userId The user ID of the advertiser on behalf of whom you are posting the Tweet. The advertiser must grant your handle (or handles) access to their ads account via ads.twitter.com. This permission allows you to call the API using the OAuth tokens of your own handle rather than the advertiser’s..
+     * @param userId The user ID of the advertiser on behalf of whom you are posting the Tweet. The advertiser must grant your handle (or handles) access to their ads account via ads.twitter.com. This permission allows you to call the API using the OAuth tokens of your own handle rather than the advertiser\u0092s..
      * @param scheduledAt The time, expressed in ISO 8601, that the Tweet should be published (or go live).. 2017-12-31T23:59:00Z
      * Tweets can only be scheduled up to one year in the future.
      * Note: Tweets should only be scheduled at minute-granularity; seconds will be ignored.
@@ -43,7 +43,7 @@ public interface TwitterScheduledTweetApi {
      * @param cardURI Associate a card with the Tweet using the card_uri value from any cards response, if available. card://855591459410511943
      * IMPORTANT
      * @param mediaIds Associate media with the Tweet by specifying a comma-separated list of identifiers. Include up to 4 images, 1 animated GIF, or 1 video. See Uploading Media for additional details on uploading media.
-     * @param nullCast Whether to create a nullcasted (or “Promoted-only”) Tweet..
+     * @param nullCast Whether to create a nullcasted (or \u0093Promoted-only\u0094) Tweet..
      */
     BaseAdsResponse<ScheduledTweet> create(String accountId, Date scheduledAt, String text, String userId, String cardURI, List<String> mediaIds,
                                            boolean nullCast) throws TwitterException;

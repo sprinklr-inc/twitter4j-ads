@@ -17,7 +17,15 @@
 package twitter4jads.api.internal;
 
 
-import twitter4jads.internal.models4j.*;
+import twitter4jads.internal.models4j.Media;
+import twitter4jads.internal.models4j.MediaUpload;
+import twitter4jads.internal.models4j.ResponseList;
+import twitter4jads.internal.models4j.Status;
+import twitter4jads.internal.models4j.StatusUpdate;
+import twitter4jads.internal.models4j.TonUpload;
+import twitter4jads.internal.models4j.TwitterException;
+import twitter4jads.internal.models4j.VideoTweetRequest;
+import twitter4jads.internal.models4j.VideoTweetResponse;
 
 /**
  * @author Joern Huxhorn - jhuxhorn at googlemail.com
@@ -30,7 +38,7 @@ public interface TweetsResources {
      * @param statusId The numerical ID of the tweet you want the retweets of.
      * @return the retweets of a given tweet
      * @throws TwitterException when Twitter service or network is unavailable
-     * @see <a href="https://dev.twitter.com/docs/api/1.1/get/statuses/retweets/:id">Tweets Resources › statuses/retweets/:id</a>
+     * @see <a href=\u0093https://dev.twitter.com/docs/api/1.1/get/statuses/retweets/:id\u0094>Tweets Resources \u009B statuses/retweets/:id</a>
      * @since Twitter4J 2.0.10
      */
     ResponseList<Status> getRetweets(long statusId) throws TwitterException;

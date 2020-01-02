@@ -16,13 +16,13 @@
 
 package twitter4jads.auth;
 
-import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.conf.Configuration;
 import twitter4jads.internal.http.BASE64Encoder;
 import twitter4jads.internal.http.HttpClientWrapper;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.http.HttpRequest;
 import twitter4jads.internal.logging.Logger;
+import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.internal.util.z_T4JInternalStringUtil;
 
 import javax.crypto.Mac;
@@ -31,7 +31,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com
@@ -355,16 +359,16 @@ public class OAuthAuthorization implements Authorization, java.io.Serializable, 
 
     /**
      * The request parameters are collected, sorted and concatenated into a normalized string:<br>
-     * •	Parameters in the OAuth HTTP Authorization header excluding the realm parameter.<br>
-     * •	Parameters in the HTTP POST request body (with a content-type of application/x-www-form-urlencoded).<br>
-     * •	HTTP GET parameters added to the URLs in the query part (as defined by [RFC3986] section 3).<br>
+     * \u0095	Parameters in the OAuth HTTP Authorization header excluding the realm parameter.<br>
+     * \u0095	Parameters in the HTTP POST request body (with a content-type of application/x-www-form-urlencoded).<br>
+     * \u0095	HTTP GET parameters added to the URLs in the query part (as defined by [RFC3986] section 3).<br>
      * <br>
      * The oauth_signature parameter MUST be excluded.<br>
      * The parameters are normalized into a single string as follows:<br>
      * 1.	Parameters are sorted by name, using lexicographical byte value ordering. If two or more parameters share the same name, they are sorted by their value. For example:<br>
      * 2.	                    a=1, c=hi%20there, f=25, f=50, f=a, z=p, z=t<br>
      * 3.	<br>
-     * 4.	Parameters are concatenated in their sorted order into a single string. For each parameter, the name is separated from the corresponding value by an ‘=’ character (ASCII code 61), even if the value is empty. Each name-value pair is separated by an ‘&’ character (ASCII code 38). For example:<br>
+     * 4.	Parameters are concatenated in their sorted order into a single string. For each parameter, the name is separated from the corresponding value by an \u0091=\u0092 character (ASCII code 61), even if the value is empty. Each name-value pair is separated by an \u0091&\u0092 character (ASCII code 38). For example:<br>
      * 5.	                    a=1&c=hi%20there&f=25&f=50&f=a&z=p&z=t<br>
      * 6.	<br>
      *
