@@ -1,7 +1,9 @@
 package twitter4jads.models.ads;
 
 import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +13,8 @@ import java.util.List;
  * Date: 29/01/14
  * Time: 11:54 AM
  */
-public class LineItem extends TwitterEntity {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class LineItem extends TwitterEntity implements Serializable {
 
     @SerializedName("name")
     private String name;
@@ -105,6 +108,9 @@ public class LineItem extends TwitterEntity {
 
     @SerializedName("entity_status")
     private EntityStatus status;
+
+    @SerializedName("audience_expansion")
+    private String audienceExpansion;
 
     public String getCreativeSource() {
         return creativeSource;
@@ -352,6 +358,14 @@ public class LineItem extends TwitterEntity {
 
     public void setStatus(EntityStatus status) {
         this.status = status;
+    }
+
+    public String getAudienceExpansion() {
+        return audienceExpansion;
+    }
+
+    public void setAudienceExpansion(String audienceExpansion) {
+        this.audienceExpansion = audienceExpansion;
     }
 
     @Override

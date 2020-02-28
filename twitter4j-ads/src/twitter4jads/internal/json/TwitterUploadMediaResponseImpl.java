@@ -1,10 +1,10 @@
 package twitter4jads.internal.json;
 
-import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.conf.Configuration;
 import twitter4jads.internal.http.HttpResponse;
 import twitter4jads.internal.models4j.Image;
 import twitter4jads.internal.models4j.Media;
+import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.internal.org.json.JSONObject;
 
 import static twitter4jads.internal.json.z_T4JInternalParseUtil.getLong;
@@ -22,6 +22,7 @@ public class TwitterUploadMediaResponseImpl extends TwitterResponseImpl implemen
     public static final String PENDING = "pending";
     private Long mediaId;
     private String mediaIdString;
+    private String mediaKey;
     private Image image;
     private Long size;
     private Long expiresAfterSecs;
@@ -91,6 +92,7 @@ public class TwitterUploadMediaResponseImpl extends TwitterResponseImpl implemen
         try {
             mediaId = getLong("media_id", json);
             mediaIdString = getRawString("media_id", json);
+            mediaKey = getRawString("media_key", json);
             size = getLong("size", json);
             if (!json.isNull("image")) {
                 image = new TwitterImageJSONImpl(json);

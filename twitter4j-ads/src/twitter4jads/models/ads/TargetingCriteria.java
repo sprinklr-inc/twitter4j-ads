@@ -17,27 +17,20 @@ import java.util.List;
  */
 public class TargetingCriteria extends TwitterEntity {
 
-    @SerializedName("created_at")
-    private Date createdAt;
-
-    @SerializedName("line_item_id")
-    private String lineItemId;
-
-    @SerializedName("updated_at")
-    private Date updatedAt;
-
-    @SerializedName("deleted")
-    private String deleted;
-
-    @SerializedName("name")
-    private String name;
-
-    @SerializedName("operator_type")
-    private String operatorType;
-
     @SerializedName("targeting_value")
     public JsonElement targetingValue;
-
+    @SerializedName("created_at")
+    private Date createdAt;
+    @SerializedName("line_item_id")
+    private String lineItemId;
+    @SerializedName("updated_at")
+    private Date updatedAt;
+    @SerializedName("deleted")
+    private String deleted;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("operator_type")
+    private String operatorType;
     @SerializedName("targeting_type")
     private TargetingType targetingType;
 
@@ -71,8 +64,19 @@ public class TargetingCriteria extends TwitterEntity {
     @SerializedName("app_lists")
     private List<TwitterApplicationDetails> appList;    //this is the list of apps that are excluded from third party targeting for twitter
 
+    @SerializedName("os_type")
+    private String osType;
+
     @SerializedName("country_code")
     private String country_code;
+
+    public TargetingCriteria() {
+    }
+
+    public TargetingCriteria(String targetingValue, TargetingType targetingType) {
+        this.targetingValue = new JsonPrimitive(targetingValue);
+        this.targetingType = targetingType;
+    }
 
     public String getCountryCode() {
         return country_code;
@@ -111,6 +115,11 @@ public class TargetingCriteria extends TwitterEntity {
         return estimatedUsers;
     }
 
+    @SuppressWarnings("unused")
+    public void setEstimatedUsers(Integer estimatedUsers) {
+        this.estimatedUsers = estimatedUsers;
+    }
+
     public TailoredAudienceType getTailoredAudienceType() {
         return tailoredAudienceType;
     }
@@ -118,11 +127,6 @@ public class TargetingCriteria extends TwitterEntity {
     @SuppressWarnings("unused")
     public void setTailoredAudienceType(TailoredAudienceType tailoredAudienceType) {
         this.tailoredAudienceType = tailoredAudienceType;
-    }
-
-    @SuppressWarnings("unused")
-    public void setEstimatedUsers(Integer estimatedUsers) {
-        this.estimatedUsers = estimatedUsers;
     }
 
     public String getGenre() {
@@ -235,14 +239,6 @@ public class TargetingCriteria extends TwitterEntity {
     @SuppressWarnings("unused")
     public void setAppList(List<TwitterApplicationDetails> appList) {
         this.appList = appList;
-    }
-
-    public TargetingCriteria() {
-    }
-
-    public TargetingCriteria(String targetingValue, TargetingType targetingType) {
-        this.targetingValue = new JsonPrimitive(targetingValue);
-        this.targetingType = targetingType;
     }
 
     @Override

@@ -44,9 +44,9 @@ public class TwitterAdsBiddingApiImpl implements TwitterAdsBiddingApi {
         return twitterAdsClient.executeHttpListRequest(baseUrl, param, type);
     }
 
-    /*s
+    /*
     This call does not hit any version of twitter ads api, it hits the same end point as is hit on native
-    * */
+     */
     @Override
     public TwitterBidInfo getBidInfo(String accountId, String campaignType, Optional<String> currency, Optional<String> objectiveForBidding) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");

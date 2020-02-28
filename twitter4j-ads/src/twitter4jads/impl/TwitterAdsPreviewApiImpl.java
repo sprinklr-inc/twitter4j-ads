@@ -80,12 +80,12 @@ public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
 
     //-------------------------------------------------------------- PRIVATE METHODS-------------------------------------------------------------//
 
-    private List<HttpParameter> validateAndGetParametersForUnpublishedPostPreview(String text, String asUserId, List<String> mediaIds,
+    private List<HttpParameter> validateAndGetParametersForUnpublishedPostPreview(String text, String asUserId, List<String> mediaKeys,
                                                                                   TwitterPreviewTarget twitterPreviewTarget, String videoId)
-        throws TwitterException {
+            throws TwitterException {
         final boolean isPreviewTargetPublisherNetwork = twitterPreviewTarget == PUBLISHER_NETWORK;
-        final String mediaIdsCsv = TwitterAdUtil.getCsv(mediaIds);
-        if (isPreviewTargetPublisherNetwork && !TwitterAdUtil.isNotNullOrEmpty(mediaIdsCsv)) {
+        final String mediaKeysCsv = TwitterAdUtil.getCsv(mediaKeys);
+        if (isPreviewTargetPublisherNetwork && !TwitterAdUtil.isNotNullOrEmpty(mediaKeysCsv)) {
             throw new TwitterException("To preview an unpublished tweet, mediaIds is a required field when preview_target is " +
                     PUBLISHER_NETWORK.name());
         }
@@ -99,8 +99,8 @@ public class TwitterAdsPreviewApiImpl implements TwitterAdsPreviewApi {
         if (TwitterAdUtil.isNotNull(twitterPreviewTarget)) {
             parameterList.add(new HttpParameter(TwitterAdsConstants.PARAM_PREVIEW_TARGET, twitterPreviewTarget.name()));
         }
-        if (TwitterAdUtil.isNotNullOrEmpty(mediaIdsCsv)) {
-            parameterList.add(new HttpParameter(TwitterAdsConstants.PARAM_MEDIA_IDS, mediaIdsCsv));
+        if (TwitterAdUtil.isNotNullOrEmpty(mediaKeysCsv)) {
+            parameterList.add(new HttpParameter(TwitterAdsConstants.PARAM_MEDIA_KEYS, mediaKeysCsv));
         }
         if (TwitterAdUtil.isNotNullOrEmpty(videoId)) {
             parameterList.add(new HttpParameter(TwitterAdsConstants.PARAM_VIDEO_ID, videoId));

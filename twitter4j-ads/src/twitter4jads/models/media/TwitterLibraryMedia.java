@@ -1,6 +1,7 @@
 package twitter4jads.models.media;
 
 import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.util.Date;
 
@@ -8,6 +9,7 @@ import java.util.Date;
  * User: abhishekanand
  * Date: 07/11/17 2:32 PM.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TwitterLibraryMedia {
 
     @SerializedName("tweeted")
@@ -34,11 +36,19 @@ public class TwitterLibraryMedia {
     @SerializedName("media_status")
     private String mediaStatus;
 
+    @Deprecated
     @SerializedName("poster_image_url")
     private String posterImageUrl;
 
+    @SerializedName("poster_media_url")
+    private String posterMediaUrl;
+
+    @Deprecated
     @SerializedName("poster_image_media_key")
     private String posterImageMediaKey;
+
+    @SerializedName("poster_media_key")
+    private String posterMediaKey;
 
     @SerializedName("media_key")
     private String mediaKey;
@@ -195,5 +205,21 @@ public class TwitterLibraryMedia {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getPosterMediaKey() {
+        return posterMediaKey;
+    }
+
+    public void setPosterMediaKey(String posterMediaKey) {
+        this.posterMediaKey = posterMediaKey;
+    }
+
+    public String getPosterMediaUrl() {
+        return posterMediaUrl;
+    }
+
+    public void setPosterMediaUrl(String posterMediaUrl) {
+        this.posterMediaUrl = posterMediaUrl;
     }
 }
