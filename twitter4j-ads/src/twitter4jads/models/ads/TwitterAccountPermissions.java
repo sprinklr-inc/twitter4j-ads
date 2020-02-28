@@ -1,11 +1,5 @@
 package twitter4jads.models.ads;
 
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Collections;
-import java.util.Map;
-
 /**
  * User: abhishekanand
  * Date: 18/04/16 12:19 PM.
@@ -29,4 +23,8 @@ public class TwitterAccountPermissions {
     public static final String QUALIFIED_IMPRESSIONS_OBJECTIVE = "QUALIFIED_IMPRESSIONS_OBJECTIVE";
     public static final String VIDEO_VIEWS_PREROLL_OBJECTIVE = "VIDEO_VIEWS_PREROLL_OBJECTIVE";
     public static final String VALIDATED_AGE_TARGETING = "VALIDATED_AGE_TARGETING";
+
+    ///For Audience Expansion, previously called look alike audiences
+    public static final String UNIVERSAL_LOOKALIKE = "UNIVERSAL_LOOKALIKE";
+
 }

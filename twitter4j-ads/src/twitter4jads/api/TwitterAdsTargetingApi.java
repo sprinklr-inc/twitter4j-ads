@@ -4,25 +4,11 @@ import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.LocationType;
-import twitter4jads.models.ads.AppStoreSearchType;
-import twitter4jads.models.ads.Conversations;
-import twitter4jads.models.ads.Devices;
-import twitter4jads.models.ads.IabCategory;
-import twitter4jads.models.ads.NewTwitterReachEstimate;
-import twitter4jads.models.ads.PlatformVersions;
-import twitter4jads.models.ads.ProductType;
-import twitter4jads.models.ads.SuggestionType;
-import twitter4jads.models.ads.TargetingCriteria;
-import twitter4jads.models.ads.TargetingLocation;
-import twitter4jads.models.ads.TargetingSuggestion;
-import twitter4jads.models.ads.TargetingType;
-import twitter4jads.models.ads.TwitterAppStore;
-import twitter4jads.models.ads.TwitterBehavior;
-import twitter4jads.models.ads.TwitterBehaviorTaxonomy;
-import twitter4jads.models.ads.audience.TailoredAudienceType;
+import twitter4jads.models.ads.*;
 import twitter4jads.models.ads.tags.TwitterApplicationList;
 import twitter4jads.models.ads.targeting.TargetingParamRequest;
 import twitter4jads.models.ads.targeting.TargetingParamResponse;
+import twitter4jads.models.ads.targeting.TwitterTargetingOperator;
 
 import java.util.Collection;
 import java.util.List;
@@ -75,15 +61,12 @@ public interface TwitterAdsTargetingApi {
      * @param lineItemId                The line item ID to create targeting criteria upon.
      * @param targetingType             The type of targeting to be used with this targeting criteria.
      * @param targetingValue            The targeting value being set.
-     * @param tailoredAudienceExpansion (optional) Whether or not to expand tailored audiences.
-     * @param tailoredAudienceType      (optional) The type of tailored audience being set.
      * @return created targeting criteria
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/targeting_criteria">https://dev.twitter.com/ads/reference/post/accounts/%3Aaccount_id/targeting_criteria</a>
      */
     BaseAdsResponse<TargetingCriteria> createTargetingCriteria(String accountId, String lineItemId, TargetingType targetingType,
-                                                               String targetingValue, boolean tailoredAudienceExpansion,
-                                                               Optional<TailoredAudienceType> tailoredAudienceType)
+                                                               String targetingValue, TwitterTargetingOperator targetingOperator)
             throws TwitterException;
 
     /**
@@ -182,6 +165,8 @@ public interface TwitterAdsTargetingApi {
      */
     BaseAdsListResponseIterable<PlatformVersions> getAllTargetingPlatformVersions() throws TwitterException;
 
+    BaseAdsListResponseIterable<PlatformVersions> getAllTargetingPlatformVersions(String q, TwitterOSType osType) throws TwitterException;
+
     /**
      * @return all possible targeting conversations to choose from
      * @throws TwitterException
@@ -271,13 +256,13 @@ public interface TwitterAdsTargetingApi {
                                                                              Optional<String> cursor) throws TwitterException;
 
     /**
-     * @param q                  (optional) Search results for matching a specific app store category.
-     * @param appStoreSearchType (optional) Limit the number of results to the given count.
+     * @param q      (optional) Search results for matching a specific app store category.
+     * @param osType (optional) Limit the number of results to the given count.
      * @return Some or all of the targetable app store categories
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/get/targeting_criteria/app_store_categories">https://dev.twitter.com/ads/reference/get/targeting_criteria/app_store_categories</a>
      */
-    List<TwitterAppStore> searchAppStoreCategories(String q, Optional<AppStoreSearchType> appStoreSearchType) throws TwitterException;
+    List<TwitterAppStore> searchAppStoreCategories(String q, Optional<TwitterOSType> osType) throws TwitterException;
 
     /**
      * @param accountId The identifier for the leveraged account.

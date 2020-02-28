@@ -1,11 +1,13 @@
 package twitter4jads.models.media;
 
 import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * User: abhishekanand
  * Date: 19/04/16 4:03 PM.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TwitterAccountMedia {
 
     @SerializedName("creative_type")
@@ -19,9 +21,12 @@ public class TwitterAccountMedia {
 
     @SerializedName("media_url")
     private String mediaUrl;
-
+    @Deprecated
     @SerializedName("video_id")
     private String videoId;
+
+    @SerializedName("media_key")
+    private String mediaKey;
 
     @SerializedName("created_at")
     private String createdAt;
@@ -84,5 +89,13 @@ public class TwitterAccountMedia {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getMediaKey() {
+        return mediaKey;
+    }
+
+    public void setMediaKey(String mediaKey) {
+        this.mediaKey = mediaKey;
     }
 }

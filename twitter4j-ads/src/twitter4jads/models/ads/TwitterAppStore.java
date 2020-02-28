@@ -9,15 +9,15 @@ import com.google.gson.annotations.SerializedName;
 public class TwitterAppStore extends TwitterEntity {
 
     public static final String NAME = "name";
-    public static final String APP_STORE_TYPE = "os_type";
+    public static final String OS_TYPE = "os_type";
     public static final String TARGETING_TYPE = "targeting_type";
     public static final String TARGETING_VALUE = "targeting_value";
 
     @SerializedName(NAME)
     private String name;
 
-    @SerializedName(APP_STORE_TYPE)
-    private AppStoreType appStoreType;
+    @SerializedName(OS_TYPE)
+    private TwitterOSType osType;
 
     @SerializedName(TARGETING_TYPE)
     private TargetingType targetingType;
@@ -34,12 +34,12 @@ public class TwitterAppStore extends TwitterEntity {
         this.name = name;
     }
 
-    public AppStoreType getAppStoreType() {
-        return appStoreType;
+    public TwitterOSType getOsType() {
+        return osType;
     }
 
-    public void setAppStoreType(AppStoreType appStoreType) {
-        this.appStoreType = appStoreType;
+    public void setOsType(TwitterOSType osType) {
+        this.osType = osType;
     }
 
     public TargetingType getTargetingType() {

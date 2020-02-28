@@ -1,12 +1,14 @@
 package twitter4jads.models.ads;
 
 import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.util.Date;
 
 /**
  * Created by abhishekanand on 11/03/15.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TwitterBehaviorTaxonomy extends TwitterEntity {
 
     @SerializedName("created_at")
@@ -20,6 +22,9 @@ public class TwitterBehaviorTaxonomy extends TwitterEntity {
 
     @SerializedName("updated_at")
     private Date updatedAt;
+
+    @SerializedName("targeting_value")
+    private String targetingValue;
 
 
     public Date getCreatedAt() {
@@ -52,5 +57,13 @@ public class TwitterBehaviorTaxonomy extends TwitterEntity {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getTargetingValue() {
+        return targetingValue;
+    }
+
+    public void setTargetingValue(String targetingValue) {
+        this.targetingValue = targetingValue;
     }
 }

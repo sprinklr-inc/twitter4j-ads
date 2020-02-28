@@ -1,16 +1,13 @@
 package twitter4jads.impl;
 
 import com.google.gson.reflect.TypeToken;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
-import twitter4jads.TwitterAdsConstants;
-import twitter4jads.api.TwitterScheduledTweetApi;
+import org.apache.commons.lang3.StringUtils;
+import twitter4jads.*;
+import twitter4jads.api.TwitterScheduledTweetsApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.ScheduledTweet;
 import twitter4jads.models.ads.HttpVerb;
+import twitter4jads.models.ads.ScheduledTweet;
 import twitter4jads.util.TwitterAdUtil;
 
 import java.lang.reflect.Type;
@@ -18,21 +15,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static twitter4jads.TwitterAdsConstants.PARAM_CARD_URI;
-import static twitter4jads.TwitterAdsConstants.PARAM_CURSOR;
-import static twitter4jads.TwitterAdsConstants.PARAM_MEDIA_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_NULLCAST;
-import static twitter4jads.TwitterAdsConstants.PARAM_SCHEDULED_AT;
-import static twitter4jads.TwitterAdsConstants.PARAM_TEXT;
-import static twitter4jads.TwitterAdsConstants.PARAM_USER_ID;
-import static twitter4jads.TwitterAdsConstants.PATH_SCHEDULED_TWEETS;
-import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI;
+import static twitter4jads.TwitterAdsConstants.*;
 
 /**
  * User: abhishekanand
  * Date: 03/08/17 2:17 PM.
  */
-public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetApi {
+public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetsApi {
 
     private final TwitterAdsClient twitterAdsClient;
 
@@ -40,10 +29,10 @@ public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetApi {
         this.twitterAdsClient = twitterAdsClient;
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
-    public BaseAdsListResponseIterable<ScheduledTweet> fetch(String accountId, String userId, boolean withDeleted, Integer count, String cursor)
+    public BaseAdsListResponseIterable<ScheduledTweet> getScheduledTweets(String accountId, String userId, boolean withDeleted, Integer count, String cursor)
             throws TwitterException {
-
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(userId, "userId");
 
@@ -59,10 +48,10 @@ public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetApi {
         return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
-    public BaseAdsResponse<ScheduledTweet> fetchScheduledTweetById(String accountId, String scheduledTweetId, boolean withDeleted)
+    public BaseAdsResponse<ScheduledTweet> getScheduledTweetById(String accountId, String scheduledTweetId, boolean withDeleted)
             throws TwitterException {
-
         TwitterAdUtil.ensureNotNull(scheduledTweetId, "scheduledTweetId");
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
 
@@ -72,27 +61,28 @@ public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetApi {
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_SCHEDULED_TWEETS + scheduledTweetId;
         final Type type = new TypeToken<BaseAdsResponse<ScheduledTweet>>() {
         }.getType();
-        return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.GET);
+        return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[0]), type, HttpVerb.GET);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
-    public BaseAdsResponse<ScheduledTweet> create(String accountId, Date scheduledAt, String text, String userId, String cardURI,
-                                                  List<String> mediaIds,
-                                                  boolean nullCast) throws TwitterException {
+    public BaseAdsResponse<ScheduledTweet> createScheduledTweet(String accountId, Date scheduledAt, String text, String userId, String cardId,
+                                                                List<String> mediaKeys,
+                                                                boolean nullCast) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(userId, "userId");
         TwitterAdUtil.ensureNotNull(scheduledAt, "scheduledAt");
 
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(TwitterAdsConstants.PARAM_AS_USER_ID, userId));
-        if (TwitterAdUtil.isNotNullOrEmpty(cardURI)) {
-            params.add(new HttpParameter(PARAM_CARD_URI, cardURI));
+        if (StringUtils.isNotBlank(cardId)) {
+            params.add(new HttpParameter(PARAM_CARD_URI, "card://" + cardId));
         }
         params.add(new HttpParameter(PARAM_SCHEDULED_AT, TwitterAdUtil.convertTimeToZuluFormatAndToUTC(scheduledAt.getTime())));
-        if (TwitterAdUtil.isNotEmpty(mediaIds)) {
-            params.add(new HttpParameter(PARAM_MEDIA_IDS, TwitterAdUtil.getCsv(mediaIds)));
+        if (TwitterAdUtil.isNotEmpty(mediaKeys)) {
+            params.add(new HttpParameter(PARAM_MEDIA_KEYS, TwitterAdUtil.getCsv(mediaKeys)));
         }
-        if (TwitterAdUtil.isNotNullOrEmpty(text)) {
+        if (StringUtils.isNotBlank(text)) {
             params.add(new HttpParameter(PARAM_TEXT, text));
         }
         params.add(new HttpParameter(PARAM_NULLCAST, nullCast));
@@ -100,23 +90,24 @@ public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetApi {
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_SCHEDULED_TWEETS;
         final Type type = new TypeToken<BaseAdsResponse<ScheduledTweet>>() {
         }.getType();
-        return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.POST);
+        return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[0]), type, HttpVerb.POST);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
-    public BaseAdsResponse<ScheduledTweet> update(String accountId, String scheduledTweetId, Date scheduledAt, String text, String cardURI,
-                                                  List<String> mediaIds) throws TwitterException {
+    public BaseAdsResponse<ScheduledTweet> updateScheduledTweet(String accountId, String scheduledTweetId, Date scheduledAt, String text, String cardId,
+                                                                List<String> mediaKeys) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         TwitterAdUtil.ensureNotNull(scheduledTweetId, "scheduledTweetId");
 
         final List<HttpParameter> params = new ArrayList<>();
-        if (TwitterAdUtil.isNotNullOrEmpty(cardURI)) {
-            params.add(new HttpParameter(PARAM_CARD_URI, cardURI));
+        if (StringUtils.isNotBlank(cardId)) {
+            params.add(new HttpParameter(PARAM_CARD_URI, "card://" + cardId));
         }
-        if (TwitterAdUtil.isNotEmpty(mediaIds)) {
-            params.add(new HttpParameter(PARAM_MEDIA_IDS, TwitterAdUtil.getCsv(mediaIds)));
+        if (TwitterAdUtil.isNotEmpty(mediaKeys)) {
+            params.add(new HttpParameter(PARAM_MEDIA_KEYS, TwitterAdUtil.getCsv(mediaKeys)));
         }
-        if (TwitterAdUtil.isNotNullOrEmpty(text)) {
+        if (StringUtils.isNotBlank(text)) {
             params.add(new HttpParameter(PARAM_TEXT, text));
         }
         if (scheduledAt != null) {
@@ -126,17 +117,18 @@ public class TwitterScheduledTweetsApiImpl implements TwitterScheduledTweetApi {
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_SCHEDULED_TWEETS + scheduledTweetId;
         final Type type = new TypeToken<BaseAdsResponse<ScheduledTweet>>() {
         }.getType();
-        return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.PUT);
+        return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[0]), type, HttpVerb.PUT);
 
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public BaseAdsResponse<ScheduledTweet> delete(String accountId, String scheduledTweetId) throws TwitterException {
+    public BaseAdsResponse<ScheduledTweet> deleteScheduledTweet(String accountId, String scheduledTweetId) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "Account Id");
         TwitterAdUtil.ensureNotNull(scheduledTweetId, "Tweet Id");
-        String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_SCHEDULED_TWEETS + scheduledTweetId;
-        Type type = new TypeToken<BaseAdsResponse<ScheduledTweet>>() {
+
+        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_SCHEDULED_TWEETS + scheduledTweetId;
+        final Type type = new TypeToken<BaseAdsResponse<ScheduledTweet>>() {
         }.getType();
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);
     }

@@ -1,140 +1,29 @@
 package twitter4jads.impl;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
-import twitter4jads.BaseAdsListResponse;
-import twitter4jads.BaseAdsListResponseIterable;
-import twitter4jads.BaseAdsResponse;
-import twitter4jads.TwitterAdsClient;
+import twitter4jads.*;
 import twitter4jads.api.TwitterAdsTargetingApi;
 import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.http.HttpResponse;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.LocationType;
-import twitter4jads.models.ads.AppStoreSearchType;
-import twitter4jads.models.ads.BidType;
-import twitter4jads.models.ads.Conversations;
-import twitter4jads.models.ads.Devices;
-import twitter4jads.models.ads.HttpVerb;
-import twitter4jads.models.ads.IabCategory;
-import twitter4jads.models.ads.NewTwitterReachEstimate;
-import twitter4jads.models.ads.PlatformVersions;
-import twitter4jads.models.ads.ProductType;
-import twitter4jads.models.ads.SuggestionType;
-import twitter4jads.models.ads.TargetingCriteria;
-import twitter4jads.models.ads.TargetingLocation;
-import twitter4jads.models.ads.TargetingSuggestion;
-import twitter4jads.models.ads.TargetingType;
-import twitter4jads.models.ads.TwitterAppStore;
-import twitter4jads.models.ads.TwitterApplicationDetails;
-import twitter4jads.models.ads.TwitterBehavior;
-import twitter4jads.models.ads.TwitterBehaviorTaxonomy;
-import twitter4jads.models.ads.audience.TailoredAudienceType;
+import twitter4jads.models.ads.*;
 import twitter4jads.models.ads.tags.TwitterApplicationList;
 import twitter4jads.models.ads.targeting.TargetingParamRequest;
 import twitter4jads.models.ads.targeting.TargetingParamResponse;
+import twitter4jads.models.ads.targeting.TwitterTargetingOperator;
 import twitter4jads.util.TwitterAdUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import static twitter4jads.TwitterAdsConstants.BID_AMOUNT_LOCAL_MICRO;
-import static twitter4jads.TwitterAdsConstants.BID_TYPE;
-import static twitter4jads.TwitterAdsConstants.CAMPAIGN_DAILY_BUDGET_AMOUNT_LOCAL_MICRO;
-import static twitter4jads.TwitterAdsConstants.CURRENCY;
-import static twitter4jads.TwitterAdsConstants.MAX_LINE_ITEM_IDS_REQUEST_SIZE;
-import static twitter4jads.TwitterAdsConstants.PARAM_AGE_RANGE;
-import static twitter4jads.TwitterAdsConstants.PARAM_APP_STORE_CATEGORY;
-import static twitter4jads.TwitterAdsConstants.PARAM_APP_STORE_IDENTIFIERS;
-import static twitter4jads.TwitterAdsConstants.PARAM_BEHAVIOR;
-import static twitter4jads.TwitterAdsConstants.PARAM_BEHAVIOR_EXPANDED;
-import static twitter4jads.TwitterAdsConstants.PARAM_BROAD_KEYWORDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_CAMPAIGN_ENGAGEMENT;
-import static twitter4jads.TwitterAdsConstants.PARAM_CONVERSATIONS;
-import static twitter4jads.TwitterAdsConstants.PARAM_COUNT;
-import static twitter4jads.TwitterAdsConstants.PARAM_COUNTRY_CODE;
-import static twitter4jads.TwitterAdsConstants.PARAM_CURSOR;
-import static twitter4jads.TwitterAdsConstants.PARAM_DEVICES;
-import static twitter4jads.TwitterAdsConstants.PARAM_ENGAGEMENT_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_EVENT;
-import static twitter4jads.TwitterAdsConstants.PARAM_EXACT_KEYWORDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_EXCLUDE_APP_LIST_IDENTIFIER;
-import static twitter4jads.TwitterAdsConstants.PARAM_FOLLOWERS_OF_USERS;
-import static twitter4jads.TwitterAdsConstants.PARAM_GENDER;
-import static twitter4jads.TwitterAdsConstants.PARAM_IGNORED_VALUES;
-import static twitter4jads.TwitterAdsConstants.PARAM_INTERESTS;
-import static twitter4jads.TwitterAdsConstants.PARAM_LANGUAGES;
-import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_LOCATIONS;
-import static twitter4jads.TwitterAdsConstants.PARAM_LOCATION_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_NAME;
-import static twitter4jads.TwitterAdsConstants.PARAM_NEGATIVE_BEHAVIOR;
-import static twitter4jads.TwitterAdsConstants.PARAM_NEGATIVE_EXACT_KEYWORDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_NEGATIVE_PHRASE_KEYWORDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_NEGATIVE_UNORDERED_KEYWORDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_NETWORK_ACTIVATION_DURATION_GTE;
-import static twitter4jads.TwitterAdsConstants.PARAM_NETWORK_ACTIVATION_DURATION_LT;
-import static twitter4jads.TwitterAdsConstants.PARAM_NETWORK_OPERATOR;
-import static twitter4jads.TwitterAdsConstants.PARAM_OBJECTIVE;
-import static twitter4jads.TwitterAdsConstants.PARAM_PHRASE_KEYWORDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_PLATFORMS;
-import static twitter4jads.TwitterAdsConstants.PARAM_PLATFORM_VERSIONS;
-import static twitter4jads.TwitterAdsConstants.PARAM_PRODUCT_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_Q;
-import static twitter4jads.TwitterAdsConstants.PARAM_SIMILAR_TO_FOLLOWERS_OF_USERS;
-import static twitter4jads.TwitterAdsConstants.PARAM_SORT_BY;
-import static twitter4jads.TwitterAdsConstants.PARAM_SUGGESTION_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_TAILORED_AUDIENCES;
-import static twitter4jads.TwitterAdsConstants.PARAM_TAILORED_AUDIENCES_EXCLUDED;
-import static twitter4jads.TwitterAdsConstants.PARAM_TAILORED_AUDIENCES_EXPANDED;
-import static twitter4jads.TwitterAdsConstants.PARAM_TAILORED_AUDIENCE_EXPANSION;
-import static twitter4jads.TwitterAdsConstants.PARAM_TAILORED_AUDIENCE_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_TARGETING_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_TARGETING_VALUE;
-import static twitter4jads.TwitterAdsConstants.PARAM_TARGETING_VALUES;
-import static twitter4jads.TwitterAdsConstants.PARAM_TV_CHANNEL;
-import static twitter4jads.TwitterAdsConstants.PARAM_TV_GENRE;
-import static twitter4jads.TwitterAdsConstants.PARAM_TV_MARKET;
-import static twitter4jads.TwitterAdsConstants.PARAM_TV_MARKET_LOCALE;
-import static twitter4jads.TwitterAdsConstants.PARAM_TV_SHOWS;
-import static twitter4jads.TwitterAdsConstants.PARAM_UNORDERED_KEYWORDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_USER_ENGAGEMENT;
-import static twitter4jads.TwitterAdsConstants.PARAM_WIFI_ONLY;
-import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
-import static twitter4jads.TwitterAdsConstants.PATH_ACCOUNTS;
-import static twitter4jads.TwitterAdsConstants.PATH_APP_LIST;
-import static twitter4jads.TwitterAdsConstants.PATH_BEHAVIORS;
-import static twitter4jads.TwitterAdsConstants.PATH_BEHAVIORS_TAXONOMY;
-import static twitter4jads.TwitterAdsConstants.PATH_IAB_CATEGORIES;
-import static twitter4jads.TwitterAdsConstants.PATH_REACH_ESTIMATE;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA_APP_STORE_CATEGORIES;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA_CONVERSATIONS;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA_DEVICES;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA_EVENT;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA_INTERESTS;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA_LOCATION;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA_NETWORK_OPERATORS;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA_PLATFORMS;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_CRITERIA_PLATFORM_VERSIONS;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_LANGUAGES;
-import static twitter4jads.TwitterAdsConstants.PATH_TARGETING_SUGGESTIONS;
-import static twitter4jads.TwitterAdsConstants.PATH_TV_CHANNELS;
-import static twitter4jads.TwitterAdsConstants.PATH_TV_GENRES;
-import static twitter4jads.TwitterAdsConstants.PATH_TV_MARKETS;
-import static twitter4jads.TwitterAdsConstants.PATH_TV_SHOWS;
-import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI;
-import static twitter4jads.TwitterAdsConstants.PREFIX_BATCH_ACCOUNTS_URI;
+import static twitter4jads.TwitterAdsConstants.*;
+import static twitter4jads.models.ads.TargetingType.*;
 import static twitter4jads.util.TwitterAdUtil.constructBaseAdsListResponse;
 
 /**
@@ -145,6 +34,9 @@ import static twitter4jads.util.TwitterAdUtil.constructBaseAdsListResponse;
 public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
 
     private static final Integer MAX_REQUEST_PARAMETER_SIZE = 50;
+    private static final Set<TargetingType> TARGETING_TYPES_WITH_MODIFIER_PREFIX_OR_SUFFIX =
+            Sets.newHashSet(EXCLUDE_APP_LIST, NEGATIVE_BEHAVIOR, NEGATIVE_EXACT_KEYWORD, NEGATIVE_PHRASE_KEYWORD, NEGATIVE_UNORDERED_KEYWORD,
+                    NETWORK_ACTIVATION_DURATION_GTE, NETWORK_ACTIVATION_DURATION_LT);
 
     private static final Gson GSON = new Gson();
     private final TwitterAdsClient twitterAdsClient;
@@ -167,7 +59,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     public BaseAdsListResponseIterable<TargetingCriteria> getTargetingCriterias(String accountId, Collection<String> lineItemIds, boolean withDeleted,
                                                                                 Integer count, String cursor, String sortBy)
             throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotEmpty(lineItemIds, "lineItemIds");
 
         final List<HttpParameter> params = new ArrayList<>();
@@ -194,7 +86,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     @Override
     public BaseAdsResponse<TargetingCriteria> getTargetingCriteriaById(String accountId, String targetingId, boolean withDeleted)
             throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(targetingId, "Targeting Id");
 
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_TARGETING_CRITERIA +
@@ -208,7 +100,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
 
     @Override
     public BaseAdsResponse<TargetingCriteria> deleteTargetingCriteria(String accountId, String targetingCriteriaId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(targetingCriteriaId, "Targeting Id");
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_TARGETING_CRITERIA +
                 targetingCriteriaId;
@@ -259,7 +151,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     @Override
     public List<TargetingCriteria> createTargetingCriterias(String accountId, String lineItemId, List<TargetingCriteria> targetingCriteriaValues)
             throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(lineItemId, "Line Item");
 
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_TARGETING_CRITERIA;
@@ -281,22 +173,23 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
 
     @Override
     public BaseAdsResponse<TargetingCriteria> createTargetingCriteria(String accountId, String lineItemId, TargetingType targetingType,
-                                                                      String targetingValue, boolean tailoredAudienceExpansion,
-                                                                      Optional<TailoredAudienceType> tailoredAudienceType) throws TwitterException {
+                                                                      String targetingValue, TwitterTargetingOperator targetingOperator) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "AccountId");
         TwitterAdUtil.ensureNotNull(lineItemId, "Line Item Id");
         TwitterAdUtil.ensureNotNull(targetingType, "Targeting Type");
+        if (TARGETING_TYPES_WITH_MODIFIER_PREFIX_OR_SUFFIX.contains(targetingType)) {
+            throw new IllegalArgumentException("Support for targeting types with modifier prefix or suffix is removed since API v6. "
+                    + "Please use corresponding unmodified targeting types with correct operator type.\n"
+                    + "e.g. targeting_type=NEGATIVE_BEHAVIOR => targeting_type=BEHAVIOR&operator_type=NE");
+        }
         TwitterAdUtil.ensureNotNull(targetingValue, "Targeting Value");
+        TwitterAdUtil.ensureNotNull(targetingOperator, "Targeting Operator Type");
 
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_LINE_ITEM_ID, lineItemId));
         params.add(new HttpParameter(PARAM_TARGETING_TYPE, targetingType.name()));
+        params.add(new HttpParameter(PARAM_OPERATOR_TYPE, targetingOperator.name()));
         params.add(new HttpParameter(PARAM_TARGETING_VALUE, targetingValue));
-        params.add(new HttpParameter(PARAM_TAILORED_AUDIENCE_EXPANSION, tailoredAudienceExpansion));
-
-        if (tailoredAudienceType != null && tailoredAudienceType.isPresent()) {
-            params.add(new HttpParameter(PARAM_TAILORED_AUDIENCE_TYPE, tailoredAudienceType.get().name()));
-        }
 
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_TARGETING_CRITERIA;
         final Type type = new TypeToken<BaseAdsResponse<TargetingCriteria>>() {
@@ -307,13 +200,12 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
 
     @Override
     public BaseAdsListResponseIterable<PlatformVersions> getAllTargetingPlatformVersions() throws TwitterException {
-        final List<HttpParameter> params = new ArrayList<>();
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TARGETING_CRITERIA_PLATFORM_VERSIONS;
+        return getAllTargetingPlatformVersions(null, null);
+    }
 
-        Type type = new TypeToken<BaseAdsListResponse<PlatformVersions>>() {
-        }.getType();
-
-        return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
+    @Override
+    public BaseAdsListResponseIterable<PlatformVersions> getAllTargetingPlatformVersions(String q, TwitterOSType osType) throws TwitterException {
+        return hitQueryForPath(q, PATH_TARGETING_CRITERIA_PLATFORM_VERSIONS);
     }
 
     @Override
@@ -321,7 +213,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         return hitQueryForPath(q, PATH_TARGETING_CRITERIA_DEVICES);
     }
 
-    private void validateTargetingBatch(List<TargetingParamRequest> targetingParamRequests) throws TwitterException {
+    private void validateTargetingBatch(List<TargetingParamRequest> targetingParamRequests) throws
+            TwitterException {
         if (!TwitterAdUtil.isNotEmpty(targetingParamRequests)) {
             throw new TwitterException("Targeting Params size is 0");
         }
@@ -338,7 +231,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
                                                                      Long bidAmountLocalMicro, String currency,
                                                                      Long campaignDailyBudgetAmountLocalMicro, String bidType)
             throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "AccountId");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(productType, "Product Type");
         TwitterAdUtil.ensureNotNull(objective, "Objective");
 
@@ -374,7 +267,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     public BaseAdsListResponseIterable<IabCategory> fetchIabCategories(String q) throws TwitterException {
         final List<HttpParameter> params = new ArrayList<>();
         if (TwitterAdUtil.isNotNullOrEmpty(q)) {
-            params.add(new HttpParameter("q", q));
+            params.add(new HttpParameter(PARAM_Q, q));
         }
 
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_IAB_CATEGORIES;
@@ -385,7 +278,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     }
 
     @Override
-    public TargetingParamResponse createTargetingBatchRequest(String accountId, List<TargetingParamRequest> targetingParamRequests) throws TwitterException {
+    public TargetingParamResponse createTargetingBatchRequest(String
+                                                                      accountId, List<TargetingParamRequest> targetingParamRequests) throws TwitterException {
         validateTargetingBatch(targetingParamRequests);
 
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_BATCH_ACCOUNTS_URI + PATH_ACCOUNTS + accountId + PATH_TARGETING_CRITERIA;
@@ -398,7 +292,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
 
 
     @Override
-    public BaseAdsListResponseIterable<TargetingCriteria> getAllTargetingTVChannels(String tvMarketLocale, Optional<Integer> count, Optional<String> cursor)
+    public BaseAdsListResponseIterable<TargetingCriteria> getAllTargetingTVChannels(String
+                                                                                            tvMarketLocale, Optional<Integer> count, Optional<String> cursor)
             throws TwitterException {
         final List<HttpParameter> params = new ArrayList<>();
         if (TwitterAdUtil.isNotNullOrEmpty(tvMarketLocale)) {
@@ -419,13 +314,14 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     }
 
     @Override
-    public BaseAdsListResponseIterable<TargetingLocation> getTargetingLocations(String query, LocationType locationType) throws TwitterException {
+    public BaseAdsListResponseIterable<TargetingLocation> getTargetingLocations(String query, LocationType
+            locationType) throws TwitterException {
 
         List<HttpParameter> params = new ArrayList<>(2);
         if (StringUtils.isNotBlank(query)) {
-            params.add(new HttpParameter("q", query.trim()));
+            params.add(new HttpParameter(PARAM_Q, query.trim()));
         }
-        params.add(new HttpParameter("location_type", locationType.name()));
+        params.add(new HttpParameter(PARAM_LOCATION_TYPE, locationType.name()));
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TARGETING_CRITERIA_LOCATION;
         Type type = new TypeToken<BaseAdsListResponse<TargetingLocation>>() {
         }.getType();
@@ -449,9 +345,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     }
 
     @Override
-    public BaseAdsListResponseIterable<TargetingCriteria> getAllTVShows(String tvMarket, String q, Optional<Integer> count, Optional<String> cursor)
-            throws TwitterException {
-        TwitterAdUtil.ensureNotNull(tvMarket, "tvMarket");
+    public BaseAdsListResponseIterable<TargetingCriteria> getAllTVShows(String tvMarket, String q, Optional<Integer> count, Optional<String> cursor) throws TwitterException {
+        TwitterAdUtil.ensureNotNull(tvMarket, "tvMarketLocale");
 
         List<HttpParameter> params = validateTvShowsParameters(tvMarket, q, count, cursor);
         String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TV_SHOWS;
@@ -493,9 +388,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     }
 
     @Override
-    public List<TargetingSuggestion> getTargetingSuggestion(String accountId, SuggestionType suggestionType, List<String> targetingValues,
-                                                            Optional<Integer> count, List<String> ignoredValues) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "AccountId");
+    public List<TargetingSuggestion> getTargetingSuggestion(String accountId, SuggestionType suggestionType, List<String> targetingValues, Optional<Integer> count, List<String> ignoredValues) throws TwitterException {
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(suggestionType, "Suggestion Type");
         TwitterAdUtil.ensureNotEmpty(targetingValues, "Targeting Values");
 
@@ -525,13 +419,13 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
 
     @SuppressWarnings("Duplicates")
     @Override
-    public List<TwitterAppStore> searchAppStoreCategories(String q, Optional<AppStoreSearchType> appStoreSearchType) throws TwitterException {
+    public List<TwitterAppStore> searchAppStoreCategories(String q, Optional<TwitterOSType> osType) throws TwitterException {
         List<HttpParameter> params = new ArrayList<>();
         if (TwitterAdUtil.isNotNullOrEmpty(q)) {
-            params.add(new HttpParameter("q", q));
+            params.add(new HttpParameter(PARAM_Q, q));
         }
-        if (appStoreSearchType != null && appStoreSearchType.isPresent()) {
-            params.add(new HttpParameter("store", appStoreSearchType.get().name()));
+        if (osType != null && osType.isPresent()) {
+            params.add(new HttpParameter(PARAM_OS_TYPE, osType.get().name()));
         }
 
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PATH_TARGETING_CRITERIA_APP_STORE_CATEGORIES;
@@ -549,8 +443,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     }
 
     @Override
-    public BaseAdsListResponseIterable<TwitterBehavior> getBehaviors(Optional<Integer> count, Optional<String> cursor, List<String> behaviorIds,
-                                                                     Optional<String> countryCode) throws TwitterException {
+    public BaseAdsListResponseIterable<TwitterBehavior> getBehaviors(Optional<Integer> count, Optional<String> cursor, List<String> behaviorIds, Optional<String> countryCode) throws TwitterException {
         List<HttpParameter> params = new ArrayList<>();
         if (count != null && count.isPresent()) {
             params.add(new HttpParameter("count", count.get()));
@@ -573,16 +466,10 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     }
 
     @Override
-    public BaseAdsListResponseIterable<TwitterBehaviorTaxonomy> getBehaviorTaxonomy(List<String> behaviorTaxonomyIds,
-                                                                                    List<String> parentBehaviorTaxonomyIds, Optional<Integer> count,
-                                                                                    Optional<String> cursor) throws TwitterException {
+    public BaseAdsListResponseIterable<TwitterBehaviorTaxonomy> getBehaviorTaxonomy(List<String> behaviorTaxonomyIds, List<String> parentBehaviorTaxonomyIds, Optional<Integer> count, Optional<String> cursor) throws TwitterException {
         final List<HttpParameter> params = new ArrayList<>();
-        if (TwitterAdUtil.isNotEmpty(behaviorTaxonomyIds)) {
-            params.add(new HttpParameter("behavior_taxonomy_ids", TwitterAdUtil.getCsv(behaviorTaxonomyIds)));
-        }
-
         if (TwitterAdUtil.isNotEmpty(parentBehaviorTaxonomyIds)) {
-            params.add(new HttpParameter("parent_behavior_taxonomy_ids", TwitterAdUtil.getCsv(parentBehaviorTaxonomyIds)));
+            params.add(new HttpParameter(PARAM_PARENT_BEHAVIOR_TAXONOMY_IDS, TwitterAdUtil.getCsv(parentBehaviorTaxonomyIds)));
         }
 
         if (count != null && count.isPresent()) {
@@ -601,7 +488,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     }
 
     @Override
-    public BaseAdsListResponseIterable<TwitterApplicationList> getAllAppLists(String accountId) throws TwitterException {
+    public BaseAdsListResponseIterable<TwitterApplicationList> getAllAppLists(String accountId) throws
+            TwitterException {
         final List<HttpParameter> params = new ArrayList<>();
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_APP_LIST;
         final Type type = new TypeToken<BaseAdsListResponse<TwitterApplicationList>>() {
@@ -622,8 +510,7 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     }
 
     @Override
-    public BaseAdsResponse<TwitterApplicationList> createNewApplicationList(String accountId, TwitterApplicationList twitterApplicationList)
-            throws TwitterException {
+    public BaseAdsResponse<TwitterApplicationList> createNewApplicationList(String accountId, TwitterApplicationList twitterApplicationList) throws TwitterException {
         final List<HttpParameter> params = validateAndCreateApplicationListParameters(twitterApplicationList);
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_APP_LIST;
         final Type typeToken = new TypeToken<BaseAdsResponse<TwitterApplicationList>>() {
@@ -635,10 +522,19 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
     // ------------------------------------------------------------------- PRIVATE METHODS ---------------------------------------------------------
 
     @SuppressWarnings("Duplicates")
-    private <T> BaseAdsListResponseIterable<T> hitQueryForPath(String q, String queryPath) throws TwitterException {
+    private <T> BaseAdsListResponseIterable<T> hitQueryForPath(String q, String queryPath) throws
+            TwitterException {
+        return hitQueryForPath(q, queryPath, null);
+    }
+
+    private <T> BaseAdsListResponseIterable<T> hitQueryForPath(String q, String queryPath, TwitterOSType osType)
+            throws TwitterException {
         final List<HttpParameter> params = new ArrayList<>();
         if (TwitterAdUtil.isNotNullOrEmpty(q)) {
-            params.add(new HttpParameter("q", q));
+            params.add(new HttpParameter(PARAM_Q, q));
+        }
+        if (TwitterAdUtil.isNotNull(osType)) {
+            params.add(new HttpParameter(PARAM_OS_TYPE, osType.name()));
         }
 
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + queryPath;
@@ -792,7 +688,8 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         return params;
     }
 
-    private List<HttpParameter> validateTargetingLocationParameters(final Optional<LocationType> locationType, final String q, final String countryCode,
+    private List<HttpParameter> validateTargetingLocationParameters(final Optional<LocationType> locationType,
+                                                                    final String q, final String countryCode,
                                                                     final Optional<Integer> count) {
 
         List<HttpParameter> params = new ArrayList<>();
@@ -811,11 +708,12 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         return params;
     }
 
-    private List<HttpParameter> validateTvShowsParameters(String tvMarket, String q, Optional<Integer> count, Optional<String> cursor) {
+    private List<HttpParameter> validateTvShowsParameters(String tvMarket, String
+            q, Optional<Integer> count, Optional<String> cursor) {
         TwitterAdUtil.ensureNotNull(tvMarket, "tvMarket");
         List<HttpParameter> params = new ArrayList<>();
         if (StringUtils.isNotBlank(tvMarket)) {
-            params.add(new HttpParameter(PARAM_TV_MARKET, tvMarket));
+            params.add(new HttpParameter(TwitterAdsConstants.PARAM_LOCALE, tvMarket));
         }
         if (StringUtils.isNotBlank(q)) {
             params.add(new HttpParameter(PARAM_Q, q));

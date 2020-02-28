@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class AbstractAppCard extends AbstractTwitterCard {
 
+    @SerializedName("media_key")
+    private String mediaKey;
+
     @SerializedName("iphone_app_id")
     private String iphoneAppId;
 
@@ -95,5 +98,13 @@ public class AbstractAppCard extends AbstractTwitterCard {
 
     public void setAppCta(String appCta) {
         this.appCta = appCta;
+    }
+
+    public String getMediaKey() {
+        return mediaKey;
+    }
+
+    public void setMediaKey(String mediaKey) {
+        this.mediaKey = mediaKey;
     }
 }

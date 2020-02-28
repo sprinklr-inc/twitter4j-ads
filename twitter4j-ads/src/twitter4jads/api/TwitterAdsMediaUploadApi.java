@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public interface TwitterAdsMediaUploadApi {
 
-    String uploadMediaAndGetMediaId(String mediaUrl, Set<String> accountUserIds, TwitterMediaType twitterMediaType, String name)
+    String uploadMediaAndGetMediaKey(String mediaUrl, Set<String> accountUserIds, TwitterMediaType twitterMediaType, String name)
             throws TwitterException;
 
 }

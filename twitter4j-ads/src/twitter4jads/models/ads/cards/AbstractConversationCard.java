@@ -8,8 +8,12 @@ import com.google.gson.annotations.SerializedName;
  * Time: 1:32 AM
  */
 public abstract class AbstractConversationCard extends AbstractTwitterCard {
+
     @SerializedName("title")
     private String title;
+
+    @SerializedName("media_key")
+    private String mediaKey;
 
     @SerializedName("first_cta")
     private String firstHashtag;
@@ -127,5 +131,13 @@ public abstract class AbstractConversationCard extends AbstractTwitterCard {
 
     public void setThankUrl(String thankUrl) {
         this.thankUrl = thankUrl;
+    }
+
+    public String getMediaKey() {
+        return mediaKey;
+    }
+
+    public void setMediaKey(String mediaKey) {
+        this.mediaKey = mediaKey;
     }
 }

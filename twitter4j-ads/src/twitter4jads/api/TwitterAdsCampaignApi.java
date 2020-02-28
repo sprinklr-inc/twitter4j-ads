@@ -5,7 +5,6 @@ import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.EntityStatus;
-import twitter4jads.models.ads.TwitterPoliticalDisclaimer;
 import twitter4jads.models.ads.sort.CampaignSortByField;
 
 import java.util.Collection;
@@ -26,13 +25,14 @@ public interface TwitterAdsCampaignApi {
      * @param withDeleted          Include deleted results in your request. Defaults to false.
      * @param count                (optional) Specifies the number of campaigns to try and retrieve, up to a maximum of 1000 per distinct request.
      * @param cursor               (optional) Specify a cursor to retrieve data from a specific page (function automatically handles paging upon iteration when you do not specify cursor value).
+     * @param q                    (optional) An query to scope resource by name.
      * @return Retrieve details for some or all campaigns associated with the current account.
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/campaigns">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/campaigns</a>
      */
     BaseAdsListResponseIterable<Campaign> getAllCampaigns(String accountId, Optional<Collection<String>> campaignIds,
                                                           Optional<Collection<String>> fundingInstrumentIds, boolean withDeleted, Optional<Integer> count,
-                                                          Optional<String> cursor, Optional<CampaignSortByField> sortByField) throws TwitterException;
+                                                          Optional<String> cursor, Optional<CampaignSortByField> sortByField, Optional<String> q) throws TwitterException;
 
     /**
      * @param accountId   The identifier for the leveraged account.
@@ -82,32 +82,4 @@ public interface TwitterAdsCampaignApi {
      * @see <a href="https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/campaigns/%3Acampaign_id">https://dev.twitter.com/ads/reference/delete/accounts/%3Aaccount_id/campaigns/%3Acampaign_id</a>
      */
     BaseAdsResponse<Campaign> deleteCampaign(String accountId, String campaignId) throws TwitterException;
-
-    /**
-     * @param accountId                  The identifier for the leveraged account.
-     * @param twitterPoliticalDisclaimer Political disclaimer to publish.
-     * @return publish political disclaimer for political ad accounts
-     */
-    BaseAdsResponse<TwitterPoliticalDisclaimer> publishDisclaimer(String accountId, TwitterPoliticalDisclaimer twitterPoliticalDisclaimer)
-            throws TwitterException;
-
-    /**
-     * @param accountId   The identifier for the leveraged account.
-     * @param campaignIds Campaign ids for which to fetch the disclaimers.
-     * @return get political disclaimer by campaigns Ids . Upto 200 may be provided
-     */
-    BaseAdsListResponseIterable<TwitterPoliticalDisclaimer> getDisclaimersByCampaignIds(String accountId, Collection<String> campaignIds)
-            throws TwitterException;
-
-    /**
-     * @param accountUserId    The identifier for the leveraged account.
-     * @param disclaimerId     The id of disclaimer to update
-     * @param paidForBy
-     * @param paidForByWebsite
-     * @param authorizedBy
-     * @return update political disclaimer by disclaimer id.
-     */
-    BaseAdsResponse<TwitterPoliticalDisclaimer> updateDisclaimer(String accountUserId, String disclaimerId, String paidForBy, String paidForByWebsite,
-                                                                 String authorizedBy)
-            throws TwitterException;
 }

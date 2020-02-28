@@ -10,7 +10,9 @@ public enum TwitterOperationType {
 
     private final String channelKey;
 
-    TwitterOperationType(String channelKey) {this.channelKey = channelKey;}
+    TwitterOperationType(String channelKey) {
+        this.channelKey = channelKey;
+    }
 
     public String getChannelKey() {
         return this.channelKey;

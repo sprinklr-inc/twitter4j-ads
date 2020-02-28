@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName;
  */
 public abstract class AbstractTwitterDMCard extends AbstractTwitterCard {
 
+    @SerializedName("media_key")
+    private String mediaKey;
+
     @SerializedName("recipient_user_id")
     private Long recipientUserId;
 
@@ -105,5 +108,13 @@ public abstract class AbstractTwitterDMCard extends AbstractTwitterCard {
 
     public void setFourthWelcomeMessageId(Long fourthWelcomeMessageId) {
         this.fourthWelcomeMessageId = fourthWelcomeMessageId;
+    }
+
+    public String getMediaKey() {
+        return mediaKey;
+    }
+
+    public void setMediaKey(String mediaKey) {
+        this.mediaKey = mediaKey;
     }
 }
