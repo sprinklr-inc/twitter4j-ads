@@ -24,7 +24,7 @@ public class GetLineItemForAccount extends BaseAdsTest {
         TwitterAdsLineItemApi lineItemApi = twitterAdsInstance.getLineItemApi();
         List<LineItem> lineItemList = Lists.newArrayList();
         try {
-            BaseAdsListResponseIterable<LineItem> allLineItems = lineItemApi.getAllLineItems("18ce53uo3nm", null, null, null, null, false, null, Optional.of(LineItemsSortByField.BID_AMOUNT_LOCAL_MICRO));
+            BaseAdsListResponseIterable<LineItem> allLineItems = lineItemApi.getAllLineItems("18ce53uo3nm", null, null, null, null, false, null, Optional.of(LineItemsSortByField.BID_AMOUNT_LOCAL_MICRO), null);
             for (BaseAdsListResponse<LineItem> allLineItem : allLineItems) {
                 lineItemList.addAll(allLineItem.getData());
             }

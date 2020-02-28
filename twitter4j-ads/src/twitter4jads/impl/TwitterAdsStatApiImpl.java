@@ -12,14 +12,7 @@ import twitter4jads.internal.http.HttpParameter;
 import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.Granularity;
 import twitter4jads.models.TwitterSegmentationType;
-import twitter4jads.models.ads.HttpVerb;
-import twitter4jads.models.ads.JobDetails;
-import twitter4jads.models.ads.Placement;
-import twitter4jads.models.ads.TwitterAdStatistics;
-import twitter4jads.models.ads.TwitterAuctionInsights;
-import twitter4jads.models.ads.TwitterEntityStatistics;
-import twitter4jads.models.ads.TwitterEntityStatisticsMetrics;
-import twitter4jads.models.ads.TwitterEntityType;
+import twitter4jads.models.ads.*;
 import twitter4jads.util.TwitterAdUtil;
 
 import java.io.BufferedReader;
@@ -33,22 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
-import static twitter4jads.TwitterAdsConstants.GRANULARITY;
-import static twitter4jads.TwitterAdsConstants.PARAM_CAMPAIGN_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_END_TIME;
-import static twitter4jads.TwitterAdsConstants.PARAM_ENTITY_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_ENTITY_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_JOB_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_LINE_ITEM_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_METRIC_GROUPS;
-import static twitter4jads.TwitterAdsConstants.PARAM_PLACEMENT;
-import static twitter4jads.TwitterAdsConstants.PARAM_SEGMENTATION_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_START_TIME;
-import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
-import static twitter4jads.TwitterAdsConstants.PATH_REACH_STATS;
-import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI;
-import static twitter4jads.TwitterAdsConstants.PREFIX_STATS_ACCOUNTS_URI;
-import static twitter4jads.TwitterAdsConstants.PREFIX_STATS_JOB_ACCOUNTS_URI;
+import static twitter4jads.TwitterAdsConstants.*;
 
 /**
  * User: abhay
@@ -67,7 +45,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
                                                                                Collection<String> entityIds, long startTime, long endTime,
                                                                                boolean withDeleted, Granularity granularity, Placement placement)
             throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(startTime, "startTime");
         TwitterAdUtil.ensureNotNull(entityIds, "entityIds");
         TwitterAdUtil.ensureNotNull(placement, "placement");
@@ -86,10 +64,10 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
         }
 
         String metrics = StringUtils.join(getMetrics(twitterEntity, null), ",");
-        params.add(new HttpParameter(PARAM_METRIC_GROUPS, metrics));
+        params.add(new HttpParameter(PARAM_METRICS_GROUPS, metrics));
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         params.add(new HttpParameter(PARAM_ENTITY_IDS, TwitterAdUtil.getCsv(entityIds)));
-        params.add(new HttpParameter(PARAM_PLACEMENT, placement.name()));
+        params.add(new HttpParameter(PARAMS_PLACEMENT, placement.name()));
 
         final Type type = new TypeToken<BaseAdsListResponse<TwitterEntityStatistics>>() {
         }.getType();
@@ -100,7 +78,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
     public BaseAdsListResponseIterable<TwitterAuctionInsights> fetchAuctionInsights(String accountId, Collection<String> lineItemIds, long startTime,
                                                                                     long endTime, Granularity granularity, Placement placement)
             throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(startTime, "startTime");
         TwitterAdUtil.ensureNotNull(lineItemIds, "lineItemIds");
         TwitterAdUtil.ensureNotNull(placement, "placement");
@@ -117,7 +95,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
             params.add(new HttpParameter(PARAM_END_TIME, endTimeAsString));
         }
         params.add(new HttpParameter(PARAM_LINE_ITEM_IDS, TwitterAdUtil.getCsv(lineItemIds)));
-        params.add(new HttpParameter(PARAM_PLACEMENT, placement.name()));
+        params.add(new HttpParameter(PARAMS_PLACEMENT, placement.name()));
 
         final Type type = new TypeToken<BaseAdsListResponse<TwitterAuctionInsights>>() {
         }.getType();
@@ -128,7 +106,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
     public BaseAdsResponse<JobDetails> createAsyncJob(String accountId, TwitterEntityType twitterEntityType, Collection<String> ids, long startTime,
                                                       long endTime, boolean withDeleted, Granularity granularity, Placement placement,
                                                       Optional<TwitterSegmentationType> twitterSegmentationType) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(startTime, "startTime");
         TwitterAdUtil.ensureNotNull(ids, "entityIds");
         TwitterAdUtil.ensureNotNull(placement, "placement");
@@ -154,10 +132,10 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
 
         String metrics = StringUtils.join(getMetrics(twitterEntityType, segmentationType), ",");
-        params.add(new HttpParameter(PARAM_METRIC_GROUPS, metrics));
+        params.add(new HttpParameter(PARAM_METRICS_GROUPS, metrics));
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
         params.add(new HttpParameter(PARAM_ENTITY_IDS, TwitterAdUtil.getCsv(ids)));
-        params.add(new HttpParameter(PARAM_PLACEMENT, placement.name()));
+        params.add(new HttpParameter(PARAMS_PLACEMENT, placement.name()));
 
         final Type type = new TypeToken<BaseAdsResponse<JobDetails>>() {
         }.getType();
@@ -166,7 +144,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
     @Override
     public BaseAdsListResponseIterable<JobDetails> getJobExecutionDetails(String accountId, Collection<String> jobIds) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_JOB_IDS, TwitterAdUtil.getCsv(jobIds)));
 
@@ -188,7 +166,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
     @Override
     public BaseAdsListResponseIterable<TwitterAdStatistics> fetchCampaignStats(String accountId, Collection<String> campaignIds, long startTime,
                                                                                long endTime) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(startTime, "startTime");
         TwitterAdUtil.ensureNotNull(campaignIds, "campaignIds");
 
@@ -211,7 +189,7 @@ public class TwitterAdsStatApiImpl implements TwitterAdsStatApi {
 
     @Override
     public BaseAdsResponse<JobDetails> deleteJob(String accountId, String jobId) throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
         TwitterAdUtil.ensureNotNull(jobId, "jobId");
 
         final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_STATS_JOB_ACCOUNTS_URI + accountId + "/" + jobId;

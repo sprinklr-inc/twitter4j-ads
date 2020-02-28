@@ -1,10 +1,12 @@
 package twitter4jads.models.ads.cards;
 
 import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * @author meghanajain
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TwitterWebsiteCard extends AbstractTwitterCard {
 
     @SerializedName("website_title")
@@ -13,8 +15,15 @@ public class TwitterWebsiteCard extends AbstractTwitterCard {
     @SerializedName("website_url")
     private String websiteUrl;
 
+    @Deprecated
     @SerializedName("image")
-    private String image;
+    private String imageUrl;
+
+    @SerializedName("media_url")
+    private String mediaUrl;
+
+    @SerializedName("media_key")
+    private String mediaKey;
 
     @SerializedName("image_data")
     private String imageData;
@@ -35,12 +44,12 @@ public class TwitterWebsiteCard extends AbstractTwitterCard {
         this.websiteUrl = websiteUrl;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getImageData() {
@@ -49,5 +58,21 @@ public class TwitterWebsiteCard extends AbstractTwitterCard {
 
     public void setImageData(String imageData) {
         this.imageData = imageData;
+    }
+
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
+    }
+
+    public String getMediaKey() {
+        return mediaKey;
+    }
+
+    public void setMediaKey(String mediaKey) {
+        this.mediaKey = mediaKey;
     }
 }

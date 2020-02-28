@@ -16,12 +16,7 @@ import twitter4jads.models.ads.audience.AudienceApiResponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.Sets.newHashSet;
@@ -174,6 +169,9 @@ public final class TwitterAdUtil {
     public static <T> BaseAdsListResponse<T> constructBaseAdsListResponse(HttpResponse httpResponse, String response, Type type) throws IOException {
         Gson gson = new Gson();
         BaseAdsListResponse<T> baseResponse = gson.fromJson(response, type);
+        if (baseResponse == null) {
+            return null;
+        }
         RateLimitStatus rateLimitStatus = createFromResponseHeader(httpResponse);
         baseResponse.setRateLimitStatus(rateLimitStatus);
         return baseResponse;

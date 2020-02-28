@@ -6,5 +6,5 @@ package twitter4jads.models.ads;
  * Time: 12:06 PM
  */
 public enum TwitterOptimization {
-    DEFAULT, ENGAGEMENT, WEBSITE_CONVERSIONS, WEBSITE_CLICKS
+    DEFAULT, ENGAGEMENT, WEBSITE_CONVERSIONS, WEBSITE_CLICKS, APP_CLICKS, APP_INSTALLS
 }

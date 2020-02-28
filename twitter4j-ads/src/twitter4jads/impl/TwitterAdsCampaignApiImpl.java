@@ -11,9 +11,6 @@ import twitter4jads.internal.models4j.TwitterException;
 import twitter4jads.models.ads.Campaign;
 import twitter4jads.models.ads.EntityStatus;
 import twitter4jads.models.ads.HttpVerb;
-import twitter4jads.models.ads.TwitterAgreementType;
-import twitter4jads.models.ads.TwitterPoliticalDisclaimer;
-import twitter4jads.models.ads.TwitterSponsorshipType;
 import twitter4jads.models.ads.sort.CampaignSortByField;
 import twitter4jads.util.TwitterAdUtil;
 
@@ -25,33 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static twitter4jads.TwitterAdsConstants.MAX_DISCLAIMER_REQUEST_PARAMETER_SIZE;
-import static twitter4jads.TwitterAdsConstants.PARAM_ACCOUNT_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_AUTHORIZED_BY;
-import static twitter4jads.TwitterAdsConstants.PARAM_CAMPAIGN_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_CAMPAIGN_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_COUNT;
-import static twitter4jads.TwitterAdsConstants.PARAM_CURSOR;
-import static twitter4jads.TwitterAdsConstants.PARAM_DAILY_BUDGET_AMOUNT_LOCAL_MICRO;
-import static twitter4jads.TwitterAdsConstants.PARAM_DISCLAIMER_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_DURATION_IN_DAYS;
-import static twitter4jads.TwitterAdsConstants.PARAM_END_TIME;
-import static twitter4jads.TwitterAdsConstants.PARAM_ENTITY_STATUS;
-import static twitter4jads.TwitterAdsConstants.PARAM_FREQUENCY_CAP;
-import static twitter4jads.TwitterAdsConstants.PARAM_FUNDING_INSTRUMENT_ID;
-import static twitter4jads.TwitterAdsConstants.PARAM_FUNDING_INSTRUMENT_IDS;
-import static twitter4jads.TwitterAdsConstants.PARAM_NAME;
-import static twitter4jads.TwitterAdsConstants.PARAM_PAID_FOR_BY;
-import static twitter4jads.TwitterAdsConstants.PARAM_PAID_FOR_BY_WEBSITE;
-import static twitter4jads.TwitterAdsConstants.PARAM_SORT_BY;
-import static twitter4jads.TwitterAdsConstants.PARAM_SPONSORSHIP_TYPE;
-import static twitter4jads.TwitterAdsConstants.PARAM_STANDARD_DELIVERY;
-import static twitter4jads.TwitterAdsConstants.PARAM_START_TIME;
-import static twitter4jads.TwitterAdsConstants.PARAM_TOTAL_BUDGET_AMOUNT_LOCAL_MICRO;
-import static twitter4jads.TwitterAdsConstants.PARAM_WITH_DELETED;
-import static twitter4jads.TwitterAdsConstants.PATH_CAMPAIGN;
-import static twitter4jads.TwitterAdsConstants.PATH_POLITICAL_DISCLAIMERS;
-import static twitter4jads.TwitterAdsConstants.PREFIX_ACCOUNTS_URI;
+import static twitter4jads.TwitterAdsConstants.*;
 
 /**
  * User: abhay
@@ -70,7 +41,7 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
     @Override
     public BaseAdsListResponseIterable<Campaign> getAllCampaigns(String accountId, Optional<Collection<String>> campaignIds,
                                                                  Optional<Collection<String>> fundingInstrumentIds, boolean withDeleted, Optional<Integer> count,
-                                                                 Optional<String> cursor, Optional<CampaignSortByField> sortByField) throws TwitterException {
+                                                                 Optional<String> cursor, Optional<CampaignSortByField> sortByField, Optional<String> q) throws TwitterException {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         String campaignIdsAsString = null;
         String fundingInstrumentIdsAsString = null;
@@ -84,7 +55,7 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         }
 
         List<HttpParameter> params =
-                getCampaignParameters(accountId, Optional.ofNullable(campaignIdsAsString), Optional.ofNullable(fundingInstrumentIdsAsString), withDeleted, count, cursor);
+                getCampaignParameters(accountId, Optional.ofNullable(campaignIdsAsString), Optional.ofNullable(fundingInstrumentIdsAsString), withDeleted, count, cursor, q);
 
         if (sortByField != null && sortByField.isPresent()) {
             params.add(new HttpParameter(PARAM_SORT_BY, sortByField.get().getField()));
@@ -152,58 +123,6 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         return twitterAdsClient.executeHttpRequest(baseUrl, null, type, HttpVerb.DELETE);
     }
 
-    @SuppressWarnings("Duplicates")
-    @Override
-    public BaseAdsResponse<TwitterPoliticalDisclaimer> publishDisclaimer(String accountId, TwitterPoliticalDisclaimer twitterPoliticalDisclaimer)
-            throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "Account Id");
-        final List<HttpParameter> params = validateCreateDisclaimerParameters(accountId, twitterPoliticalDisclaimer);
-        HttpParameter[] parameters = null;
-        if (!params.isEmpty()) {
-            parameters = params.toArray(new HttpParameter[0]);
-        }
-
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_POLITICAL_DISCLAIMERS;
-        Type type = new TypeToken<BaseAdsResponse<TwitterPoliticalDisclaimer>>() {
-        }.getType();
-        return twitterAdsClient.executeHttpRequest(baseUrl, parameters, type, HttpVerb.POST);
-    }
-
-    @SuppressWarnings("Duplicates")
-    @Override
-    public BaseAdsListResponseIterable<TwitterPoliticalDisclaimer> getDisclaimersByCampaignIds(String accountId, Collection<String> campaignIds)
-            throws TwitterException {
-        TwitterAdUtil.ensureNotNull(accountId, "accountId");
-        String campaignIdsAsString = null;
-        if (TwitterAdUtil.isNotNull(campaignIds)) {
-            TwitterAdUtil.ensureMaxSize(campaignIds, MAX_DISCLAIMER_REQUEST_PARAMETER_SIZE);
-            campaignIdsAsString = TwitterAdUtil.getCsv(campaignIds);
-        }
-
-        final String baseUrl = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_POLITICAL_DISCLAIMERS;
-        final List<HttpParameter> params = new ArrayList<>();
-        params.add(new HttpParameter(PARAM_CAMPAIGN_IDS, campaignIdsAsString));
-        params.add(new HttpParameter(PARAM_WITH_DELETED, true));
-
-        final Type type = new TypeToken<BaseAdsListResponse<TwitterPoliticalDisclaimer>>() {
-        }.getType();
-        return twitterAdsClient.executeHttpListRequest(baseUrl, params, type);
-    }
-
-    @SuppressWarnings("Duplicates")
-    @Override
-    public BaseAdsResponse<TwitterPoliticalDisclaimer> updateDisclaimer(String accountId, String disclaimerId, String paidForBy,
-                                                                        String paidForByWebsite, String authorizedBy) throws TwitterException {
-        final List<HttpParameter> params = validateUpdateDisclaimerParameters(accountId, disclaimerId, paidForBy, paidForByWebsite, authorizedBy);
-
-        final String baseUrl =
-                twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_POLITICAL_DISCLAIMERS + disclaimerId;
-        final Type type = new TypeToken<BaseAdsResponse<TwitterPoliticalDisclaimer>>() {
-        }.getType();
-
-        return twitterAdsClient.executeHttpRequest(baseUrl, params.toArray(new HttpParameter[0]), type, HttpVerb.PUT);
-    }
-
     // ------------------------------------------------------------------------ PRIVATE METHODS -----------------------------------------------------
 
     private List<HttpParameter> validateCreateCampaignParameters(Campaign campaign) {
@@ -248,12 +167,11 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         if (campaign.getDurationInDays() != null) {
             params.add(new HttpParameter(PARAM_DURATION_IN_DAYS, campaign.getDurationInDays()));
         }
-
         return params;
     }
 
     private List<HttpParameter> getCampaignParameters(String accountId, Optional<String> campaignIds, Optional<String> fundingInstrumentIds, boolean withDeleted,
-                                                      Optional<Integer> count, Optional<String> cursor) {
+                                                      Optional<Integer> count, Optional<String> cursor, Optional<String> q) {
         TwitterAdUtil.ensureNotNull(accountId, "accountId");
         final List<HttpParameter> params = new ArrayList<>();
         params.add(new HttpParameter(PARAM_WITH_DELETED, withDeleted));
@@ -268,6 +186,10 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         }
         if (cursor != null && cursor.isPresent()) {
             params.add(new HttpParameter(PARAM_CURSOR, cursor.get()));
+        }
+
+        if (q != null && q.isPresent()) {
+            params.add(new HttpParameter(PARAM_Q, q.get()));
         }
 
         return params;
@@ -319,53 +241,4 @@ public class TwitterAdsCampaignApiImpl implements TwitterAdsCampaignApi {
         return params;
     }
 
-    @SuppressWarnings("Duplicates")
-    private List<HttpParameter> validateUpdateDisclaimerParameters(String accountId, String disclaimerId, String paidForBy, String paidForByWebsite,
-                                                                   String authorizedBy) {
-        TwitterAdUtil.ensureNotNull(accountId, "AccountId");
-        TwitterAdUtil.ensureNotNull(disclaimerId, "Disclaimer Id");
-
-        final List<HttpParameter> params = new ArrayList<>();
-        if (TwitterAdUtil.isNotNullOrEmpty(paidForBy)) {
-            params.add(new HttpParameter(PARAM_PAID_FOR_BY, paidForBy));
-        }
-        if (TwitterAdUtil.isNotNullOrEmpty(paidForByWebsite)) {
-            params.add(new HttpParameter(PARAM_PAID_FOR_BY_WEBSITE, paidForByWebsite));
-        }
-        if (TwitterAdUtil.isNotNullOrEmpty(authorizedBy)) {
-            params.add(new HttpParameter(PARAM_AUTHORIZED_BY, authorizedBy));
-        }
-
-        return params;
-    }
-
-    @SuppressWarnings("Duplicates")
-    private List<HttpParameter> validateCreateDisclaimerParameters(String accountId, TwitterPoliticalDisclaimer twitterPoliticalDisclaimer) {
-        TwitterAdUtil.ensureNotNull(twitterPoliticalDisclaimer.getSponsorshipType(), "Sponsorship Type");
-        final TwitterSponsorshipType sponsorshipType = twitterPoliticalDisclaimer.getSponsorshipType();
-
-        TwitterAdUtil.ensureNotNull(twitterPoliticalDisclaimer.getDisclaimerType(), "Disclaimer Type");
-        final TwitterAgreementType disclaimerType = twitterPoliticalDisclaimer.getDisclaimerType();
-
-        TwitterAdUtil.ensureNotNull(twitterPoliticalDisclaimer.getCampaignId(), "Campaign Id");
-        final String campaignId = twitterPoliticalDisclaimer.getCampaignId();
-        TwitterAdUtil.ensureNotNull(twitterPoliticalDisclaimer.getPaidForBy(), "Paid For By");
-
-        final String paidForBy = twitterPoliticalDisclaimer.getPaidForBy();
-        final List<HttpParameter> params = new ArrayList<>();
-        params.add(new HttpParameter(PARAM_ACCOUNT_ID, accountId));
-        params.add(new HttpParameter(PARAM_CAMPAIGN_ID, campaignId));
-        params.add(new HttpParameter(PARAM_DISCLAIMER_TYPE, disclaimerType.name()));
-        params.add(new HttpParameter(PARAM_SPONSORSHIP_TYPE, sponsorshipType.name()));
-        params.add(new HttpParameter(PARAM_PAID_FOR_BY, paidForBy));
-
-        if (twitterPoliticalDisclaimer.getAuthorizedBy() != null) {
-            params.add(new HttpParameter(PARAM_AUTHORIZED_BY, twitterPoliticalDisclaimer.getAuthorizedBy()));
-        }
-        if (twitterPoliticalDisclaimer.getPaidForByWebsite() != null) {
-            params.add(new HttpParameter(PARAM_PAID_FOR_BY_WEBSITE, twitterPoliticalDisclaimer.getPaidForByWebsite()));
-        }
-
-        return params;
-    }
 }

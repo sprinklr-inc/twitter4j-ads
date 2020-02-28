@@ -1,21 +1,6 @@
 package twitter4jads;
 
-import twitter4jads.api.TwitterAdsAccountApi;
-import twitter4jads.api.TwitterAdsAudienceApi;
-import twitter4jads.api.TwitterAdsBiddingApi;
-import twitter4jads.api.TwitterAdsCampaignApi;
-import twitter4jads.api.TwitterAdsCardsApi;
-import twitter4jads.api.TwitterAdsFundingInstrumentApi;
-import twitter4jads.api.TwitterAdsLineItemApi;
-import twitter4jads.api.TwitterAdsMediaApi;
-import twitter4jads.api.TwitterAdsMediaUploadApi;
-import twitter4jads.api.TwitterAdsPreviewApi;
-import twitter4jads.api.TwitterAdsPromotedTweetApi;
-import twitter4jads.api.TwitterAdsStatApi;
-import twitter4jads.api.TwitterAdsTargetingApi;
-import twitter4jads.api.TwitterAdsWebEventApi;
-import twitter4jads.api.TwitterCallToActionApi;
-import twitter4jads.api.TwitterScheduledTweetApi;
+import twitter4jads.api.*;
 
 /**
  * User: poly
@@ -54,7 +39,9 @@ public interface TwitterAds extends java.io.Serializable {
 
     TwitterAdsPreviewApi getPreviewApi();
 
-    TwitterScheduledTweetApi getScheduledTweetApi();
+    TwitterScheduledTweetsApi getScheduledTweetApi();
 
     TwitterAdsMediaUploadApi getMediaUploadApi();
+
+    TwitterAdsTweetsApi getTweetsApi();
 }

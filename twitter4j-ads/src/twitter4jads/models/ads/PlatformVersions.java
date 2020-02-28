@@ -1,12 +1,14 @@
 package twitter4jads.models.ads;
 
 import com.google.gson.annotations.SerializedName;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * User: poly
  * Date: 11/02/14
  * Time: 11:53 AM
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PlatformVersions extends TwitterEntity{
 
     @SerializedName("name")
@@ -21,8 +23,12 @@ public class PlatformVersions extends TwitterEntity{
     @SerializedName("number")
     private String number;
 
+    @Deprecated
     @SerializedName("platform")
     private String platform;
+
+    @SerializedName("os_type")
+    private String osType;
 
     public String getName() {
         return name;
@@ -62,5 +68,13 @@ public class PlatformVersions extends TwitterEntity{
 
     public void setPlatform(String platform) {
         this.platform = platform;
+    }
+
+    public String getOsType() {
+        return osType;
+    }
+
+    public void setOsType(String osType) {
+        this.osType = osType;
     }
 }

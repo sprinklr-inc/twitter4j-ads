@@ -3,13 +3,7 @@ package twitter4jads.api;
 import twitter4jads.BaseAdsListResponseIterable;
 import twitter4jads.BaseAdsResponse;
 import twitter4jads.internal.models4j.TwitterException;
-import twitter4jads.models.ads.BidType;
-import twitter4jads.models.ads.EntityStatus;
-import twitter4jads.models.ads.LineItem;
-import twitter4jads.models.ads.LineItemAppResponse;
-import twitter4jads.models.ads.PromotedAccount;
-import twitter4jads.models.ads.Sentiments;
-import twitter4jads.models.ads.TwitterOSType;
+import twitter4jads.models.ads.*;
 import twitter4jads.models.ads.sort.LineItemsSortByField;
 import twitter4jads.models.ads.sort.PromotedAccountsSortByField;
 import twitter4jads.models.media.TwitterMediaCallToAction;
@@ -36,13 +30,14 @@ public interface TwitterAdsLineItemApi {
      * @param cursor               (optional) Specify a cursor to retrieve data from a specific page (function automatically handles paging upon iteration when you do not specify cursor value).
      * @param sortByField          (optional) Specify to return the line items according to the sorted parameter given.
      * @param withDeleted          Include deleted results in your request. Defaults to false.
+     * @param q                    (optional) A query to scope resource by name.
      * @return Retrieve the line items associated with a specific campaign belonging to the current account.
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/line_items">https://dev.twitter.com/ads/reference/get/accounts/%3Aaccount_id/line_items</a>
      */
     BaseAdsListResponseIterable<LineItem> getAllLineItems(String accountId, Optional<Collection<String>> campaignIds, Optional<Collection<String>> lineItemIds,
                                                           Optional<Collection<String>> fundingInstrumentIds, Optional<Integer> count, boolean withDeleted,
-                                                          String cursor, Optional<LineItemsSortByField> sortByField) throws TwitterException;
+                                                          String cursor, Optional<LineItemsSortByField> sortByField, Optional<String> q) throws TwitterException;
 
     /**
      * @param accountId   The identifier for the leveraged account.
@@ -64,17 +59,18 @@ public interface TwitterAdsLineItemApi {
     BaseAdsResponse<LineItem> createLineItem(String accountId, LineItem lineItem) throws TwitterException;
 
     /**
-     * @param accountId              The identifier for the leveraged account.
-     * @param lineItemId             The line item identifier of the line item to update.
-     * @param bidType                The BidType to use on this line item.
-     * @param automaticallySelectBid Whether to use auto bidding on this line item.
-     * @param bidAmountLocalMicro    (optional) Specify a new bid to set on this line item.
-     * @param status                 Status to set
-     * @param includeSentiment       (optional) Update the include sentiment parameter of line item.
-     * @param chargeBy               (optional) Update the charge by parameter of line item.
-     * @param bidUnit                (optional) Update the bid unit parameter of line item.
-     * @param advertiserDomain       (optional) Update the advertiser domain of line item (for TAP campaigns).
-     * @param iabCategories          (optional) Update the IAB categories associated with the line item (for TAP campaigns).
+     * @param accountId                The identifier for the leveraged account.
+     * @param lineItemId               The line item identifier of the line item to update.
+     * @param bidType                  The BidType to use on this line item.
+     * @param automaticallySelectBid   Whether to use auto bidding on this line item.
+     * @param bidAmountLocalMicro      (optional) Specify a new bid to set on this line item.
+     * @param status                   Status to set
+     * @param includeSentiment         (optional) Update the include sentiment parameter of line item.
+     * @param chargeBy                 (optional) Update the charge by parameter of line item.
+     * @param bidUnit                  (optional) Update the bid unit parameter of line item.
+     * @param advertiserDomain         (optional) Update the advertiser domain of line item (for TAP campaigns).
+     * @param iabCategories            (optional) Update the IAB categories associated with the line item (for TAP campaigns).
+     * @param twitterAudienceExpansion (optional) Used to expand the reach of campaigns by targeting users similar to those already targeted.
      * @return updated line item
      * @throws TwitterException
      * @see <a href="https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/line_items/%3Aline_item_id">https://dev.twitter.com/ads/reference/put/accounts/%3Aaccount_id/line_items/%3Aline_item_id</a>
@@ -84,7 +80,7 @@ public interface TwitterAdsLineItemApi {
                                              Optional<Boolean> matchRelevantPopularQueries, Optional<String> chargeBy,
                                              Optional<String> bidUnit, Optional<String> advertiserDomain, String optimization,
                                              String[] iabCategories, String startTime, String endTime, String name,
-                                             Long targetCPA, Long budget, String trackingTags) throws TwitterException;
+                                             Long targetCPA, Long budget, String trackingTags, String twitterAudienceExpansion) throws TwitterException;
 
     /**
      * @param accountId  The identifier for the leveraged account.

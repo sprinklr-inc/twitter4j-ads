@@ -92,27 +92,27 @@ public interface TwitterAdsAudienceApi {
             throws TwitterException;
 
     /**
-     * @param accountId
+     * @param accountId   The identifier for the leveraged account.
      * @param requestBody
-     * @return
+     * @return response of creating a flexible tailored audience
      * @throws TwitterException
      */
     BaseAdsListBatchPostResponse<TailoredAudience> createFlexibleTailoredAudience(String accountId, String requestBody) throws TwitterException;
 
     /**
-     * @param accountId
-     * @param tailoredAudienceId
-     * @return
+     * @param accountId          The identifier for the leveraged account.
+     * @param tailoredAudienceId A reference to the tailored audience you are operating with in the request.
+     * @return details for some or all permissions associated with the specified tailored audience.
      * @throws TwitterException
      */
     BaseAdsListResponse<TailoredAudiencePermission> getTailoredAudiencePermission(String accountId, String tailoredAudienceId) throws
             TwitterException;
 
     /**
-     * @param accountId
-     * @param tailoredAudienceId
-     * @param grantedAccountId
-     * @return
+     * @param accountId          The identifier for the leveraged account.
+     * @param tailoredAudienceId A reference to the tailored audience you are operating with in the request.
+     * @param grantedAccountId   The account you wish to grant the tailored audience permissions for.
+     * @return response for creating a new permission object allowing the specified audience to be shared with a given account.
      * @throws TwitterException
      */
     BaseAdsResponse<TailoredAudiencePermission> shareTailoredAudience(String accountId, String tailoredAudienceId, String

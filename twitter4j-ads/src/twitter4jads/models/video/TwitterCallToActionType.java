@@ -12,7 +12,10 @@ import java.util.Map;
 public enum TwitterCallToActionType {
 
     VISIT_SITE,
-    WATCH_NOW;
+    WATCH_NOW,
+    GO_TO,
+    SEE_MORE,
+    SHOP;
 
     private static final Map<String, TwitterCallToActionType> NAME_TO_CALL_TO_ACTION;
 

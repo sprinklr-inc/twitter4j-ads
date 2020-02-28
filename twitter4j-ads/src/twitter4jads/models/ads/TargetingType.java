@@ -25,8 +25,11 @@ public enum TargetingType {
     UNORDERED_KEYWORD,
     PHRASE_KEYWORD,
     EXACT_KEYWORD,
+    @Deprecated
     NEGATIVE_PHRASE_KEYWORD(true, PHRASE_KEYWORD),
+    @Deprecated
     NEGATIVE_UNORDERED_KEYWORD(true, UNORDERED_KEYWORD),
+    @Deprecated
     NEGATIVE_EXACT_KEYWORD(true, EXACT_KEYWORD),
     TAILORED_AUDIENCE,
     TAILORED_AUDIENCES_EXCLUDED(true, TAILORED_AUDIENCE),
@@ -38,10 +41,13 @@ public enum TargetingType {
     RTB_APP_CATEGORY,
     NETWORK_OPERATOR,
     NETWORK_ACTIVATION_DURATION,//this is for batch targeting
+    @Deprecated
     NETWORK_ACTIVATION_DURATION_LT(false, NETWORK_ACTIVATION_DURATION),
+    @Deprecated
     NETWORK_ACTIVATION_DURATION_GTE(false, NETWORK_ACTIVATION_DURATION),
     AGE,
     BEHAVIOR,
+    @Deprecated
     NEGATIVE_BEHAVIOR(true, BEHAVIOR),
     BEHAVIOR_EXPANDED,
     TV_SHOW_AIRING_RESTRICTED,
@@ -54,12 +60,14 @@ public enum TargetingType {
     CUSTOM_APP_LIST,
     //batch request to Twitter for exclude_app_list is expected as APP_LIST with operator_type NE
     APP_LIST,
+    @Deprecated
     EXCLUDE_APP_LIST(true, APP_LIST),
     USER_ENGAGEMENT,
     EVENT,
     CONTENT_PUBLISHER_USER,
     CONVERSATION,
-    IAB_CATEGORY;
+    IAB_CATEGORY,
+    EXCLUDED_IAB_CATEGORY(true, IAB_CATEGORY);
 
     private final boolean isNegativeTargeting;
     private final TargetingType negativeOf;
