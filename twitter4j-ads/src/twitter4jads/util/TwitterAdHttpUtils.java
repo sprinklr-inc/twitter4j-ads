@@ -64,4 +64,29 @@ public class TwitterAdHttpUtils {
 
         return new RateLimitStatusImpl(remainingHits, limit, resetTimeInSeconds, costValue);
     }
+
+    public static RateLimitStatusImpl createFromResponseHeaderForAccountBasedRateLimit(HttpResponse res) {
+
+        int remainingHits = 10;//"X-Account-Rate-Limit-Remaining"
+        int limit = 10;//"X-Account-Rate-Limit-Limit"
+        int resetTimeInSeconds = 0;//not included in the response header. Need to be calculated.
+
+        String strLimit = res.getResponseHeader("X-Account-Rate-Limit-Limit");
+        if (strLimit != null) {
+            limit = Integer.parseInt(strLimit);
+        }
+
+        String remaining = res.getResponseHeader("X-Account-Rate-Limit-Remaining");
+        if (remaining != null) {
+            remainingHits = Integer.parseInt(remaining);
+        }
+
+        String reset = res.getResponseHeader("X-Account-Rate-Limit-Reset");
+        if (reset != null) {
+            long longReset = Long.parseLong(reset);
+            resetTimeInSeconds = (int) longReset;
+        }
+
+        return new RateLimitStatusImpl(remainingHits, limit, resetTimeInSeconds);
+    }
 }
