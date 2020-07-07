@@ -14,8 +14,8 @@ public class TwitterAccountMediaCreative {
     @SerializedName("landing_url")
     private String landingUrl;
 
-    @SerializedName("serving_status")
-    private String servingStatus;
+    @SerializedName("entity_status")
+    private String entityStatus;
 
 
     @SerializedName("id")
@@ -53,12 +53,12 @@ public class TwitterAccountMediaCreative {
         this.landingUrl = landingUrl;
     }
 
-    public String getServingStatus() {
-        return servingStatus;
+    public String getEntityStatus() {
+        return entityStatus;
     }
 
-    public void setServingStatus(String servingStatus) {
-        this.servingStatus = servingStatus;
+    public void setEntityStatus(String entityStatus) {
+        this.entityStatus = entityStatus;
     }
 
     public String getId() {

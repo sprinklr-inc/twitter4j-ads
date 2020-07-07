@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  */
 public interface TwitterAdsConstants {
 
-    String CURRENT_VERSION = "6";
+    String CURRENT_VERSION = "7";
 
     String PREFIX_ACCOUNTS_URI = CURRENT_VERSION + "/accounts/";
     String AUTHENTICATED_USER_ACCESS = "/authenticated_user_access";
