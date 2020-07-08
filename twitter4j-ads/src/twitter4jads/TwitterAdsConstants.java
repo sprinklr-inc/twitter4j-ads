@@ -271,7 +271,9 @@ public interface TwitterAdsConstants {
     String PATH_SCHEDULED_PROMOTED_TWEETS = "/scheduled_promoted_tweets/";
     String PATH_PROMOTED_ACCOUNTS = "/promoted_accounts/";
     String PATH_PROMOTABLE_USERS = "/promotable_users/";
+    @Deprecated
     String PATH_REACH_ESTIMATE = "/reach_estimate/";
+    String PATH_AUDIENCE_SUMMARY = "/audience_summary";
     String PATH_LINE_ITEMS = "/line_items/";
     String PATH_TARGETING_CRITERIA = "/targeting_criteria/";
     String PATH_TARGETING_CRITERIA_LOCATION = CURRENT_VERSION + "/targeting_criteria/locations";

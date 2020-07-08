@@ -305,6 +305,11 @@ public interface TwitterAdsTargetingApi {
     BaseAdsResponse<NewTwitterReachEstimate> getReachEstimate(String accountId, ProductType productType, List<TargetingCriteria> targetingCriterias,
                                                               String objective, Long bidAmountLocalMicro, String currency, Long campaignDailyBudgetAmountLocalMicro, String bidType)
             throws TwitterException;
+    /**
+     * @return audience_summary of the ad
+     */
+    BaseAdsResponse<AudienceSummary> getAudienceSummary(String accountId, List<TargetingCriteria> targetingCriterias)
+            throws TwitterException;
 
     BaseAdsListResponseIterable<IabCategory> fetchIabCategories(String q) throws TwitterException;
 

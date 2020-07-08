@@ -20,7 +20,7 @@ package twitter4jads.internal.models4j;
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 public final class Version {
-    private static final String VERSION = "5.0";
+    private static final String VERSION = "7.0";
     private static final String TITLE = "Twitter4JAds";
 
     private Version() {

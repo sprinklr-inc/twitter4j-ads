@@ -3,6 +3,7 @@ package twitter4jads.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
 import twitter4jads.*;
@@ -25,6 +26,7 @@ import java.util.*;
 import static twitter4jads.TwitterAdsConstants.*;
 import static twitter4jads.models.ads.TargetingType.*;
 import static twitter4jads.util.TwitterAdUtil.constructBaseAdsListResponse;
+import static twitter4jads.util.TwitterAdUtil.constructBaseAdsResponse;
 
 /**
  * User: abhay
@@ -261,6 +263,29 @@ public class TwitterAdsTargetingApiImpl implements TwitterAdsTargetingApi {
         }.getType();
 
         return twitterAdsClient.executeHttpRequest(url, params.toArray(new HttpParameter[params.size()]), type, HttpVerb.GET);
+    }
+
+    @Override
+    public BaseAdsResponse<AudienceSummary> getAudienceSummary(String accountId, List<TargetingCriteria> targetingCriteriaList)
+            throws TwitterException {
+        TwitterAdUtil.ensureNotNull(accountId, ACCOUNT_ID);
+        TwitterAdUtil.ensureNotEmpty(targetingCriteriaList, "Targeting Criteria");
+
+        JsonObject params = new JsonObject();
+        params.add("targeting_criteria", new Gson().toJsonTree(targetingCriteriaList, new TypeToken<List<AudienceSummary>>() {}.getType()).getAsJsonArray());
+
+        final String url = twitterAdsClient.getBaseAdsAPIUrl() + PREFIX_ACCOUNTS_URI + accountId + PATH_AUDIENCE_SUMMARY;
+        final Type type = new TypeToken<BaseAdsResponse<AudienceSummary>>() {
+        }.getType();
+
+
+        try {
+            HttpResponse httpResponse = twitterAdsClient.postRequest(url, GSON.toJson(params));
+            String stringResponse = httpResponse.asString();
+            return constructBaseAdsResponse(httpResponse, stringResponse, type);
+        } catch (IOException e) {
+            throw new TwitterException("Failed to parse response.", e);
+        }
     }
 
     @Override

@@ -2,7 +2,7 @@ apply plugin: "java"
 apply plugin: 'maven-publish'
 
 group = 'com.sprinklr'
-version = '5.0'
+version = '7.0'
 
 repositories {
     mavenCentral()
@@ -63,8 +63,12 @@ publishing {
 publishing {
     repositories {
         maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            url "$buildDir/repo"
+            name 'nexus-releases'
+            url "http://172.16.25.49:8081/nexus/content/repositories/releases/"
+            credentials {
+                username "performad"
+                password "performad"
+            }
         }
     }
 }
