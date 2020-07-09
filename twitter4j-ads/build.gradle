@@ -63,12 +63,8 @@ publishing {
 publishing {
     repositories {
         maven {
-            name 'nexus-releases'
-            url "http://172.16.25.49:8081/nexus/content/repositories/releases/"
-            credentials {
-                username "performad"
-                password "performad"
-            }
+            // change to point to your repo, e.g. http://my.org/repo
+            url "$buildDir/repo"
         }
     }
 }

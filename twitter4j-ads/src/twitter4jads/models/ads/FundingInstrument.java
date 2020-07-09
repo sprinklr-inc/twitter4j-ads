@@ -26,6 +26,9 @@ public class FundingInstrument extends TwitterEntity implements Serializable {
     @SerializedName("type")
     private String type;
 
+    @SerializedName("able_to_fund")
+    private Boolean ableToFund;
+
     @SerializedName("entity_status")
     private String entityStatus;
 
@@ -93,6 +96,14 @@ public class FundingInstrument extends TwitterEntity implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getAbleToFund() {
+        return ableToFund;
+    }
+
+    public void setAbleToFund(Boolean ableToFund) {
+        this.ableToFund = ableToFund;
     }
 
     public String getEntityStatus() {
