@@ -1,0 +1,17 @@
+apply plugin: "java"
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+dependencies {
+    compile project(':twitter4j-ads')
+}

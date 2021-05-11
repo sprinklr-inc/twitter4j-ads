@@ -1,0 +1,43 @@
+version = '5.0'
+
+
+subprojects {
+    apply plugin: 'idea'
+
+    tasks.withType(Jar) {
+        def revision = 'git rev-parse HEAD'.execute().text.trim()
+        def date = new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        def user = System.properties['user.name']
+        def javaVendor = System.properties['java.vendor']
+        def javaVersion = System.properties['java.version']
+        def osName = System.properties['os.name']
+        def osArch = System.properties['os.arch']
+        def osVersion = System.properties['os.version']
+        def buildNumber = System.getenv("BUILD_NUMBER")
+        if(!buildNumber) {
+            buildNumber = 'UNSET'
+        }
+        def jobName = System.getenv("JOB_NAME")
+        if(!jobName) {
+            jobName = 'UNSET'
+        }
+        manifest {
+            attributes 'Built-By': user,
+                    'Date': date,
+                    'Implementation-Version': revision,
+                    'Implementation-Java': javaVendor + ' ' + javaVersion,
+                    'Implementation-Build-OS': osName + ' ' + osArch + ' ' + osVersion,
+                    'Build-Number': buildNumber,
+                    'Build-Job': jobName
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+        options.compilerArgs << '-nowarn'
+        options.encoding = 'UTF-8'
+    }
+
+    task allDeps(type: DependencyReportTask) {}
+}
